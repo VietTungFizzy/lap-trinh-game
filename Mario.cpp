@@ -7,15 +7,26 @@
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
-
+#include "debug.h"
 #include "Collision.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+
 	vy += ay * dt;
 	vx += ax * dt;
-
-	if (abs(vx) > abs(maxVx)) vx = maxVx;
+	if (abs(vx) > abs(maxVx)) {
+		// Add momentum effect when mario change from walking to idle
+		if (state == MARIO_STATE_IDLE) {
+			if (abs(ax) < MINIMUM_ACCEL_VALUE) {
+				vx = 0;
+				ax = 0;
+			}
+		}
+		else {
+			vx = maxVx;
+		}
+	}
 
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
@@ -310,8 +321,8 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_IDLE:
-		ax = 0.0f;
-		vx = 0.0f;
+		ax += (0 - ax) / MARIO_SLOW_DOWN_COEFFICIENT;
+		maxVx = 0.0f;
 		break;
 
 	case MARIO_STATE_DIE:
