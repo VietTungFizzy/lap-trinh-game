@@ -19,7 +19,7 @@
 #define MARIO_GRAVITY			0.002f
 
 #define MARIO_JUMP_DEFLECT_SPEED  0.4f
-#define MARIO_SLOW_DOWN_COEFFICIENT 3
+#define MARIO_SLOW_DOWN_COEFFICIENT 5
 #pragma endregion
 
 #pragma region STATE
