@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
+#include "Decorated_Obj.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -147,7 +148,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id);
 	}
 	break;
-
+	case OBJECT_TYPE_DECORATED:
+	{
+		int sprite_id = atoi(tokens[3].c_str());
+		obj = new CDecoratedObject(x, y, sprite_id);
+	}
+	break;
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
