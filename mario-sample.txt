@@ -1,5 +1,5 @@
 [SETTINGS]
-start	6
+start	1
 width	320
 height	240
 
@@ -7,10 +7,7 @@ height	240
 # type: 0: intro, 1: play scene 
 [SCENES]
 0	intro.txt
-1	scene01.txt
-2	scene02.txt
-5	scene0005.txt
-6	world-1-1.txt
+1	world-1-1.txt
 
 # id	file 
 [TEXTURES]
