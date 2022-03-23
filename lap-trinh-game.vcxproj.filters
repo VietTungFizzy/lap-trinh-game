@@ -96,6 +96,9 @@
     <ClInclude Include="Decorated_Obj.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="RewardingBrick.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -156,6 +159,9 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="Decorated_Obj.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="RewardingBrick.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>

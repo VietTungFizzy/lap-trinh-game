@@ -7,6 +7,8 @@
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
+#include "RewardingBrick.h"
+
 #include "debug.h"
 #include "Collision.h"
 
@@ -64,6 +66,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<CRewardingBrick*>(e->obj))
+		OnCollisionWithRewardingBrick(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -110,6 +114,11 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
+{
+	e->obj->SetState(REWARDING_BRICK_TOUCHED_STATE);
 }
 
 //
@@ -251,7 +260,7 @@ void CMario::Render()
 
 	//RenderBoundingBox();
 	
-	DebugOutTitle(L"Coins: %d", coin);
+	// DebugOutTitle(L"Coins: %d", coin);
 }
 
 void CMario::SetState(int state)

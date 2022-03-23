@@ -10,6 +10,7 @@
 #include "Coin.h"
 #include "Platform.h"
 #include "Decorated_Obj.h"
+#include "RewardingBrick.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -26,12 +27,14 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
+#define SCENE_SECTION_CAMERA_BOUNDARIES 3
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
+#define SCREEN_HEIGHT 240
 
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
@@ -157,6 +160,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		int sprite_id = atoi(tokens[3].c_str());
 		obj = new CDecoratedObject(x, y, sprite_id);
+		break;
+	}
+	case OBJECT_TYPE_REWARDING_BRICK: 
+	{
+		int rewarding_id = atoi(tokens[3].c_str());
+		obj = new CRewardingBrick(x, y, rewarding_id);
+		break;
 	}
 	break;
 
@@ -170,6 +180,19 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 
 	objects.push_back(obj);
+}
+
+void CPlayScene::_ParseSection_CAMERA_BOUNDARIES(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 2) {
+		DebugOut(L"[ERROR] Invalid line when reading camera boundaries");
+		return;
+	}
+
+	leftBoundaries = atoi(tokens[0].c_str());
+	bottomBoundaries = atoi(tokens[1].c_str());
+	rightBoundaries = atoi(tokens[2].c_str());
 }
 
 void CPlayScene::LoadAssets(LPCWSTR assetFile)
@@ -225,6 +248,7 @@ void CPlayScene::Load()
 		if (line[0] == '#') continue;	// skip comment lines	
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
+		if (line == "[CAMERA_BOUNDARIES]") { section = SCENE_SECTION_CAMERA_BOUNDARIES; continue; }
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -234,6 +258,7 @@ void CPlayScene::Load()
 		{ 
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+			case SCENE_SECTION_CAMERA_BOUNDARIES: _ParseSection_CAMERA_BOUNDARIES(line); break;
 		}
 	}
 
@@ -268,10 +293,11 @@ void CPlayScene::Update(DWORD dt)
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
 
-	if (cx < 0) cx = 0;
+	if (cx < leftBoundaries) cx = leftBoundaries;
+	if (cx > rightBoundaries) cx = rightBoundaries;
 
 	//CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
-	CGame::GetInstance()->SetCamPos(cx, cy);
+	CGame::GetInstance()->SetCamPos(cx, (bottomBoundaries - SCREEN_HEIGHT));
 	PurgeDeletedObjects();
 }
 

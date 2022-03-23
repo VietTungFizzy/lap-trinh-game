@@ -1,3 +1,7 @@
+# Some setting properties
+[CAMERA_BOUNDARIES]
+# left	bottom	right
+0	462	2816
 # list of object assets to load in this scene
 [ASSETS]
 platform.txt
@@ -422,8 +426,9 @@ brick.txt
 1	2336	384	22001
 1	2320	400	22002
 1	2336	400	22003
+7	176	352	0
 # MARIO
-0	2320	304
+0	32	304
 
 # PLATFORM
 5	0	416	16	16	39	54000	54001	54002

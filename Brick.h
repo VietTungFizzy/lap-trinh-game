@@ -10,7 +10,7 @@
 #define BRICK_BBOX_HEIGHT 16
 
 class CBrick : public CGameObject {
-private:
+protected:
 	int spriteId;
 public:
 	CBrick(float x, float y, int spriteId) : CGameObject(x, y) { this->spriteId = spriteId; }

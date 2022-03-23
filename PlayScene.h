@@ -11,6 +11,9 @@
 
 class CPlayScene: public CScene
 {
+private:
+	int leftBoundaries, rightBoundaries, bottomBoundaries;
+
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
@@ -22,6 +25,7 @@ protected:
 
 	void _ParseSection_ASSETS(string line);
 	void _ParseSection_OBJECTS(string line);
+	void _ParseSection_CAMERA_BOUNDARIES(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
 	

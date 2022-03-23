@@ -120,9 +120,11 @@ class CMario : public CGameObject
 	BOOLEAN isOnPlatform;
 	int coin; 
 
+	// Handling collision logic
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	void OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
