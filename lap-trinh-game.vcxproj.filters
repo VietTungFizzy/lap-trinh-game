@@ -99,6 +99,9 @@
     <ClInclude Include="RewardingBrick.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="InvinsibleBrick.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -162,6 +165,9 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="RewardingBrick.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="InvinsibleBrick.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>

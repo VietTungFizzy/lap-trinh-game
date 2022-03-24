@@ -37,6 +37,9 @@
 
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
+
+#define	MARIO_LEVEL_SMALL	1
+#define	MARIO_LEVEL_BIG		2
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -87,9 +90,6 @@
 
 #define GROUND_Y 160.0f
 
-#define	MARIO_LEVEL_SMALL	1
-#define	MARIO_LEVEL_BIG		2
-
 #pragma region BBOX_SETTING
 
 #define MARIO_BIG_BBOX_WIDTH  14
@@ -107,6 +107,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME 2500
 #define MINIMUM_ACCEL_VALUE 0.00001f
+
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -114,6 +115,7 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
+	int bottomBoundary;
 	int level; 
 	int untouchable; 
 	ULONGLONG untouchable_start;
@@ -130,7 +132,7 @@ class CMario : public CGameObject
 	int GetAniIdSmall();
 
 public:
-	CMario(float x, float y) : CGameObject(x, y)
+	CMario(float x, float y, int b) : CGameObject(x, y)
 	{
 		isSitting = false;
 		maxVx = 0.0f;
@@ -142,6 +144,7 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+		bottomBoundary = b;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();

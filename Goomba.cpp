@@ -1,4 +1,5 @@
 #include "Goomba.h"
+#include "InvinsibleBrick.h"
 
 CGoomba::CGoomba(float x, float y):CGameObject(x, y)
 {
@@ -36,6 +37,7 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return; 
 	if (dynamic_cast<CGoomba*>(e->obj)) return; 
+	if (dynamic_cast<CInvinsibleBrick*>(e->obj)) return;
 
 	if (e->ny != 0 )
 	{

@@ -28,7 +28,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			vx = maxVx;
 		}
 	}
-
+	if (y > bottomBoundary) {
+		SetState(MARIO_STATE_DIE);
+	}
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
@@ -118,7 +120,9 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
-	e->obj->SetState(REWARDING_BRICK_TOUCHED_STATE);
+	if (e->ny != 0) {
+		e->obj->SetState(REWARDING_BRICK_TOUCHED_STATE);
+	}
 }
 
 //
@@ -155,8 +159,17 @@ int CMario::GetAniIdSmall()
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				if (state == MARIO_STATE_IDLE) {
+					aniId = (nx > 0) ? ID_ANI_MARIO_SMALL_IDLE_RIGHT : ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				}
+				else {
+					if (nx > 0) {
+						aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_SMALL_RUNNING_RIGHT : ID_ANI_MARIO_SMALL_WALKING_RIGHT;
+					}
+					else {
+						aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_SMALL_RUNNING_LEFT : ID_ANI_MARIO_SMALL_WALKING_LEFT;
+					}
+				}
 			}
 			else if (vx > 0)
 			{
@@ -217,8 +230,17 @@ int CMario::GetAniIdBig()
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_IDLE_LEFT;
+				if (state == MARIO_STATE_IDLE) {
+					aniId = (nx > 0) ? ID_ANI_MARIO_IDLE_RIGHT : ID_ANI_MARIO_IDLE_LEFT;
+				}
+				else {
+					if (nx > 0) {
+						aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RUNNING_RIGHT : ID_ANI_MARIO_WALKING_RIGHT;
+					}
+					else {
+						aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RUNNING_LEFT : ID_ANI_MARIO_WALKING_LEFT;
+					}
+				}
 			}
 			else if (vx > 0)
 			{
@@ -229,7 +251,7 @@ int CMario::GetAniIdBig()
 				else
 					aniId = ID_ANI_MARIO_WALKING_RIGHT;
 			}
-			else // vx < 0
+			else if (vx < 0)
 			{
 				if (ax > 0)
 					aniId = ID_ANI_MARIO_BRACE_LEFT;
@@ -238,7 +260,6 @@ int CMario::GetAniIdBig()
 				else
 					aniId = ID_ANI_MARIO_WALKING_LEFT;
 			}
-
 	if (aniId == -1) aniId = ID_ANI_MARIO_IDLE_RIGHT;
 
 	return aniId;
@@ -258,7 +279,7 @@ void CMario::Render()
 
 	animations->Get(aniId)->Render(x, y);
 
-	//RenderBoundingBox();
+	// RenderBoundingBox();
 	
 	// DebugOutTitle(L"Coins: %d", coin);
 }

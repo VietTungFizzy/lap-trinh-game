@@ -11,6 +11,7 @@
 #include "Platform.h"
 #include "Decorated_Obj.h"
 #include "RewardingBrick.h"
+#include "InvinsibleBrick.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -110,16 +111,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
-		if (player!=NULL) 
+	{
+		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new CMario(x,y); 
-		player = (CMario*)obj;  
-
+		// Make sure add map settings before objects loading
+		obj = new CMario(x, y, bottomBoundaries);
+		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
+	}
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
 	case OBJECT_TYPE_BRICK:
 	{
@@ -168,8 +171,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CRewardingBrick(x, y, rewarding_id);
 		break;
 	}
-	break;
-
+	case OBJECT_TYPE_INVINSIBLE_BRICK: obj = new CInvinsibleBrick(x, y); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
