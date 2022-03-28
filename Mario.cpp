@@ -109,7 +109,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	coin++;
+	point+= COIN_POINT;
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -120,8 +120,9 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
-	if (e->ny != 0) {
-		e->obj->SetState(REWARDING_BRICK_TOUCHED_STATE);
+	if (e->ny != 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
+		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
+		point += COIN_POINT;
 	}
 }
 

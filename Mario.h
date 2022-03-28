@@ -108,6 +108,7 @@
 #define MARIO_UNTOUCHABLE_TIME 2500
 #define MINIMUM_ACCEL_VALUE 0.00001f
 
+#define COIN_POINT 100
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -120,7 +121,7 @@ class CMario : public CGameObject
 	int untouchable; 
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
-	int coin; 
+	int point; 
 
 	// Handling collision logic
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -139,11 +140,11 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY; 
 
-		level = MARIO_LEVEL_BIG;
+		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
-		coin = 0;
+		point = 0;
 		bottomBoundary = b;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

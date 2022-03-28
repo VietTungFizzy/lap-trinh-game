@@ -2,6 +2,8 @@
 #include "Brick.h"
 #define REWARDING_BRICK_ANI_ID 10001
 #define REWARDING_BRICK_SPRITE_ID 20009
+#define REWARDING_BRICK_TEXT_SPRIE_ID 61000
+#define REWARDING_BRICK_COIN_ANI_ID 11000
 
 #define REWARDING_BRICK_WIDTH 16
 #define REWARDING_BRICK_BBOX_WIDTH 16
@@ -11,25 +13,40 @@
 #define REWARDING_MUSHROOM 1
 
 #define REWARDING_BRICK_NORMAL_STATE 0
-#define REWARDING_BRICK_TOUCHED_STATE 1
+#define REWARDING_BRICK_GO_UP_STATE 1
+#define REWARDING_BRICK_COIN_GO_UP_STATE 2
+#define REWARDING_BRICK_COIN_GO_DOWN_STATE 3
+#define REWARDING_BRICK_TEXT_GO_UP_STATE 4
+#define REWARDING_BRICK_FINISHED_STATE 5
 
-#define REWARDING_BRICK_GO_UP_SPEED 0.045f
+#define REWARDING_BRICK_GO_UP_SPEED 0.05f
+#define REWARDING_BRICK_COIN_SPEED 0.2f
+#define REWARDING_BRICK_TEXT_SPEED 0.1f
+#define REWARDING_BRICK_TEXT_SPEED_REDUCTION_COEFFECIENT 0.9f
 #define REWARDING_BRICK_GO_UP_DISTANCE REWARDING_BRICK_WIDTH / 2
+#define REWARING_BRICK_COIN_DISTANCE REWARDING_BRICK_BBOX_HEIGHT * 4
+
+#define REWARDING_BRICK_EPSILON (1e-3)
 class CRewardingBrick :
     public CBrick
 {
 private:
 	int rewarding;
-	bool isGoUpEffectFinish;
 	float initY;
+	
+	float xEffect;
+	float yEffect;
+	float vyEffect;
 public:
 	CRewardingBrick(float x, float y,
 		int rewarding, int spriteId = REWARDING_BRICK_SPRITE_ID) : CBrick(x, y, spriteId) 
 	{
 		this->state = REWARDING_BRICK_NORMAL_STATE;
 		this->rewarding = rewarding;
-		this->isGoUpEffectFinish = false;
 		this->initY = y;
+		this->xEffect = x;
+		this->yEffect = y;
+		this->vyEffect = 0.0f;
 	}
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

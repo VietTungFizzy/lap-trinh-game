@@ -9,6 +9,8 @@ mario.txt
 decorated.txt
 pipe.txt
 brick.txt
+coin.txt
+score_text.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -426,7 +428,11 @@ brick.txt
 1	2336	384	22001
 1	2320	400	22002
 1	2336	400	22003
+# REWARDING BRICK
 7	176	352	0
+7	192	352	0
+7	224	304	0
+7	240	304	0
 # INVINSIBLE BRICK TO FORM BOUNDARIES
 8	0	400
 8	0	384
