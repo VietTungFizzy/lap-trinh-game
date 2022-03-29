@@ -6,13 +6,15 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
+
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
 #include "Decorated_Obj.h"
 #include "RewardingBrick.h"
 #include "InvinsibleBrick.h"
-
+#include "Mushroom.h"
+#include "PlatformTopOnly.h"
 #include "SampleKeyEventHandler.h"
 
 using namespace std;
@@ -134,14 +136,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	case OBJECT_TYPE_PLATFORM:
 	{
-
 		float cell_width = (float)atof(tokens[3].c_str());
 		float cell_height = (float)atof(tokens[4].c_str());
 		int length = atoi(tokens[5].c_str());
 		int sprite_begin = atoi(tokens[6].c_str());
 		int sprite_middle = atoi(tokens[7].c_str());
 		int sprite_end = atoi(tokens[8].c_str());
-
 		obj = new CPlatform(
 			x, y,
 			cell_width, cell_height, length,
@@ -167,11 +167,36 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_REWARDING_BRICK: 
 	{
-		int rewarding_id = atoi(tokens[3].c_str());
-		obj = new CRewardingBrick(x, y, rewarding_id);
+		int rewarding_type = atoi(tokens[3].c_str());
+
+		if (rewarding_type == REWARDING_MUSHROOM) {
+			CGameObject* t = new CMushroom(x, y);
+			obj = new CRewardingBrick(x, y, rewarding_type, t);
+			objects.push_back(t);
+		}
+		else {
+			obj = new CRewardingBrick(x, y, rewarding_type);
+		}
+		
 		break;
 	}
 	case OBJECT_TYPE_INVINSIBLE_BRICK: obj = new CInvinsibleBrick(x, y); break;
+	case OBJECT_TYPE_PLATFORM_TOP_ONLY:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int sprite_begin = atoi(tokens[6].c_str());
+		int sprite_middle = atoi(tokens[7].c_str());
+		int sprite_end = atoi(tokens[8].c_str());
+		obj = new CPlatformTopOnly(
+			x, y,
+			cell_width, cell_height, length,
+			sprite_begin, sprite_middle, sprite_end
+		);
+
+		break;
+	}
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

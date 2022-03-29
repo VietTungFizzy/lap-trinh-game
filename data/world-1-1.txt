@@ -4,13 +4,14 @@
 0	462	2816
 # list of object assets to load in this scene
 [ASSETS]
-platform.txt
-mario.txt
-decorated.txt
-pipe.txt
-brick.txt
-coin.txt
-score_text.txt
+data/platform.txt
+data/mario.txt
+data/decorated.txt
+data/pipe.txt
+data/brick.txt
+data/coin.txt
+data/score_text.txt
+data/mushroom.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -46,9 +47,6 @@ score_text.txt
 6	160	400	60007
 6	176	400	60007
 6	192	400	60007
-6	240	368	60008
-6	256	368	60009
-6	272	368	60010
 6	240	384	60011
 6	256	384	60012
 6	272	384	60013
@@ -432,7 +430,7 @@ score_text.txt
 7	176	352	0
 7	192	352	0
 7	224	304	0
-7	240	304	0
+7	240	304	1
 # INVINSIBLE BRICK TO FORM BOUNDARIES
 8	0	400
 8	0	384
@@ -440,8 +438,6 @@ score_text.txt
 8	0	352
 8	0	336
 8	0	320
-# MARIO
-0	32	304
 
 # PLATFORM
 5	0	416	16	16	39	54000	54001	54002
@@ -451,3 +447,7 @@ score_text.txt
 5	1536	416	16	16	5	54000	54001	54002
 5	1664	416	16	16	36	54000	54001	54002
 5	2256	416	16	16	35	54000	54001	54002
+9	240	368	16	16	3	60008	60009	60010
+
+# MARIO
+0	32	304

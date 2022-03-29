@@ -38,6 +38,9 @@
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
 
+#define MARIO_STATE_SMALL_TO_BIG	700
+#define MARIO_STATE_BIG_TO_SMALL	701
+
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
 #pragma endregion
@@ -86,9 +89,14 @@
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT 1600
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_LEFT 1601
 
+// TRANSITION
+#define ID_ANI_MARIO_BIG_TO_SMALL_RIGHT	1702
+#define ID_ANI_MARIO_BIG_TO_SMALL_LEFT	1703
+
+#define ID_ANI_MARIO_SMALL_TO_BIG_RIGHT 1700
+#define ID_ANI_MARIO_SMALL_TO_BIG_LEFT 1701
 #pragma endregion
 
-#define GROUND_Y 160.0f
 
 #pragma region BBOX_SETTING
 
@@ -105,8 +113,8 @@
 
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
-#define MARIO_UNTOUCHABLE_TIME 2500
-#define MINIMUM_ACCEL_VALUE 0.00001f
+#define MARIO_UNTOUCHABLE_TIME 2000
+#define MINIMUM_ACCEL_VALUE 1e-4
 
 #define COIN_POINT 100
 class CMario : public CGameObject
@@ -128,10 +136,10 @@ class CMario : public CGameObject
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
-
 public:
 	CMario(float x, float y, int b) : CGameObject(x, y)
 	{

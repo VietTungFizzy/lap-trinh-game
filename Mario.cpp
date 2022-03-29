@@ -8,7 +8,8 @@
 #include "Coin.h"
 #include "Portal.h"
 #include "RewardingBrick.h"
-
+#include "Mushroom.h"
+#include "PlatformTopOnly.h"
 #include "debug.h"
 #include "Collision.h"
 
@@ -36,6 +37,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
+
+		if (this->state == MARIO_STATE_BIG_TO_SMALL || this->state == MARIO_STATE_SMALL_TO_BIG) {
+			state = MARIO_STATE_IDLE;
+		}
 	}
 
 	isOnPlatform = false;
@@ -70,6 +75,22 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CRewardingBrick*>(e->obj))
 		OnCollisionWithRewardingBrick(e);
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<CPlatformTopOnly*>(e->obj)) {
+		float xp, yp, l, t, r, b;
+		e->obj->GetPosition(xp, yp);
+		GetBoundingBox(l, t, r, b);
+		DebugOut(L"[DEBUG] yp: %f, b: %f\n", yp, b);
+		CPlatformTopOnly* plat = (CPlatformTopOnly*)e;
+		if (b > yp) {
+			plat->SetBlockMode(1);
+			DebugOut(L"[DEBUG] hit\n");
+		}
+		else {
+			plat->SetBlockMode(0);
+		}
+	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -123,6 +144,17 @@ void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 	if (e->ny != 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
 		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
 		point += COIN_POINT;
+	}
+}
+
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	if (e->obj->GetState() == MUSHROOM_STATE_ACTIVE) {
+		//e->obj->SetState(MUSHROOM_STATE_EATEN);
+		e->obj->Delete();
+		SetLevel(MARIO_LEVEL_BIG);
+		StartUntouchable();
+		SetState(MARIO_STATE_SMALL_TO_BIG);
 	}
 }
 
@@ -195,7 +227,6 @@ int CMario::GetAniIdSmall()
 
 	return aniId;
 }
-
 
 //
 // Get animdation ID for big Mario
@@ -270,26 +301,45 @@ void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
-
-	if (state == MARIO_STATE_DIE)
-		aniId = ID_ANI_MARIO_DIE;
-	else if (level == MARIO_LEVEL_BIG)
-		aniId = GetAniIdBig();
-	else if (level == MARIO_LEVEL_SMALL)
-		aniId = GetAniIdSmall();
+	switch (state) {
+		case MARIO_STATE_DIE:
+		{
+			aniId = ID_ANI_MARIO_DIE;
+			break;
+		}
+		case MARIO_STATE_SMALL_TO_BIG:
+		{
+			aniId = (nx > 0) ? ID_ANI_MARIO_SMALL_TO_BIG_RIGHT : ID_ANI_MARIO_SMALL_TO_BIG_LEFT;
+			break;
+		}
+		case MARIO_STATE_BIG_TO_SMALL:
+		{
+			aniId = (nx > 0) ? ID_ANI_MARIO_BIG_TO_SMALL_RIGHT : ID_ANI_MARIO_BIG_TO_SMALL_LEFT;
+			break;
+		}
+		default:
+		{
+			//DebugOut(L"[DEBUG] hat\n");
+			if (level == MARIO_LEVEL_BIG)
+				aniId = GetAniIdBig();
+			else if (level == MARIO_LEVEL_SMALL)
+				aniId = GetAniIdSmall();
+			break;
+		}
+	}
 
 	animations->Get(aniId)->Render(x, y);
 
 	// RenderBoundingBox();
 	
-	// DebugOutTitle(L"Coins: %d", coin);
 }
 
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE) return; 
-
+	if (this->state == MARIO_STATE_DIE ||
+		this->state == MARIO_STATE_BIG_TO_SMALL ||
+		this->state == MARIO_STATE_SMALL_TO_BIG) return;
 	switch (state)
 	{
 	case MARIO_STATE_RUNNING_RIGHT:
@@ -359,6 +409,12 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
 		ax = 0;
+		break;
+
+	case MARIO_STATE_BIG_TO_SMALL:
+	case MARIO_STATE_SMALL_TO_BIG:
+		ax = 0;
+		vx = 0;
 		break;
 	}
 
