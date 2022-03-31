@@ -77,20 +77,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithRewardingBrick(e);
 	else if (dynamic_cast<CMushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
-	else if (dynamic_cast<CPlatformTopOnly*>(e->obj)) {
-		float xp, yp, l, t, r, b;
-		e->obj->GetPosition(xp, yp);
-		GetBoundingBox(l, t, r, b);
-		DebugOut(L"[DEBUG] yp: %f, b: %f\n", yp, b);
-		CPlatformTopOnly* plat = (CPlatformTopOnly*)e;
-		if (b > yp) {
-			plat->SetBlockMode(1);
-			DebugOut(L"[DEBUG] hit\n");
-		}
-		else {
-			plat->SetBlockMode(0);
-		}
-	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -131,6 +117,7 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	point+= COIN_POINT;
+	coin++;
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -150,11 +137,14 @@ void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	if (e->obj->GetState() == MUSHROOM_STATE_ACTIVE) {
-		//e->obj->SetState(MUSHROOM_STATE_EATEN);
-		e->obj->Delete();
+		e->obj->SetState(MUSHROOM_STATE_EATEN);
+		float l, t, r, b;
+		GetBoundingBox(l, t, r, b);
+		e->obj->SetPosition(x, t );
 		SetLevel(MARIO_LEVEL_BIG);
 		StartUntouchable();
 		SetState(MARIO_STATE_SMALL_TO_BIG);
+		point += MUSHROOM_POINT;
 	}
 }
 
@@ -319,7 +309,6 @@ void CMario::Render()
 		}
 		default:
 		{
-			//DebugOut(L"[DEBUG] hat\n");
 			if (level == MARIO_LEVEL_BIG)
 				aniId = GetAniIdBig();
 			else if (level == MARIO_LEVEL_SMALL)

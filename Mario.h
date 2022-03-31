@@ -113,10 +113,11 @@
 
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
-#define MARIO_UNTOUCHABLE_TIME 2000
+#define MARIO_UNTOUCHABLE_TIME 1000
 #define MINIMUM_ACCEL_VALUE 1e-4
 
 #define COIN_POINT 100
+#define MUSHROOM_POINT 1000
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -130,7 +131,7 @@ class CMario : public CGameObject
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
 	int point; 
-
+	int coin;
 	// Handling collision logic
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);

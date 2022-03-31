@@ -108,6 +108,9 @@
     <ClInclude Include="PlatformTopOnly.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="VenusFireTrap.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -180,6 +183,9 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="PlatformTopOnly.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="VenusFireTrap.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>

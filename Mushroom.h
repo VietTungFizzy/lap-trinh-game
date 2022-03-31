@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #define MUSHROOM_SPRITE_ID 62000
+#define MUSHROOM_SCORE_TEXT_SPRITE_ID 61001
 
 #define MUSHROOM_STATE_INACTIVE 0
 #define MUSHROOM_STATE_ACTIVE 1
@@ -12,6 +13,10 @@
 
 #define MUSHROOM_SPEED 0.05f
 #define MUSHROOM_GRAVITY 0.001f
+#define MUSHROOM_TEXT_GO_UP_SPEED 0.2f
+#define MUSHROOM_SPEED_REDUCTION 0.85f
+#define MUSHROOM_EPSILON (1e-3)
+
 class CMushroom :
     public CGameObject
 {
@@ -30,5 +35,7 @@ protected:
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 public:
 	CMushroom(float x, float y);
+
+	void SetState(int state);
 };
 

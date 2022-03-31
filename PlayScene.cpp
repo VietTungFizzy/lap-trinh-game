@@ -38,6 +38,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 #define SCREEN_HEIGHT 240
+#define CAMERA_CHECKING_OFFSET 16
 
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
@@ -298,7 +299,11 @@ void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-
+	float cam_t, cam_l, cam_r, cam_b, x, y;
+	CGame* game = CGame::GetInstance();
+	game->GetCamPos(cam_l, cam_t);
+	cam_r = cam_l + game->GetBackBufferWidth();
+	cam_b = cam_t + game->GetBackBufferHeight();
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
@@ -307,31 +312,51 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+		objects[i]->GetPosition(x, y);
+		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b) {
+			if (dynamic_cast<CPlatformTopOnly*>(objects[i])) {
+				CPlatformTopOnly* t = (CPlatformTopOnly*)objects[i];
+				t->SetPlayer(player);
+			}
+			objects[i]->Update(dt, &coObjects);
+		}
+			
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
 	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
-	CGame *game = CGame::GetInstance();
-	cx -= game->GetBackBufferWidth() / 2;
-	cy -= game->GetBackBufferHeight() / 2;
+	float newCamX, newCamY;
+	player->GetPosition(newCamX, newCamY);
+	
+	newCamX -= game->GetBackBufferWidth() / 2;
+	newCamY -= game->GetBackBufferHeight() / 2;
 
-	if (cx < leftBoundaries) cx = leftBoundaries;
-	if (cx > rightBoundaries) cx = rightBoundaries;
+	if (newCamX < leftBoundaries) newCamX = leftBoundaries;
+	if (newCamX > rightBoundaries) newCamX = rightBoundaries;
 
-	//CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
-	CGame::GetInstance()->SetCamPos(cx, (bottomBoundaries - SCREEN_HEIGHT));
+	//CGame::GetInstance()->SetCamPos(newCamX, 0.0f /*newCamY*/);
+	CGame::GetInstance()->SetCamPos(newCamX, (bottomBoundaries - SCREEN_HEIGHT));
 	PurgeDeletedObjects();
 }
 
 void CPlayScene::Render()
 {
-	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Render();
+	float cam_t, cam_l, cam_r, cam_b, x, y;
+	CGame* game = CGame::GetInstance();
+	game->GetCamPos(cam_l, cam_t);
+	cam_r = cam_l + game->GetBackBufferWidth() + CAMERA_CHECKING_OFFSET;
+	cam_b = cam_t + game->GetBackBufferHeight() + CAMERA_CHECKING_OFFSET;
+	for (int i = 0; i < objects.size(); i++) {
+		objects[i]->GetPosition(x, y);
+		if (dynamic_cast<CPlatform*>(objects[i])) {
+			objects[i]->Render();
+		}
+		else if(cam_l < x && x < cam_r && cam_t < y && y < cam_b)
+			objects[i]->Render();
+	}
+		
 }
 
 /*
