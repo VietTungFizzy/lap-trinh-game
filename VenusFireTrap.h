@@ -1,9 +1,9 @@
 #pragma once
 #include "GameObject.h"
 #define VENUS_FIRE_TRAP_BBOX_WIDTH	16
-#define VENUS_FIRE_TRAP_BBOX_HEIGHT	16
+#define VENUS_FIRE_TRAP_BBOX_HEIGHT	32
 
-#define VENUS_FIRE_TRAP_GO_UP_DISTANCE 32
+#define VENUS_FIRE_TRAP_TRAVEL_DISTANCE 23
 
 #define VENUS_FIRE_TRAP_INACTIVE_STATE 0
 #define VENUS_FIRE_TRAP_GO_UP_STATE 1
@@ -21,7 +21,7 @@
 #define VENUS_FIRE_TRAP_SPRITE_ID_LOOK_UP_RIGHT 33005
 
 #define VENUS_FIRE_TRAP_COOLDOWN 2000
-#define VENUS_FIRE_TRAP_WATCHING_TIME 1000
+#define VENUS_FIRE_TRAP_WATCHING_TIME 2000
 
 #define VENUS_FIRE_TRAP_LOOK_UP_LEFT 0
 #define VENUS_FIRE_TRAP_LOOK_UP_RIGHT 1
@@ -32,12 +32,14 @@
 #define VENUS_FIRE_TRAP_MIN_RANGE 16
 
 #define VENUS_FIRE_TRAP_GO_UP_SPEED 0.02f
+#define VENUS_FIRE_TRAP_OFFSET_BOTTOM_Y 8
 class CVenusFireTrap :
     public CGameObject
 {
 private:
-	float initY;
-
+	float topY, bottomY;
+	float pivotPoint_y;
+	bool isShot;
 	CGameObject* player;
 	ULONGLONG timer_start;
 private:
@@ -51,7 +53,8 @@ public:
 
 	void SetPlayer(CGameObject* player) { this->player = player; }
 	void SetState(int state);
+	int IsCollidable() { return 1; };
 
-	CVenusFireTrap(float x, float y);
+	CVenusFireTrap(float x, float y, int type);
 };
 

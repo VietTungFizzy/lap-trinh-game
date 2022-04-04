@@ -9,7 +9,7 @@ class CInvinsibleBrick :
     public CGameObject
 {
 public:
-	CInvinsibleBrick(float x, float y) : CGameObject(x, y) {}
+	CInvinsibleBrick(float x, float y, int type) : CGameObject(x, y, type) {}
 	void Render() { 
 		//RenderBoundingBox(); 
 	}

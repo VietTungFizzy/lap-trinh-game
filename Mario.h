@@ -13,7 +13,7 @@
 #define MARIO_ACCEL_WALK_X	0.0005f
 #define MARIO_ACCEL_RUN_X	0.0007f
 
-#define MARIO_JUMP_SPEED_Y		0.5f
+#define MARIO_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
 
 #define MARIO_GRAVITY			0.002f
@@ -141,8 +141,11 @@ class CMario : public CGameObject
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+private:
+	void GetHit();
+
 public:
-	CMario(float x, float y, int b) : CGameObject(x, y)
+	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
 	{
 		isSitting = false;
 		maxVx = 0.0f;

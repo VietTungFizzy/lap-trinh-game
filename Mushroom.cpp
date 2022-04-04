@@ -61,7 +61,7 @@ void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 }
 
-CMushroom::CMushroom(float x, float y): CGameObject(x, y)
+CMushroom::CMushroom(float x, float y, int type): CGameObject(x, y, type)
 {
 	state = MUSHROOM_STATE_INVISIBLE;
 	ay = MUSHROOM_GRAVITY;

@@ -27,7 +27,7 @@ protected:
 	int nx;	 
 
 	int state;
-
+	int type;
 	bool isDeleted; 
 
 public: 
@@ -37,13 +37,14 @@ public:
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
 
 	int GetState() { return this->state; }
+	int GetType() { return this->type; }
 	virtual void Delete() { isDeleted = true;  }
 	bool IsDeleted() { return isDeleted; }
 
 	void RenderBoundingBox();
 
 	CGameObject();
-	CGameObject(float x, float y) :CGameObject() { this->x = x; this->y = y; }
+	CGameObject(float x, float y, int type) :CGameObject() { this->x = x; this->y = y; this->type = type; }
 
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;

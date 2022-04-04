@@ -5,7 +5,7 @@ class CDecoratedObject : public CGameObject {
 private:
 	int spriteId;
 public:
-	CDecoratedObject(float x, float y, int spriteId) : CGameObject(x, y) {
+	CDecoratedObject(float x, float y, int spriteId, int type) : CGameObject(x, y, type) {
 		this->spriteId = spriteId;
 	}
 	void Update(DWORD dt) {}

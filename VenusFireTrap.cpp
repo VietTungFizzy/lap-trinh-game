@@ -8,7 +8,7 @@ int CVenusFireTrap::decideWhereToLook()
 	float p_x, p_y;
 	player->GetPosition(p_x, p_y);
 	// Look down
-	if (p_y > y) {
+	if (p_y > pivotPoint_y) {
 		if (p_x > x) { // Look right
 			return VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT;
 		}
@@ -31,7 +31,7 @@ bool CVenusFireTrap::isPlayerInRange()
 	float p_x, p_y, l, t, r, b;
 	player->GetPosition(p_x, p_y);
 	GetBoundingBox(l, t, r, b);
-	return ((p_x > l + VENUS_FIRE_TRAP_MAX_RANGE && p_x < l + VENUS_FIRE_TRAP_MIN_RANGE) || 
+	return ((p_x > l - VENUS_FIRE_TRAP_MAX_RANGE && p_x < l - VENUS_FIRE_TRAP_MIN_RANGE) || 
 		(p_x < r + VENUS_FIRE_TRAP_MAX_RANGE && p_x > r + VENUS_FIRE_TRAP_MIN_RANGE));
 }
 
@@ -40,7 +40,7 @@ bool CVenusFireTrap::isPlayerTooClose()
 	float p_x, p_y, l, t, r, b;
 	player->GetPosition(p_x, p_y);
 	GetBoundingBox(l, t, r, b);
-	return (p_x < r + VENUS_FIRE_TRAP_MIN_RANGE && p_x > l + VENUS_FIRE_TRAP_MIN_RANGE);
+	return (p_x < r + VENUS_FIRE_TRAP_MIN_RANGE && p_x > l - VENUS_FIRE_TRAP_MIN_RANGE);
 }
 
 void CVenusFireTrap::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -60,7 +60,9 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			break;
 		case VENUS_FIRE_TRAP_GO_UP_STATE:
 			y += vy * dt;
-			if (abs(y - initY) > VENUS_FIRE_TRAP_GO_UP_DISTANCE) SetState(VENUS_FIRE_TRAP_FIRE_STATE);
+			if (y < topY) {
+				SetState(VENUS_FIRE_TRAP_FIRE_STATE);
+			}
 			break;
 		case VENUS_FIRE_TRAP_FIRE_STATE:
 			if (GetTickCount64() - timer_start > VENUS_FIRE_TRAP_WATCHING_TIME) {
@@ -68,17 +70,26 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				SetState(VENUS_FIRE_TRAP_GO_DOWN_STATE);
 			}
 			else {
-				DebugOut(L"[DEBUG] FIRE!!!!!\n");
+				if (isPlayerInRange() && !isShot) {
+					DebugOut(L"[DEBUG] FIRE!!!!!\n");
+					isShot = true;
+				}
 			}
 			break;
 		case VENUS_FIRE_TRAP_GO_DOWN_STATE:
 			y += vy * dt;
-			if (abs(y - initY) > VENUS_FIRE_TRAP_GO_UP_DISTANCE) SetState(VENUS_FIRE_TRAP_COOLDOWN_STATE);
+			if (y > bottomY) {
+				SetState(VENUS_FIRE_TRAP_COOLDOWN_STATE);
+			}
 			break;
 		case VENUS_FIRE_TRAP_COOLDOWN_STATE:
 			if (isPlayerTooClose()) {
 				SetState(VENUS_FIRE_TRAP_INACTIVE_STATE);
-			} else if (GetTickCount64() - timer_start > VENUS_FIRE_TRAP_COOLDOWN) SetState(VENUS_FIRE_TRAP_FIRE_STATE);
+			}
+			else if (GetTickCount64() - timer_start > VENUS_FIRE_TRAP_COOLDOWN) {
+				SetState(VENUS_FIRE_TRAP_GO_UP_STATE);
+				isShot = false;
+			}
 			break;
 	}
 	
@@ -128,6 +139,7 @@ void CVenusFireTrap::Render()
 		CSprites* s = CSprites::GetInstance();
 		s->Get(spriteId)->Draw(x, y);
 	}
+	//RenderBoundingBox();
 }
 
 void CVenusFireTrap::SetState(int state)
@@ -148,9 +160,12 @@ void CVenusFireTrap::SetState(int state)
 	CGameObject::SetState(state);
 }
 
-CVenusFireTrap::CVenusFireTrap(float x, float y): CGameObject(x, y)
+CVenusFireTrap::CVenusFireTrap(float x, float y, int type): CGameObject(x, y, type)
 {
 	player = NULL;
 	state = VENUS_FIRE_TRAP_INACTIVE_STATE;
-	initY = y;
+	bottomY = y + VENUS_FIRE_TRAP_OFFSET_BOTTOM_Y;
+	topY = y - VENUS_FIRE_TRAP_TRAVEL_DISTANCE;
+	pivotPoint_y = y - VENUS_FIRE_TRAP_TRAVEL_DISTANCE;
+	isShot = false;
 }

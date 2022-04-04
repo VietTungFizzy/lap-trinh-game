@@ -44,7 +44,7 @@ private:
 	// Only when rewarding type == REWARDING_MUSHROOM
 	CGameObject* mushroom;
 public:
-	CRewardingBrick(float x, float y, int rewarding, CGameObject* mushroom = NULL, int spriteId = REWARDING_BRICK_SPRITE_ID);
+	CRewardingBrick(float x, float y, int rewarding,int type, CGameObject* mushroom = NULL, int spriteId = REWARDING_BRICK_SPRITE_ID);
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void GetBoundingBox(float& l, float& t, float& r, float& b);

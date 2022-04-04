@@ -15,6 +15,8 @@
 #include "InvinsibleBrick.h"
 #include "Mushroom.h"
 #include "PlatformTopOnly.h"
+#include "VenusFireTrap.h"
+
 #include "SampleKeyEventHandler.h"
 
 using namespace std;
@@ -121,19 +123,19 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			return;
 		}
 		// Make sure add map settings before objects loading
-		obj = new CMario(x, y, bottomBoundaries);
+		obj = new CMario(x, y, bottomBoundaries, object_type);
 		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	}
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
+	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y, object_type); break;
 	case OBJECT_TYPE_BRICK:
 	{
 		int sprite_id = atoi(tokens[3].c_str());
-		obj = new CBrick(x, y, sprite_id); 
+		obj = new CBrick(x, y, sprite_id, object_type);
 		break;
 	}
-	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
+	case OBJECT_TYPE_COIN: obj = new CCoin(x, y, object_type); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -146,7 +148,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPlatform(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end
+			sprite_begin, sprite_middle, sprite_end,
+			object_type
 		);
 
 		break;
@@ -163,7 +166,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_DECORATED:
 	{
 		int sprite_id = atoi(tokens[3].c_str());
-		obj = new CDecoratedObject(x, y, sprite_id);
+		obj = new CDecoratedObject(x, y, sprite_id, object_type);
 		break;
 	}
 	case OBJECT_TYPE_REWARDING_BRICK: 
@@ -171,17 +174,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int rewarding_type = atoi(tokens[3].c_str());
 
 		if (rewarding_type == REWARDING_MUSHROOM) {
-			CGameObject* t = new CMushroom(x, y);
-			obj = new CRewardingBrick(x, y, rewarding_type, t);
+			CGameObject* t = new CMushroom(x, y, OBJECT_TYPE_MUSHROOM);
+			obj = new CRewardingBrick(x, y, rewarding_type, object_type, t);
 			objects.push_back(t);
 		}
 		else {
-			obj = new CRewardingBrick(x, y, rewarding_type);
+			obj = new CRewardingBrick(x, y, rewarding_type, object_type);
 		}
 		
 		break;
 	}
-	case OBJECT_TYPE_INVINSIBLE_BRICK: obj = new CInvinsibleBrick(x, y); break;
+	case OBJECT_TYPE_INVINSIBLE_BRICK: obj = new CInvinsibleBrick(x, y, object_type); break;
 	case OBJECT_TYPE_PLATFORM_TOP_ONLY:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -193,11 +196,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPlatformTopOnly(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end
+			sprite_begin, sprite_middle, sprite_end, 
+			object_type
 		);
 
 		break;
 	}
+	case OBJECT_TYPE_VENUS_FIRE_TRAP: obj = new CVenusFireTrap(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
@@ -297,31 +302,40 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
+	// We know that Mario is the last object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	float cam_t, cam_l, cam_r, cam_b, x, y;
 	CGame* game = CGame::GetInstance();
 	game->GetCamPos(cam_l, cam_t);
 	cam_r = cam_l + game->GetBackBufferWidth();
 	cam_b = cam_t + game->GetBackBufferHeight();
+	
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size() - 1; i++)
 	{
+		if (objects[i]->GetType() == OBJECT_TYPE_DECORATED) continue;
 		coObjects.push_back(objects[i]);
 	}
 
-	for (size_t i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size() - 1; i++)
 	{
+		if (objects[i]->GetType() == OBJECT_TYPE_DECORATED) continue;
+
 		objects[i]->GetPosition(x, y);
 		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b) {
 			if (dynamic_cast<CPlatformTopOnly*>(objects[i])) {
 				CPlatformTopOnly* t = (CPlatformTopOnly*)objects[i];
 				t->SetPlayer(player);
 			}
+			else if (dynamic_cast<CVenusFireTrap*>(objects[i])) {
+				CVenusFireTrap* t = (CVenusFireTrap*)objects[i];
+				t->SetPlayer(player);
+			}
 			objects[i]->Update(dt, &coObjects);
 		}
 			
 	}
+	player->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 

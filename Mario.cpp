@@ -5,11 +5,11 @@
 #include "Game.h"
 
 #include "Goomba.h"
-#include "Coin.h"
 #include "Portal.h"
 #include "RewardingBrick.h"
 #include "Mushroom.h"
-#include "PlatformTopOnly.h"
+#include "AssetIDs.h"
+#include "VenusFireTrap.h"
 #include "debug.h"
 #include "Collision.h"
 
@@ -42,9 +42,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			state = MARIO_STATE_IDLE;
 		}
 	}
-
+	DebugOutTitle(L"x: %f  y: %f state: %d", x, y, state);
 	isOnPlatform = false;
-
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -66,7 +65,15 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vx = 0;
 	}
-
+	switch (e->obj->GetType()) {
+	case OBJECT_TYPE_GOOMBA: OnCollisionWithGoomba(e); break;
+	case OBJECT_TYPE_COIN:	OnCollisionWithCoin(e); break;
+	case OBJECT_TYPE_PORTAL: OnCollisionWithPortal(e); break;
+	case OBJECT_TYPE_REWARDING_BRICK: OnCollisionWithRewardingBrick(e); break;
+	case OBJECT_TYPE_MUSHROOM:	OnCollisionWithMushroom(e); break;
+	case OBJECT_TYPE_VENUS_FIRE_TRAP:	GetHit(); break;
+	}
+	/*
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
@@ -77,6 +84,9 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithRewardingBrick(e);
 	else if (dynamic_cast<CMushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<CVenusFireTrap*>(e->obj))
+		GetHit();
+	*/
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -94,21 +104,9 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 	else // hit by Goomba
 	{
-		if (untouchable == 0)
+		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
+			GetHit();
 		}
 	}
 }
@@ -128,7 +126,7 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
-	if (e->ny != 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
+	if (e->ny > 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
 		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
 		point += COIN_POINT;
 	}
@@ -216,6 +214,23 @@ int CMario::GetAniIdSmall()
 	if (aniId == -1) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
 
 	return aniId;
+}
+
+void CMario::GetHit()
+{
+	if (untouchable == 0)
+	{
+		if (level > MARIO_LEVEL_SMALL)
+		{
+			level = MARIO_LEVEL_SMALL;
+			StartUntouchable();
+		}
+		else
+		{
+			DebugOut(L">>> Mario DIE >>> \n");
+			SetState(MARIO_STATE_DIE);
+		}
+	}
 }
 
 //

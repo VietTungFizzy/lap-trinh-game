@@ -5,7 +5,7 @@
 #include "debug.h"
 #include "Mushroom.h"
 
-CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, CGameObject* mushroom, int spriteId): CBrick(x, y, spriteId)
+CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, CGameObject* mushroom, int spriteId): CBrick(x, y, spriteId, type)
 {
 	this->state = REWARDING_BRICK_NORMAL_STATE;
 	this->rewarding = rewarding;

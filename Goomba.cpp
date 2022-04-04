@@ -1,7 +1,7 @@
 #include "Goomba.h"
 #include "InvinsibleBrick.h"
-
-CGoomba::CGoomba(float x, float y):CGameObject(x, y)
+#include "Mario.h"
+CGoomba::CGoomba(float x, float y, int type) : CGameObject(x, y, type)
 {
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
@@ -38,6 +38,7 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (!e->obj->IsBlocking()) return; 
 	if (dynamic_cast<CGoomba*>(e->obj)) return; 
 	if (dynamic_cast<CInvinsibleBrick*>(e->obj)) return;
+	if (dynamic_cast<CMario*>(e->obj)) return;
 
 	if (e->ny != 0 )
 	{
