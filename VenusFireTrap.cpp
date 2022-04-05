@@ -47,6 +47,40 @@ bool CVenusFireTrap::isPlayerTooClose()
 	return (p_x < r + VENUS_FIRE_TRAP_MIN_RANGE && p_x > l - VENUS_FIRE_TRAP_MIN_RANGE);
 }
 
+void CVenusFireTrap::CalculatePositionForBullet(float& x, float& y, int& angle)
+{
+	int direction = decideWhereToLook();
+	// Is shooting near or far
+	float p_x, p_y, l, t, r, b;
+	player->GetPosition(p_x, p_y);
+	GetBoundingBox(l, t, r, b);
+	bool isShootingFar = ((p_x > l - VENUS_FIRE_TRAP_MAX_RANGE && p_x < l - VENUS_FIRE_TRAP_MAX_RANGE / 2) ||
+		(p_x < r + VENUS_FIRE_TRAP_MAX_RANGE && p_x > r + VENUS_FIRE_TRAP_MAX_RANGE / 2));
+
+	switch (direction) {
+	case VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT:
+		x = this->x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2 + VENUS_FIRE_TRAP_BBOX_WIDTH;
+		y = this->y - VENUS_FIRE_TRAP_BULLET_SPAWN_Y_LOW_OFFSET;
+		angle = isShootingFar ? BULLET_BOTTOM_RIGHT_FAR : BULLET_BOTTOM_RIGHT_NEAR;
+		break;
+	case VENUS_FIRE_TRAP_LOOK_DOWN_LEFT:
+		x = this->x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2;
+		y = this->y - VENUS_FIRE_TRAP_BULLET_SPAWN_Y_LOW_OFFSET;
+		angle = isShootingFar ? BULLET_BOTTOM_LEFT_FAR : BULLET_BOTTOM_LEFT_NEAR;
+		break;
+	case VENUS_FIRE_TRAP_LOOK_UP_LEFT:
+		x = this->x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2;
+		y = this->y - VENUS_FIRE_TRAP_BULLET_SPAWN_Y_HIGH_OFFSET;
+		angle = isShootingFar ? BULLET_TOP_LEFT_FAR : BULLET_TOP_LEFT_NEAR;
+		break;
+	case VENUS_FIRE_TRAP_LOOK_UP_RIGHT:
+		x = this->x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2 + VENUS_FIRE_TRAP_BBOX_WIDTH;
+		y = this->y - VENUS_FIRE_TRAP_BULLET_SPAWN_Y_HIGH_OFFSET;
+		angle = isShootingFar ? BULLET_TOP_RIGHT_FAR : BULLET_TOP_RIGHT_NEAR;
+		break;
+	}
+}
+
 void CVenusFireTrap::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2;
@@ -76,9 +110,10 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else {
 				if (isPlayerInRange() && !isShot) {
 					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-					float x_bullet = x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2;
-					float y_bullet = y - VENUS_FIRE_TRAP_BULLET_SPAWN_Y_OFFSET;
-					scence->AddObjects(new CBullet(x_bullet, y_bullet, OBJECT_TYPE_BULLET, BULLET_BOTTOM_LEFT_FAR));
+					float x_bullet, y_bullet;
+					int angleFly;
+					CalculatePositionForBullet(x_bullet, y_bullet, angleFly);
+					scence->AddObjects(new CBullet(x_bullet, y_bullet, OBJECT_TYPE_BULLET, angleFly));
 					isShot = true;
 				}
 			}

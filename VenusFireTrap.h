@@ -35,7 +35,8 @@
 
 #define VENUS_FIRE_TRAP_GO_UP_SPEED 0.02f
 #define VENUS_FIRE_TRAP_OFFSET_BOTTOM_Y 8
-#define VENUS_FIRE_TRAP_BULLET_SPAWN_Y_OFFSET 6
+#define VENUS_FIRE_TRAP_BULLET_SPAWN_Y_LOW_OFFSET 6
+#define VENUS_FIRE_TRAP_BULLET_SPAWN_Y_HIGH_OFFSET 8
 class CVenusFireTrap :
     public CGameObject
 {
@@ -50,6 +51,7 @@ private:
 	int decideWhereToLook();
 	bool isPlayerInRange();
 	bool isPlayerTooClose();
+	void CalculatePositionForBullet(float& x, float& y, int & angle);
 public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

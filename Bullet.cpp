@@ -40,11 +40,29 @@ CBullet::CBullet(float x, float y, int type, int direction) : CGameObject(x, y, 
 		vx = -BULLET_SPEED_X_FAR;
 		vy = BULLET_SPEED_Y_FAR;
 		break;
-	case BULLET_BOTTOM_RIGHT_NEAR: break;
-	case BULLET_BOTTOM_RIGHT_FAR: break;
-	case BULLET_TOP_LEFT_NEAR: break;
-	case BULLET_TOP_LEFT_FAR: break;
-	case BULLET_TOP_RIGHT_NEAR: break;
-	case BULLET_TOP_RIGHT_FAR: break;
+	case BULLET_BOTTOM_RIGHT_NEAR: 
+		vx = BULLET_SPEED_X_NEAR;
+		vy = BULLET_SPEED_Y_NEAR;
+		break;
+	case BULLET_BOTTOM_RIGHT_FAR: 
+		vx = BULLET_SPEED_X_FAR;
+		vy = BULLET_SPEED_Y_FAR;
+		break;
+	case BULLET_TOP_LEFT_NEAR: 
+		vx = -BULLET_SPEED_X_NEAR;
+		vy = -BULLET_SPEED_Y_NEAR;
+		break;
+	case BULLET_TOP_LEFT_FAR: 
+		vx = -BULLET_SPEED_X_FAR;
+		vy = -BULLET_SPEED_Y_FAR;
+		break;
+	case BULLET_TOP_RIGHT_NEAR: 
+		vx = BULLET_SPEED_X_NEAR;
+		vy = -BULLET_SPEED_Y_NEAR;
+		break;
+	case BULLET_TOP_RIGHT_FAR: 
+		vx = BULLET_SPEED_X_FAR;
+		vy = -BULLET_SPEED_Y_FAR;
+		break;
 	}
 }
