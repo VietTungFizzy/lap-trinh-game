@@ -13,6 +13,7 @@ data/coin.txt
 data/score_text.txt
 data/mushroom.txt
 data/enemy.txt
+data/bullet.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

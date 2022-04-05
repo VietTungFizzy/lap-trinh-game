@@ -1,6 +1,10 @@
 #include "VenusFireTrap.h"
 #include "Animations.h"
 #include "Sprites.h"
+#include "PlayScene.h"
+#include "Bullet.h"
+#include "AssetIDs.h"
+
 #include "debug.h"
 int CVenusFireTrap::decideWhereToLook()
 {
@@ -61,7 +65,7 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		case VENUS_FIRE_TRAP_GO_UP_STATE:
 			y += vy * dt;
 			if (y < topY) {
-				SetState(VENUS_FIRE_TRAP_FIRE_STATE);
+				SetState(VENUS_FIRE_TRAP_PREPARE_TO_FIRE_STATE);
 			}
 			break;
 		case VENUS_FIRE_TRAP_FIRE_STATE:
@@ -71,7 +75,10 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else {
 				if (isPlayerInRange() && !isShot) {
-					DebugOut(L"[DEBUG] FIRE!!!!!\n");
+					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+					float x_bullet = x - VENUS_FIRE_TRAP_BBOX_WIDTH / 2;
+					float y_bullet = y - VENUS_FIRE_TRAP_BULLET_SPAWN_Y_OFFSET;
+					scence->AddObjects(new CBullet(x_bullet, y_bullet, OBJECT_TYPE_BULLET, BULLET_BOTTOM_LEFT_FAR));
 					isShot = true;
 				}
 			}
@@ -89,6 +96,11 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (GetTickCount64() - timer_start > VENUS_FIRE_TRAP_COOLDOWN) {
 				SetState(VENUS_FIRE_TRAP_GO_UP_STATE);
 				isShot = false;
+			}
+			break;
+		case VENUS_FIRE_TRAP_PREPARE_TO_FIRE_STATE:
+			if (GetTickCount64() - timer_start > VENUS_FIRE_TRAP_PREPARE_TIME) {
+				SetState(VENUS_FIRE_TRAP_FIRE_STATE);
 			}
 			break;
 	}
@@ -119,7 +131,9 @@ void CVenusFireTrap::Render()
 		CAnimations* animations = CAnimations::GetInstance();
 		animations->Get(aniId)->Render(x, y);
 	}
-	if (state == VENUS_FIRE_TRAP_GO_DOWN_STATE || state == VENUS_FIRE_TRAP_FIRE_STATE) {
+	if (state == VENUS_FIRE_TRAP_GO_DOWN_STATE || 
+		state == VENUS_FIRE_TRAP_FIRE_STATE || 
+		state == VENUS_FIRE_TRAP_PREPARE_TO_FIRE_STATE) {
 		int spriteId = -1;
 		switch (direction) {
 		case VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT:
@@ -152,6 +166,7 @@ void CVenusFireTrap::SetState(int state)
 			vy = VENUS_FIRE_TRAP_GO_UP_SPEED;
 			break;
 		case VENUS_FIRE_TRAP_FIRE_STATE:
+		case VENUS_FIRE_TRAP_PREPARE_TO_FIRE_STATE:
 		case VENUS_FIRE_TRAP_COOLDOWN_STATE:
 			timer_start = GetTickCount64();
 			vy = 0;

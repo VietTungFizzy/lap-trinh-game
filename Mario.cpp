@@ -42,7 +42,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			state = MARIO_STATE_IDLE;
 		}
 	}
-	DebugOutTitle(L"x: %f  y: %f state: %d", x, y, state);
 	isOnPlatform = false;
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }

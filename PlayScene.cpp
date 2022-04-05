@@ -126,6 +126,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CMario(x, y, bottomBoundaries, object_type);
 		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object has been created!\n");
+		return;
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y, object_type); break;
@@ -311,13 +312,13 @@ void CPlayScene::Update(DWORD dt)
 	cam_b = cam_t + game->GetBackBufferHeight();
 	
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 0; i < objects.size() - 1; i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (objects[i]->GetType() == OBJECT_TYPE_DECORATED) continue;
 		coObjects.push_back(objects[i]);
 	}
 
-	for (size_t i = 0; i < objects.size() - 1; i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (objects[i]->GetType() == OBJECT_TYPE_DECORATED) continue;
 
@@ -370,7 +371,7 @@ void CPlayScene::Render()
 		else if(cam_l < x && x < cam_r && cam_t < y && y < cam_b)
 			objects[i]->Render();
 	}
-		
+	player->Render();
 }
 
 /*

@@ -10,6 +10,7 @@
 #define VENUS_FIRE_TRAP_FIRE_STATE 2
 #define VENUS_FIRE_TRAP_GO_DOWN_STATE 3
 #define VENUS_FIRE_TRAP_COOLDOWN_STATE 4
+#define VENUS_FIRE_TRAP_PREPARE_TO_FIRE_STATE 5
 
 #define ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_LEFT 5002
 #define ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT 5003
@@ -22,6 +23,7 @@
 
 #define VENUS_FIRE_TRAP_COOLDOWN 2000
 #define VENUS_FIRE_TRAP_WATCHING_TIME 2000
+#define VENUS_FIRE_TRAP_PREPARE_TIME 500
 
 #define VENUS_FIRE_TRAP_LOOK_UP_LEFT 0
 #define VENUS_FIRE_TRAP_LOOK_UP_RIGHT 1
@@ -33,6 +35,7 @@
 
 #define VENUS_FIRE_TRAP_GO_UP_SPEED 0.02f
 #define VENUS_FIRE_TRAP_OFFSET_BOTTOM_Y 8
+#define VENUS_FIRE_TRAP_BULLET_SPAWN_Y_OFFSET 6
 class CVenusFireTrap :
     public CGameObject
 {
@@ -41,6 +44,7 @@ private:
 	float pivotPoint_y;
 	bool isShot;
 	CGameObject* player;
+	CGameObject* bullet;
 	ULONGLONG timer_start;
 private:
 	int decideWhereToLook();
