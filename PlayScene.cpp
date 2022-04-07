@@ -324,11 +324,7 @@ void CPlayScene::Update(DWORD dt)
 
 		objects[i]->GetPosition(x, y);
 		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b) {
-			if (dynamic_cast<CPlatformTopOnly*>(objects[i])) {
-				CPlatformTopOnly* t = (CPlatformTopOnly*)objects[i];
-				t->SetPlayer(player);
-			}
-			else if (dynamic_cast<CVenusFireTrap*>(objects[i])) {
+			if (dynamic_cast<CVenusFireTrap*>(objects[i])) {
 				CVenusFireTrap* t = (CVenusFireTrap*)objects[i];
 				t->SetPlayer(player);
 			}

@@ -70,22 +70,11 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_PORTAL: OnCollisionWithPortal(e); break;
 	case OBJECT_TYPE_REWARDING_BRICK: OnCollisionWithRewardingBrick(e); break;
 	case OBJECT_TYPE_MUSHROOM:	OnCollisionWithMushroom(e); break;
-	case OBJECT_TYPE_VENUS_FIRE_TRAP:	GetHit(); break;
+	case OBJECT_TYPE_BULLET:
+	case OBJECT_TYPE_VENUS_FIRE_TRAP:	
+		GetHit(); 
+		break;
 	}
-	/*
-	if (dynamic_cast<CGoomba*>(e->obj))
-		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CCoin*>(e->obj))
-		OnCollisionWithCoin(e);
-	else if (dynamic_cast<CPortal*>(e->obj))
-		OnCollisionWithPortal(e);
-	else if (dynamic_cast<CRewardingBrick*>(e->obj))
-		OnCollisionWithRewardingBrick(e);
-	else if (dynamic_cast<CMushroom*>(e->obj))
-		OnCollisionWithMushroom(e);
-	else if (dynamic_cast<CVenusFireTrap*>(e->obj))
-		GetHit();
-	*/
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -126,7 +115,9 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
 	if (e->ny > 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
-		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
+		CRewardingBrick* obj = (CRewardingBrick*)e->obj;
+		obj->SetState(REWARDING_BRICK_GO_UP_STATE);
+		obj->SetPlayer(this);
 		point += COIN_POINT;
 	}
 }
