@@ -10,6 +10,7 @@
 #include "Mushroom.h"
 #include "AssetIDs.h"
 #include "VenusFireTrap.h"
+#include "Koopa.h"
 #include "debug.h"
 #include "Collision.h"
 
@@ -74,6 +75,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_VENUS_FIRE_TRAP:	
 		GetHit(); 
 		break;
+	case OBJECT_TYPE_KOOPA: OnCollisionWithKoopa(e); break;
 	}
 }
 
@@ -133,6 +135,40 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		StartUntouchable();
 		SetState(MARIO_STATE_SMALL_TO_BIG);
 		point += MUSHROOM_POINT;
+	}
+}
+
+void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+	if (e->ny < 0) {
+		switch (koopa->GetState()) {
+			case KOOPA_STATE_SHELL_MOVING:
+			case KOOPA_STATE_NORMAL: {
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
+				break;
+			}
+			case KOOPA_STATE_RETURNING_TO_NORMAL:
+			case KOOPA_STATE_SHELL_STAY_STILL: 
+			{
+				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+				bool isPlayerLeft = (vx > 0) ? false : true;
+				koopa->SetIsPlayerLeft(isPlayerLeft);
+				break;
+			}
+		}
+	}
+	else {
+		if (koopa->GetState() != KOOPA_STATE_SHELL_STAY_STILL &&
+			koopa->GetState() != KOOPA_STATE_RETURNING_TO_NORMAL) {
+			GetHit();
+		}
+		else {
+			koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+			bool isPlayerLeft = (vx > 0) ? false : true;
+			koopa->SetIsPlayerLeft(isPlayerLeft);
+		}
 	}
 }
 

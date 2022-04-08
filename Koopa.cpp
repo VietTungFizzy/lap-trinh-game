@@ -1,5 +1,18 @@
 #include "Koopa.h"
 #include "Animations.h"
+#include "Sprites.h"
+#include "debug.h"
+void CKoopa::SetState(int state)
+{
+	switch (state) {
+		case KOOPA_STATE_SHELL_STAY_STILL:
+		{
+			y -= (KOOPA_BBOX_HEIGHT_NORMAL - KOOPA_BBOX_HEIGHT_SHELL) / 2;
+			break;
+		}
+	}
+	CGameObject::SetState(state);
+}
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	if (state == KOOPA_STATE_NORMAL) {
@@ -17,6 +30,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (temp <= boundaries_left || temp >= boundaries_right) vx = -vx;
 	}
 
+	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -36,8 +50,13 @@ void CKoopa::Render()
 			break;
 		}
 		CAnimations* animations = CAnimations::GetInstance();
-		animations->Get(aniId)->Render(x, y);
+		animations->Get(aniId)->Render(x, y + KOOPA_RENDER_OFFSET_Y);
 	}
+	else {
+		CSprites* sprites = CSprites::GetInstance();
+		sprites->Get(KOOPA_SPRITE_ID_SHELL)->Draw(x, y);
+	}
+	// RenderBoundingBox();
 }
 
 void CKoopa::OnNoCollision(DWORD dt)
@@ -49,12 +68,24 @@ void CKoopa::OnNoCollision(DWORD dt)
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return;
-	if (e->ny != 0)
-	{
-		vy = 0;
-	}
-	else if (e->nx != 0)
-	{
-		vx = -vx;
+	switch (state) {
+		case KOOPA_STATE_RETURNING_TO_NORMAL:
+		case KOOPA_STATE_SHELL_STAY_STILL:
+		case KOOPA_STATE_NORMAL: 
+			if (e->ny != 0)
+			{
+				vy = 0;
+			}
+			break;
+		case KOOPA_STATE_SHELL_MOVING:
+			if (e->ny != 0)
+			{
+				vy = 0;
+			}
+			else if (e->nx != 0)
+			{
+				vx = -vx;
+			}
+			break;
 	}
 }
