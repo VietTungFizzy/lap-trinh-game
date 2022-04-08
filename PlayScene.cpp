@@ -16,6 +16,7 @@
 #include "Mushroom.h"
 #include "PlatformTopOnly.h"
 #include "VenusFireTrap.h"
+#include "Koopa.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -204,6 +205,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_VENUS_FIRE_TRAP: obj = new CVenusFireTrap(x, y, object_type); break;
+	case OBJECT_TYPE_KOOPA:
+	{
+		float l = (float)atof(tokens[3].c_str());
+		float r = (float)atof(tokens[4].c_str());
+		obj = new CKoopa(x, y, object_type, l, r);
+		break;
+	}
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
