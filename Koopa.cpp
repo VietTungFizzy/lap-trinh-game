@@ -2,8 +2,11 @@
 #include "Animations.h"
 #include "Sprites.h"
 #include "debug.h"
+#include "AssetIDs.h"
 void CKoopa::SetState(int state)
 {
+	boundaries_left = 0;
+	boundaries_right = 0;
 	switch (state) {
 		case KOOPA_STATE_SHELL_STAY_STILL:
 		{
@@ -56,6 +59,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
+	DebugOutTitle(L"[DEBUG] vx: %f state: %d", vx, state);
 	switch (state) {
 		case KOOPA_STATE_NORMAL:
 		{
@@ -144,6 +148,16 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 			if (e->ny != 0)
 			{
 				vy = 0;
+				if (boundaries_left == 0 && boundaries_right == 0) {
+					float l, t, r, b;
+					e->obj->GetBoundingBox(l, t, r, b);
+					boundaries_left = l + KOOPA_BBOX_WIDTH / 2;
+					boundaries_right = r - KOOPA_BBOX_WIDTH / 2;
+				}
+			}
+			else if (e->nx != 0 && e->obj->GetType() != OBJECT_TYPE_MARIO)
+			{
+				vx = -vx;
 			}
 			break;
 		case KOOPA_STATE_SHELL_MOVING:

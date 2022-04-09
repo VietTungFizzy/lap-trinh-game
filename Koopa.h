@@ -35,11 +35,11 @@ private:
     bool isPlayerLeft, isCauseDamageOn;
     float ax, ay;
 public:
-    CKoopa(float x, float y, int type, float boundaries_left, float boundaries_right) : CGameObject(x,y,type){
+    CKoopa(float x, float y, int type) : CGameObject(x,y,type){
         this->state = KOOPA_STATE_NORMAL;
         this->vx = KOOPA_NORMAL_SPEED;
-        this->boundaries_left = boundaries_left;
-        this->boundaries_right = boundaries_right;
+        this->boundaries_left = 0;
+        this->boundaries_right = 0;
         this->ax = 0;
         this->ay = KOOPA_GRAVITY;
         this->isCauseDamageOn = true;
