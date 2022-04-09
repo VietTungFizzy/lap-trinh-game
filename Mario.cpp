@@ -141,8 +141,9 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+	int koopaState = koopa->GetState();
 	if (e->ny < 0) {
-		switch (koopa->GetState()) {
+		switch (koopaState) {
 			case KOOPA_STATE_SHELL_MOVING:
 			case KOOPA_STATE_NORMAL: {
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -152,22 +153,29 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			case KOOPA_STATE_RETURNING_TO_NORMAL:
 			case KOOPA_STATE_SHELL_STAY_STILL: 
 			{
-				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
 				bool isPlayerLeft = (vx > 0) ? false : true;
 				koopa->SetIsPlayerLeft(isPlayerLeft);
+				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
 				break;
 			}
 		}
 	}
 	else {
-		if (koopa->GetState() != KOOPA_STATE_SHELL_STAY_STILL &&
-			koopa->GetState() != KOOPA_STATE_RETURNING_TO_NORMAL) {
-			GetHit();
-		}
-		else {
-			koopa->SetState(KOOPA_STATE_SHELL_MOVING);
-			bool isPlayerLeft = (vx > 0) ? false : true;
-			koopa->SetIsPlayerLeft(isPlayerLeft);
+		switch (koopaState) {
+			case KOOPA_STATE_NORMAL:
+				GetHit();
+				break;
+			case KOOPA_STATE_RETURNING_TO_NORMAL:
+			case KOOPA_STATE_SHELL_STAY_STILL:
+			{
+				bool isPlayerLeft = (e->nx > 0) ? false : true;
+				koopa->SetIsPlayerLeft(isPlayerLeft);
+				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+				break;
+			}
+			case KOOPA_STATE_SHELL_MOVING:
+				if(koopa->GetCauseDamageMode()) GetHit();
+				break;
 		}
 	}
 }

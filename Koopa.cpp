@@ -8,6 +8,26 @@ void CKoopa::SetState(int state)
 		case KOOPA_STATE_SHELL_STAY_STILL:
 		{
 			y -= (KOOPA_BBOX_HEIGHT_NORMAL - KOOPA_BBOX_HEIGHT_SHELL) / 2;
+			vx = 0;
+			timer = GetTickCount64();
+			break;
+		}
+		case KOOPA_STATE_SHELL_MOVING:
+		{
+			vx = isPlayerLeft ? KOOPA_SHELL_SPEED : -KOOPA_SHELL_SPEED;
+			timer = GetTickCount64();
+			isCauseDamageOn = false;
+			break;
+		}
+		case KOOPA_STATE_RETURNING_TO_NORMAL:
+		{
+			timer = GetTickCount64();
+			break;
+		}
+		case KOOPA_STATE_NORMAL: 
+		{
+			y -= (KOOPA_BBOX_HEIGHT_NORMAL - KOOPA_BBOX_HEIGHT_SHELL) / 2;
+			vx = KOOPA_NORMAL_SPEED;
 			break;
 		}
 	}
@@ -21,15 +41,53 @@ void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom
 		right = left + KOOPA_BBOX_WIDTH;
 		bottom = top + KOOPA_BBOX_HEIGHT_NORMAL;
 	}
+	else if (state == KOOPA_STATE_SHELL_STAY_STILL ||
+		state == KOOPA_STATE_RETURNING_TO_NORMAL || 
+		state == KOOPA_STATE_SHELL_MOVING) {
+
+		left = x - KOOPA_BBOX_WIDTH / 2;
+		top = y - KOOPA_BBOX_HEIGHT_SHELL / 2;
+		right = left + KOOPA_BBOX_WIDTH;
+		bottom = top + KOOPA_BBOX_HEIGHT_SHELL;
+	}
 }
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == KOOPA_STATE_NORMAL) {
-		float temp = x + vx * dt;
-		if (temp <= boundaries_left || temp >= boundaries_right) vx = -vx;
+	vy += ay * dt;
+	vx += ax * dt;
+	switch (state) {
+		case KOOPA_STATE_NORMAL:
+		{
+			float temp = x + vx * dt;
+			if (temp <= boundaries_left || temp >= boundaries_right) vx = -vx;
+			break;
+		}
+		case KOOPA_STATE_SHELL_STAY_STILL: 
+		{
+			if (GetTickCount64() - timer > KOOPA_TIME_BEFORE_START_RETURNING_TO_NORMAL) {
+				timer = 0;
+				SetState(KOOPA_STATE_RETURNING_TO_NORMAL);
+			}
+			break;
+		}
+		case KOOPA_STATE_RETURNING_TO_NORMAL:
+		{
+			if (GetTickCount64() - timer > KOOPA_TIME_RETURNING_TO_NORMAL) {
+				timer = 0;
+				SetState(KOOPA_STATE_NORMAL);
+			}
+			break;
+		}
+		case KOOPA_STATE_SHELL_MOVING: 
+		{
+			if (GetTickCount64() - timer > KOOPA_TIME_NOT_CAUSE_DAMAGE) {
+				timer = GetTickCount64();
+				isCauseDamageOn = true;
+			}
+			break;
+		}
 	}
-
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -46,8 +104,19 @@ void CKoopa::Render()
 			aniId = KOOPA_ANI_ID_SHELL;
 			break;
 		case KOOPA_STATE_RETURNING_TO_NORMAL:
-
-			break;
+			{
+				ULONGLONG t = GetTickCount64() - timer;
+				if (t < KOOPA_TIME_RETURNING_TO_NORMAL / 2) {
+					aniId = KOOPA_ANI_ID_TRY_TO_POP_OUT_FULL_TIME;
+				}
+				else if (t < KOOPA_TIME_RETURNING_TO_NORMAL / 4) {
+					aniId = KOOPA_ANI_ID_TRY_TO_POP_OUT_HALF_TIME;
+				}
+				else if (t < KOOPA_TIME_RETURNING_TO_NORMAL) {
+					aniId = KOOPA_ANI_ID_TRY_TO_POP_OUT_QUARTER_TIME;
+				}
+				break;
+			}
 		}
 		CAnimations* animations = CAnimations::GetInstance();
 		animations->Get(aniId)->Render(x, y + KOOPA_RENDER_OFFSET_Y);
@@ -56,7 +125,7 @@ void CKoopa::Render()
 		CSprites* sprites = CSprites::GetInstance();
 		sprites->Get(KOOPA_SPRITE_ID_SHELL)->Draw(x, y);
 	}
-	// RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CKoopa::OnNoCollision(DWORD dt)

@@ -316,8 +316,8 @@ void CPlayScene::Update(DWORD dt)
 	float cam_t, cam_l, cam_r, cam_b, x, y;
 	CGame* game = CGame::GetInstance();
 	game->GetCamPos(cam_l, cam_t);
-	cam_r = cam_l + game->GetBackBufferWidth();
-	cam_b = cam_t + game->GetBackBufferHeight();
+	cam_r = cam_l + game->GetBackBufferWidth() + CAMERA_CHECKING_OFFSET;
+	cam_b = cam_t + game->GetBackBufferHeight() + CAMERA_CHECKING_OFFSET;
 	
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
