@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "AssetIDs.h"
 #include "Goomba.h"
+#include "RewardingBrick.h"
 void CKoopa::SetState(int state)
 {
 	boundaries_left = 0;
@@ -157,5 +158,9 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
 		vx = -vx;
+	}
+
+	if (e->obj->GetType() == OBJECT_TYPE_REWARDING_BRICK && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
+		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
 	}
 }

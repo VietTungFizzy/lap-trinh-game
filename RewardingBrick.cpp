@@ -3,7 +3,7 @@
 #include "Animations.h"
 #include "Sprites.h"
 #include "debug.h"
-#include "Mushroom.h"
+#include "Reward.h"
 
 CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, CGameObject* mushroom, int spriteId): CBrick(x, y, spriteId, type)
 {
@@ -53,7 +53,7 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else if (rewarding == REWARDING_MUSHROOM) {
 					initY = temp;
 					yEffect = temp;
-					mushroom->SetState(MUSHROOM_STATE_INACTIVE);
+					mushroom->SetState(REWARD_STATE_INACTIVE);
 					SetState(REWARDING_BRICK_MUSHROOM_GO_UP_STATE);
 				}
 			}
@@ -87,7 +87,7 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			yEffect += vyEffect * dt;
 			mushroom->SetPosition(xEffect, yEffect);
 			if (abs(initY - yEffect) > REWARDING_BRICK_MUSHROOM_GO_UP_DISTANCE) {
-				mushroom->SetState(MUSHROOM_STATE_ACTIVE);
+				mushroom->SetState(REWARD_STATE_ACTIVE);
 				SetState(REWARDING_BRICK_FINISHED_STATE);
 			}
 		}

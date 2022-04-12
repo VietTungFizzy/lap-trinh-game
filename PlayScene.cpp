@@ -13,7 +13,7 @@
 #include "Decorated_Obj.h"
 #include "RewardingBrick.h"
 #include "InvinsibleBrick.h"
-#include "Mushroom.h"
+#include "Reward.h"
 #include "PlatformTopOnly.h"
 #include "VenusFireTrap.h"
 #include "Koopa.h"
@@ -176,7 +176,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int rewarding_type = atoi(tokens[3].c_str());
 
 		if (rewarding_type == REWARDING_MUSHROOM) {
-			CGameObject* t = new CMushroom(x, y, OBJECT_TYPE_MUSHROOM);
+			CGameObject* t = new CReward(x, y, OBJECT_TYPE_MUSHROOM);
 			obj = new CRewardingBrick(x, y, rewarding_type, object_type, t);
 			objects.push_back(t);
 		}
