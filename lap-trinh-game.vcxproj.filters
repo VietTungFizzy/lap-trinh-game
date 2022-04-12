@@ -102,7 +102,7 @@
     <ClInclude Include="InvinsibleBrick.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Reward.h">
+    <ClInclude Include="Mushroom.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="PlatformTopOnly.h">
@@ -185,7 +185,7 @@
     <ClCompile Include="InvinsibleBrick.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Reward.cpp">
+    <ClCompile Include="Mushroom.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="PlatformTopOnly.cpp">

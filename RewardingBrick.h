@@ -43,7 +43,7 @@ private:
 
 	// Only when rewarding type == REWARDING_MUSHROOM
 	CGameObject* mushroom;
-	int mushroomDirection;
+	CGameObject* player;
 public:
 	CRewardingBrick(float x, float y, int rewarding,int type, CGameObject* mushroom = NULL, int spriteId = REWARDING_BRICK_SPRITE_ID);
 	void Render();
@@ -51,6 +51,6 @@ public:
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetState(int state);
 
-	void SetMushroomDirection(int dir) { this->mushroomDirection = mushroomDirection; }
+	void SetPlayer(CGameObject* player) { this->player = player; }
 };
 

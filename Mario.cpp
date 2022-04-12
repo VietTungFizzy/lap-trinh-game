@@ -7,7 +7,7 @@
 #include "Goomba.h"
 #include "Portal.h"
 #include "RewardingBrick.h"
-#include "Reward.h"
+#include "Mushroom.h"
 #include "AssetIDs.h"
 #include "VenusFireTrap.h"
 #include "Koopa.h"
@@ -119,14 +119,15 @@ void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 	if (e->ny > 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
 		CRewardingBrick* obj = (CRewardingBrick*)e->obj;
 		obj->SetState(REWARDING_BRICK_GO_UP_STATE);
+		obj->SetPlayer(this);
 		point += COIN_POINT;
 	}
 }
 
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
-	if (e->obj->GetState() == REWARD_STATE_ACTIVE) {
-		e->obj->SetState(REWARD_STATE_EATEN);
+	if (e->obj->GetState() == MUSHROOM_STATE_ACTIVE) {
+		e->obj->SetState(MUSHROOM_STATE_EATEN);
 		float l, t, r, b;
 		GetBoundingBox(l, t, r, b);
 		e->obj->SetPosition(x, t );
