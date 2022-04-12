@@ -1,11 +1,13 @@
-#include "RewardingBrick.h"
-#include "Animation.h"
 #include "Animations.h"
 #include "Sprites.h"
 #include "debug.h"
 #include "Mushroom.h"
+#include "Mario.h"
+#include "RewardingBrick.h"
+#include "PlayScene.h"
+#include "AssetIDs.h"
 
-CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, CGameObject* mushroom, int spriteId): CBrick(x, y, spriteId, type)
+CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, int spriteId): CBrick(x, y, spriteId, type)
 {
 	this->state = REWARDING_BRICK_NORMAL_STATE;
 	this->rewarding = rewarding;
@@ -13,7 +15,8 @@ CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, CGam
 	this->xEffect = x;
 	this->yEffect = y;
 	this->vyEffect = 0.0f;
-	this->mushroom = mushroom;
+	this->reward = NULL;
+	this->rewardDirection = MUSHROOM_DIRECTION_LEFT;
 }
 void CRewardingBrick::Render()
 {
@@ -50,11 +53,21 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					yEffect = temp - REWARDING_BRICK_BBOX_HEIGHT;
 					SetState(REWARDING_BRICK_COIN_GO_UP_STATE);
 				}
-				else if (rewarding == REWARDING_MUSHROOM) {
+				else if (rewarding == REWARDING_SUPER_ITEM) {
 					initY = temp;
 					yEffect = temp;
-					mushroom->SetState(MUSHROOM_STATE_INACTIVE);
-					SetState(REWARDING_BRICK_MUSHROOM_GO_UP_STATE);
+					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+					CMario* player = (CMario*)scence->GetPlayer();
+					if (player->GetLevel() == MARIO_LEVEL_SMALL) {
+						scence->AddObjects(new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM));
+						reward->SetState(MUSHROOM_STATE_INACTIVE);
+					}
+					else if (player->GetLevel() == MARIO_LEVEL_BIG) {
+						scence->AddObjects(new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM));
+						reward->SetState(MUSHROOM_STATE_INACTIVE);
+					}
+					
+					SetState(REWARDING_BRICK_REWARD_GO_UP_STATE);
 				}
 			}
 			break;
@@ -82,13 +95,15 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (abs(vyEffect) < REWARDING_BRICK_EPSILON) SetState(REWARDING_BRICK_FINISHED_STATE);
 			break;
 		}
-		case REWARDING_BRICK_MUSHROOM_GO_UP_STATE:
+		case REWARDING_BRICK_REWARD_GO_UP_STATE:
 		{
 			yEffect += vyEffect * dt;
-			mushroom->SetPosition(xEffect, yEffect);
-			if (abs(initY - yEffect) > REWARDING_BRICK_MUSHROOM_GO_UP_DISTANCE) {
-				mushroom->SetState(MUSHROOM_STATE_ACTIVE);
-				SetState(REWARDING_BRICK_FINISHED_STATE);
+			reward->SetPosition(xEffect, yEffect);
+			if (reward->GetType() == OBJECT_TYPE_MUSHROOM) {
+				if (abs(initY - yEffect) > REWARDING_BRICK_MUSHROOM_GO_UP_DISTANCE) {
+					reward->SetState(MUSHROOM_STATE_ACTIVE);
+					SetState(REWARDING_BRICK_FINISHED_STATE);
+				}
 			}
 		}
 		default: break;
@@ -126,9 +141,9 @@ void CRewardingBrick::SetState(int state)
 			vyEffect = -REWARDING_BRICK_TEXT_SPEED;
 			break;
 		}
-		case REWARDING_BRICK_MUSHROOM_GO_UP_STATE:
+		case REWARDING_BRICK_REWARD_GO_UP_STATE:
 		{
-			vyEffect = -REWARDING_BRICK_MUSHROOM_GO_UP_SPEED;
+			if(reward->GetType() == OBJECT_TYPE_MUSHROOM) vyEffect = -REWARDING_BRICK_MUSHROOM_GO_UP_SPEED;
 			break;
 		}
 		default: break;

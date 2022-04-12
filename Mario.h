@@ -41,8 +41,6 @@
 #define MARIO_STATE_SMALL_TO_BIG	700
 #define MARIO_STATE_BIG_TO_SMALL	701
 
-#define	MARIO_LEVEL_SMALL	1
-#define	MARIO_LEVEL_BIG		2
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -112,6 +110,7 @@
 #pragma endregion
 
 #pragma region MISC
+
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
 #define MARIO_UNTOUCHABLE_TIME 1000
@@ -122,6 +121,13 @@
 
 #pragma endregion
 
+#pragma region LEVEL
+
+#define	MARIO_LEVEL_SMALL	1
+#define	MARIO_LEVEL_BIG		2
+#define MARIO_LEVEL_RACCOON 3
+
+#pragma endregion
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -179,6 +185,7 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	void SetLevel(int l);
+	int GetLevel() { return this->level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);

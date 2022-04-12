@@ -10,14 +10,14 @@
 #define REWARDING_BRICK_BBOX_HEIGHT 16
 
 #define REWARDING_COIN 0
-#define REWARDING_MUSHROOM 1
+#define REWARDING_SUPER_ITEM 1
 
 #define REWARDING_BRICK_NORMAL_STATE 0
 #define REWARDING_BRICK_GO_UP_STATE 1
 #define REWARDING_BRICK_COIN_GO_UP_STATE 2
 #define REWARDING_BRICK_COIN_GO_DOWN_STATE 3
 #define REWARDING_BRICK_TEXT_GO_UP_STATE 4
-#define REWARDING_BRICK_MUSHROOM_GO_UP_STATE 5
+#define REWARDING_BRICK_REWARD_GO_UP_STATE 5
 #define REWARDING_BRICK_FINISHED_STATE 6
 
 #define REWARDING_BRICK_GO_UP_SPEED 0.05f
@@ -30,6 +30,7 @@
 #define REWARDING_BRICK_MUSHROOM_GO_UP_SPEED 0.01f
 
 #define REWARDING_BRICK_EPSILON (1e-3)
+
 class CRewardingBrick :
     public CBrick
 {
@@ -41,16 +42,15 @@ private:
 	float yEffect;
 	float vyEffect;
 
-	// Only when rewarding type == REWARDING_MUSHROOM
-	CGameObject* mushroom;
-	CGameObject* player;
+	// Only when rewarding type == REWARDING_SUPER_ITEM
+	CGameObject* reward;
+	int rewardDirection;
 public:
-	CRewardingBrick(float x, float y, int rewarding,int type, CGameObject* mushroom = NULL, int spriteId = REWARDING_BRICK_SPRITE_ID);
+	CRewardingBrick(float x, float y, int rewarding,int type, int spriteId = REWARDING_BRICK_SPRITE_ID);
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetState(int state);
 
-	void SetPlayer(CGameObject* player) { this->player = player; }
 };
 

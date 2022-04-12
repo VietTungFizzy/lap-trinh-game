@@ -17,6 +17,8 @@
 #define MUSHROOM_SPEED_REDUCTION 0.85f
 #define MUSHROOM_EPSILON (1e-3)
 
+#define MUSHROOM_DIRECTION_LEFT -1
+#define MUSHROOM_DIRECTION_RIGHT 1
 class CMushroom :
     public CGameObject
 {
@@ -34,7 +36,7 @@ protected:
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 public:
-	CMushroom(float x, float y, int type);
+	CMushroom(float x, float y, int dir, int type);
 
 	void SetState(int state);
 };
