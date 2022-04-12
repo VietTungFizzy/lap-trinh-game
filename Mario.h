@@ -111,6 +111,7 @@
 
 #pragma endregion
 
+#pragma region MISC
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
 #define MARIO_UNTOUCHABLE_TIME 1000
@@ -118,6 +119,9 @@
 
 #define COIN_POINT 100
 #define MUSHROOM_POINT 1000
+
+#pragma endregion
+
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;

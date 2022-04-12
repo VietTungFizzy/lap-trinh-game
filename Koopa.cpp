@@ -3,6 +3,7 @@
 #include "Sprites.h"
 #include "debug.h"
 #include "AssetIDs.h"
+#include "Goomba.h"
 void CKoopa::SetState(int state)
 {
 	boundaries_left = 0;
@@ -140,35 +141,21 @@ void CKoopa::OnNoCollision(DWORD dt)
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return;
-	switch (state) {
-		case KOOPA_STATE_RETURNING_TO_NORMAL:
-		case KOOPA_STATE_SHELL_STAY_STILL:
-		case KOOPA_STATE_NORMAL: 
-			if (e->ny != 0)
-			{
-				vy = 0;
-				if (boundaries_left == 0 && boundaries_right == 0) {
-					float l, t, r, b;
-					e->obj->GetBoundingBox(l, t, r, b);
-					boundaries_left = l + KOOPA_BBOX_WIDTH / 2;
-					boundaries_right = r - KOOPA_BBOX_WIDTH / 2;
-				}
-			}
-			else if (e->nx != 0 && e->obj->GetType() != OBJECT_TYPE_MARIO)
-			{
-				vx = -vx;
-			}
-			break;
-		case KOOPA_STATE_SHELL_MOVING:
-			if (e->ny != 0)
-			{
-				vy = 0;
-			}
-			else if (e->nx != 0)
-			{
-				vx = -vx;
-			}
-			break;
+	if (e->obj->GetType() == OBJECT_TYPE_MARIO ||
+		e->obj->GetType() == OBJECT_TYPE_GOOMBA) return;
+
+	if (e->ny != 0 && e->obj->IsBlocking())
+	{
+		vy = 0;
+		if (boundaries_left == 0 && boundaries_right == 0 && state != KOOPA_STATE_SHELL_MOVING) {
+			float l, t, r, b;
+			e->obj->GetBoundingBox(l, t, r, b);
+			boundaries_left = l + KOOPA_BBOX_WIDTH / 2;
+			boundaries_right = r - KOOPA_BBOX_WIDTH / 2;
+		}
+	}
+	else if (e->nx != 0 && e->obj->IsBlocking())
+	{
+		vx = -vx;
 	}
 }
