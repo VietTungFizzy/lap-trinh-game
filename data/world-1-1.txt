@@ -426,7 +426,7 @@ data/bullet.txt
 2	880	383
 
 # PARA GOOMBA
-3	480	256
+3	944	383
 
 # KOOPA
 11	575	362
@@ -434,4 +434,4 @@ data/bullet.txt
 # POSITION AT THE BEGINNING
 #	0	32	304
 # TESTING
-0	480	288
+0	704	303
