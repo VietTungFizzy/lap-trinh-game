@@ -28,10 +28,8 @@
 
 class CGoomba : public CGameObject
 {
-private:
-	int isCollidable;
-
 protected:
+	int isCollidable;
 	float ax;				
 	float ay; 
 

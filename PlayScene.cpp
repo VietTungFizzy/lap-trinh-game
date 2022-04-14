@@ -17,6 +17,7 @@
 #include "PlatformTopOnly.h"
 #include "VenusFireTrap.h"
 #include "Koopa.h"
+#include "ParaGoomba.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -200,6 +201,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_VENUS_FIRE_TRAP: obj = new CVenusFireTrap(x, y, object_type); break;
 	case OBJECT_TYPE_KOOPA: obj = new CKoopa(x, y, object_type); break;
+	case OBJECT_TYPE_PARA_GOOMBA: obj = new CParaGoomba(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

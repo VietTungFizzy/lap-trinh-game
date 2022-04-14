@@ -61,7 +61,6 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
-	DebugOutTitle(L"[DEBUG] vx: %f state: %d", vx, state);
 	switch (state) {
 		case KOOPA_STATE_NORMAL:
 		{
@@ -131,7 +130,7 @@ void CKoopa::Render()
 		CSprites* sprites = CSprites::GetInstance();
 		sprites->Get(KOOPA_SPRITE_ID_SHELL)->Draw(x, y);
 	}
-	RenderBoundingBox();
+	// RenderBoundingBox();
 }
 
 void CKoopa::OnNoCollision(DWORD dt)
