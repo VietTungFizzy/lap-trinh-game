@@ -2,6 +2,7 @@
 #include "InvinsibleBrick.h"
 #include "Mario.h"
 #include "AssetIDs.h"
+#include "ParaGoomba.h"
 CGoomba::CGoomba(float x, float y, int type) : CGameObject(x, y, type)
 {
 	this->ax = 0;
@@ -54,6 +55,8 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 		this->nx = e->nx;
 		break;
 	case OBJECT_TYPE_PARA_GOOMBA:
+		if(e->obj->GetState() == PARA_GOOMBA_STATE_LOST_WING) vx = -vx;
+		break;
 	case OBJECT_TYPE_GOOMBA:
 		vx = -vx;
 		break;

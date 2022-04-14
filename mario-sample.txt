@@ -16,4 +16,5 @@ height	240
 1	textures\mario_transition.png
 10	textures\enemies.png
 20	textures\misc.png
-21	textures\test.png
+21	textures\stage_title.png
+22	textures\misc_1.png

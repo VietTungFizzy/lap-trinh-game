@@ -171,6 +171,7 @@
     <ClInclude Include="RewardingBrick.h" />
     <ClInclude Include="SampleKeyEventHandler.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ScoreText.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Texture.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="RewardingBrick.cpp" />
     <ClCompile Include="SampleKeyEventHandler.cpp" />
+    <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Textures.cpp" />

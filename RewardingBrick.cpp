@@ -6,6 +6,7 @@
 #include "RewardingBrick.h"
 #include "PlayScene.h"
 #include "AssetIDs.h"
+#include "ScoreText.h"
 
 CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, int spriteId): CBrick(x, y, spriteId, type)
 {
@@ -31,9 +32,6 @@ void CRewardingBrick::Render()
 		if (state == REWARDING_BRICK_COIN_GO_UP_STATE || state == REWARDING_BRICK_COIN_GO_DOWN_STATE) {
 			CAnimations* animations = CAnimations::GetInstance();
 			animations->Get(REWARDING_BRICK_COIN_ANI_ID)->Render(xEffect, yEffect);
-		}
-		if (state == REWARDING_BRICK_TEXT_GO_UP_STATE) {
-			s->Get(REWARDING_BRICK_TEXT_SPRIE_ID)->Draw(xEffect, yEffect);
 		}
 	}
 }
@@ -92,9 +90,9 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		case REWARDING_BRICK_TEXT_GO_UP_STATE:
 		{
-			yEffect += vyEffect * dt;
-			vyEffect *= REWARDING_BRICK_TEXT_SPEED_REDUCTION_COEFFECIENT;
-			if (abs(vyEffect) < REWARDING_BRICK_EPSILON) SetState(REWARDING_BRICK_FINISHED_STATE);
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			scene->AddObjects(new CScoreText(xEffect, yEffect, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
+			SetState(REWARDING_BRICK_FINISHED_STATE);
 			break;
 		}
 		case REWARDING_BRICK_REWARD_GO_UP_STATE:
@@ -136,11 +134,6 @@ void CRewardingBrick::SetState(int state)
 		case REWARDING_BRICK_COIN_GO_DOWN_STATE:
 		{
 			vyEffect = REWARDING_BRICK_COIN_SPEED;
-			break;
-		}
-		case REWARDING_BRICK_TEXT_GO_UP_STATE:
-		{
-			vyEffect = -REWARDING_BRICK_TEXT_SPEED;
 			break;
 		}
 		case REWARDING_BRICK_REWARD_GO_UP_STATE:

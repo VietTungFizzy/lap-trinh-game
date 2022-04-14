@@ -1,9 +1,9 @@
 #include "Mushroom.h"
 #include "Sprites.h"
 #include "debug.h"
-#include "InvinsibleBrick.h"
-#include "Mario.h"
-#include "PlatformTopOnly.h"
+#include "PlayScene.h"
+#include "AssetIDs.h"
+#include "ScoreText.h"
 void CMushroom::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x - MUSHROOM_BBOX_WIDTH / 2;
@@ -21,9 +21,9 @@ void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		CCollision::GetInstance()->Process(this, dt, coObjects);
 	}
 	else if (state == MUSHROOM_STATE_EATEN) {
-		y += vy * dt;
-		vy *= MUSHROOM_SPEED_REDUCTION;
-		if (abs(vy) < MUSHROOM_EPSILON) Delete();
+		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+		scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_1000, OBJECT_TYPE_SCORE_TEXT));
+		Delete();
 	}
 }
 
@@ -33,11 +33,6 @@ void CMushroom::Render()
 		CSprites* s = CSprites::GetInstance();
 		s->Get(MUSHROOM_SPRITE_ID)->Draw(x, y);
 	}
-	else if (state == MUSHROOM_STATE_EATEN) {
-		CSprites* s = CSprites::GetInstance();
-		s->Get(MUSHROOM_SCORE_TEXT_SPRITE_ID)->Draw(x, y);
-	}
-	
 }
 
 void CMushroom::OnNoCollision(DWORD dt)
@@ -48,9 +43,9 @@ void CMushroom::OnNoCollision(DWORD dt)
 
 void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<CInvinsibleBrick*>(e->obj)) return;
-	if (dynamic_cast<CMario*>(e->obj)) return;
-	if (dynamic_cast<CPlatformTopOnly*>(e->obj)) { vy = 0; return; }
+	if (e->obj->GetType() == OBJECT_TYPE_INVINSIBLE_BRICK ||
+		e->obj->GetType() == OBJECT_TYPE_MARIO) return;
+	if(e->obj->GetType() == OBJECT_TYPE_PLATFORM_TOP_ONLY) { vy = 0; return; }
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
