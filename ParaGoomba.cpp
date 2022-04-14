@@ -83,8 +83,7 @@ void CParaGoomba::OnNoCollision(DWORD dt)
 
 void CParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (e->obj->GetType() == OBJECT_TYPE_GOOMBA ||
-		e->obj->GetType() == OBJECT_TYPE_MARIO) return;
+	if (e->obj->GetType() == OBJECT_TYPE_MARIO) return;
 	if (e->ny !=0 && e->obj->IsBlocking())
 	{
 		vy = 0;
@@ -99,6 +98,7 @@ void CParaGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vx = -vx;
 	}
+	if (e->obj->GetType() == OBJECT_TYPE_GOOMBA && state == PARA_GOOMBA_STATE_LOST_WING) vx = -vx;
 }
 
 CParaGoomba::CParaGoomba(float x, float y, int type) : CGameObject(x, y, type)
@@ -143,5 +143,14 @@ void CParaGoomba::SetState(int state)
 		vy = -PARA_GOOMBA_SMALL_JUMP_SPEED;
 		jumpCount++;
 		break;
+	case PARA_GOOMBA_STATE_LOST_WING:
+		{
+			CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			CGameObject* player = scence->GetPlayer();
+			float p_x, p_y;
+			player->GetPosition(p_x, p_y);
+			vx = (p_x > x) ? PARA_GOOMBA_WALK_SPEED : -PARA_GOOMBA_WALK_SPEED;
+			break;
+		}
 	}
 }

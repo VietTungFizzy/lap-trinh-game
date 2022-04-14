@@ -37,7 +37,6 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (dynamic_cast<CGoomba*>(e->obj)) return; 
 	if (dynamic_cast<CMario*>(e->obj)) return;
 
 	if (e->ny != 0 && e->obj->IsBlocking())
@@ -49,9 +48,15 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 		vx = -vx;
 	}
 
-	if (e->obj->GetType() == OBJECT_TYPE_KOOPA) {
+	switch (e->obj->GetType()) {
+	case OBJECT_TYPE_KOOPA:
 		SetState(GOOMBA_STATE_CONTACT_WITH_SHELL);
 		this->nx = e->nx;
+		break;
+	case OBJECT_TYPE_PARA_GOOMBA:
+	case OBJECT_TYPE_GOOMBA:
+		vx = -vx;
+		break;
 	}
 	
 }

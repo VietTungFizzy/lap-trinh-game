@@ -11,6 +11,8 @@
 #include "AssetIDs.h"
 #include "VenusFireTrap.h"
 #include "Koopa.h"
+#include "ParaGoomba.h"
+
 #include "debug.h"
 #include "Collision.h"
 
@@ -76,6 +78,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		GetHit(); 
 		break;
 	case OBJECT_TYPE_KOOPA: OnCollisionWithKoopa(e); break;
+	case OBJECT_TYPE_PARA_GOOMBA: OnCollisionWithParaGoomba(e); break;
 	}
 }
 
@@ -175,6 +178,27 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				if(koopa->GetCauseDamageMode()) GetHit();
 				break;
 		}
+	}
+}
+
+void CMario::OnCollisionWithParaGoomba(LPCOLLISIONEVENT e)
+{
+	CParaGoomba* paraGoomba = dynamic_cast<CParaGoomba*>(e->obj);
+	if (e->ny < 0) {
+		int paraGoombaState = paraGoomba->GetState();
+		switch (paraGoombaState) {
+		case PARA_GOOMBA_STATE_LOST_WING: paraGoomba->SetState(PARA_GOOMBA_STATE_DIE); break;
+		case PARA_GOOMBA_STATE_JUMP:
+		case PARA_GOOMBA_STATE_WALK:
+		case PARA_GOOMBA_STATE_FLY_UP:
+			paraGoomba->SetState(PARA_GOOMBA_STATE_LOST_WING);
+			break;
+		}
+
+		vy = (vx > 0) ? MARIO_JUMP_DEFLECT_SPEED : -MARIO_JUMP_DEFLECT_SPEED;
+	}
+	else {
+		GetHit();
 	}
 }
 
