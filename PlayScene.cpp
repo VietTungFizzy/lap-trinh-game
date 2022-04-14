@@ -169,6 +169,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		int sprite_id = atoi(tokens[3].c_str());
 		obj = new CDecoratedObject(x, y, sprite_id, object_type);
+		decoratedObjects.push_back(obj);
+		return;
 		break;
 	}
 	case OBJECT_TYPE_REWARDING_BRICK: 
@@ -308,14 +310,11 @@ void CPlayScene::Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->GetType() == OBJECT_TYPE_DECORATED) continue;
 		coObjects.push_back(objects[i]);
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		if (objects[i]->GetType() == OBJECT_TYPE_DECORATED) continue;
-
 		objects[i]->GetPosition(x, y);
 		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b) {
 			if (dynamic_cast<CVenusFireTrap*>(objects[i])) {
@@ -353,6 +352,13 @@ void CPlayScene::Render()
 	game->GetCamPos(cam_l, cam_t);
 	cam_r = cam_l + game->GetBackBufferWidth() + CAMERA_CHECKING_OFFSET;
 	cam_b = cam_t + game->GetBackBufferHeight() + CAMERA_CHECKING_OFFSET;
+	// Always render decorated objects first
+	for (int i = 0; i < decoratedObjects.size(); i++) {
+		decoratedObjects[i]->GetPosition(x, y);
+		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b)
+			decoratedObjects[i]->Render();
+	}
+
 	for (int i = 0; i < objects.size(); i++) {
 		objects[i]->GetPosition(x, y);
 		if (dynamic_cast<CPlatform*>(objects[i])) {
@@ -362,6 +368,16 @@ void CPlayScene::Render()
 			objects[i]->Render();
 	}
 	player->Render();
+}
+
+void CPlayScene::AddObjects(LPGAMEOBJECT obj, bool isAddAtTheBeginning)
+{
+	if (isAddAtTheBeginning) {
+		objects.insert(objects.begin(), obj);
+	}
+	else {
+		objects.push_back(obj);
+	}
 }
 
 /*

@@ -50,7 +50,6 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 
 	if (e->obj->GetType() == OBJECT_TYPE_KOOPA) {
-		DebugOut(L"[DEBUG] hit\n");
 		SetState(GOOMBA_STATE_CONTACT_WITH_SHELL);
 		this->nx = e->nx;
 	}

@@ -6,7 +6,6 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
-//#include "Koopas.h"
 
 
 class CPlayScene: public CScene
@@ -18,7 +17,11 @@ protected:
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
 
+	// List of objects that can have impact with the game
 	vector<LPGAMEOBJECT> objects;
+
+	// List of objects don't have any impact with the game => Just serve as decoration
+	vector<LPGAMEOBJECT> decoratedObjects;
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -38,7 +41,7 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
-	void AddObjects(LPGAMEOBJECT obj) { objects.push_back(obj); }
+	void AddObjects(LPGAMEOBJECT obj, bool isAddAtTheBeginning = false);
 
 	void Clear();
 	void PurgeDeletedObjects();

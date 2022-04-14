@@ -59,11 +59,13 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 					CMario* player = (CMario*)scence->GetPlayer();
 					if (player->GetLevel() == MARIO_LEVEL_SMALL) {
-						scence->AddObjects(new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM));
+						reward = new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM);
+						scence->AddObjects(reward, true);
 						reward->SetState(MUSHROOM_STATE_INACTIVE);
 					}
 					else if (player->GetLevel() == MARIO_LEVEL_BIG) {
-						scence->AddObjects(new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM));
+						reward = new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM);
+						scence->AddObjects(reward, true);
 						reward->SetState(MUSHROOM_STATE_INACTIVE);
 					}
 					

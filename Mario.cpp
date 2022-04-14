@@ -117,9 +117,7 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
 	if (e->ny > 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
-		CRewardingBrick* obj = (CRewardingBrick*)e->obj;
-		obj->SetState(REWARDING_BRICK_GO_UP_STATE);
-		obj->SetPlayer(this);
+		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
 		point += COIN_POINT;
 	}
 }
