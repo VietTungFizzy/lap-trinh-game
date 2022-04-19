@@ -13,12 +13,12 @@
 #define MARIO_ACCEL_WALK_X	0.0005f
 #define MARIO_ACCEL_RUN_X	0.0007f
 
-#define MARIO_JUMP_SPEED_Y		0.6f
-#define MARIO_JUMP_RUN_SPEED_Y	0.6f
+#define MARIO_JUMP_SPEED_Y		0.4f
+#define MARIO_JUMP_RUN_SPEED_Y	0.4f
 
-#define MARIO_GRAVITY			0.002f
+#define MARIO_GRAVITY			0.001f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.4f
+#define MARIO_JUMP_DEFLECT_SPEED  0.2f
 #define MARIO_SLOW_DOWN_COEFFICIENT 5
 #pragma endregion
 
@@ -116,9 +116,6 @@
 #define MARIO_UNTOUCHABLE_TIME 1000
 #define MINIMUM_ACCEL_VALUE 1e-4
 
-#define COIN_POINT 100
-#define MUSHROOM_POINT 1000
-
 #pragma endregion
 
 #pragma region LEVEL
@@ -188,6 +185,7 @@ public:
 	void SetLevel(int l);
 	int GetLevel() { return this->level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
+	void AddPoint(int point) { this->point += point; }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

@@ -3,6 +3,8 @@
 #include "Mario.h"
 #include "AssetIDs.h"
 #include "ParaGoomba.h"
+#include "PlayScene.h"
+#include "ScoreText.h"
 CGoomba::CGoomba(float x, float y, int type) : CGameObject(x, y, type)
 {
 	this->ax = 0;
@@ -51,9 +53,15 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	switch (e->obj->GetType()) {
 	case OBJECT_TYPE_KOOPA:
-		SetState(GOOMBA_STATE_CONTACT_WITH_SHELL);
-		this->nx = e->nx;
-		break;
+		{
+			SetState(GOOMBA_STATE_CONTACT_WITH_SHELL);
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			CMario* player = (CMario*)scene->GetPlayer();
+			player->AddPoint(SCORE_POINT_100);
+			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
+			this->nx = e->nx;
+			break;
+		}
 	case OBJECT_TYPE_PARA_GOOMBA:
 		if(e->obj->GetState() == PARA_GOOMBA_STATE_LOST_WING) vx = -vx;
 		break;

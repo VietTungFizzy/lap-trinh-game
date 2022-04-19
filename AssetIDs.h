@@ -8,6 +8,7 @@
 #define ID_TEX_ENEMY 10
 #define ID_TEX_MISC 20
 
+#pragma region OBJECT TYPE
 #define OBJECT_TYPE_SCORE_TEXT -4
 #define OBJECT_TYPE_SUPER_LEAF -3
 #define OBJECT_TYPE_BULLET -2
@@ -26,7 +27,7 @@
 #define OBJECT_TYPE_KOOPA 11
 #define OBJECT_TYPE_PARA_KOOPA 12
 #define OBJECT_TYPE_PORTAL	50
-
+#pragma endregion
 
 #pragma region MARIO 
 
@@ -87,6 +88,7 @@
 
 #pragma endregion 
 
+#pragma region MISC SPRITE
 #define ID_SPRITE_BRICK 20000
 
 #define ID_SPRITE_GOOMBA 30000
@@ -99,3 +101,4 @@
 #define ID_SPRITE_CLOUD_BEGIN (ID_SPRITE_CLOUD+1000)
 #define ID_SPRITE_CLOUD_MIDDLE (ID_SPRITE_CLOUD+2000)
 #define ID_SPRITE_CLOUD_END (ID_SPRITE_CLOUD+3000)
+#pragma endregion

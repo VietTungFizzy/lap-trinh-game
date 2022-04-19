@@ -2,6 +2,7 @@
 #include "Animations.h"
 #include "AssetIDs.h"
 #include "PlayScene.h"
+#include "ScoreText.h"
 #include "debug.h"
 void CParaGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -150,6 +151,7 @@ void CParaGoomba::SetState(int state)
 			float p_x, p_y;
 			player->GetPosition(p_x, p_y);
 			vx = (p_x > x) ? PARA_GOOMBA_WALK_SPEED : -PARA_GOOMBA_WALK_SPEED;
+			scence->AddObjects(new CScoreText(x, y - PARA_GOOMBA_BBOX_HEIGHT_DIE / 2, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
 			break;
 		}
 	}

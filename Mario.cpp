@@ -12,6 +12,8 @@
 #include "VenusFireTrap.h"
 #include "Koopa.h"
 #include "ParaGoomba.h"
+#include "ScoreText.h"
+#include "PlayScene.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -45,7 +47,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			state = MARIO_STATE_IDLE;
 		}
 	}
-	isOnPlatform = false;
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -85,19 +86,14 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-
-	// jump on top >> kill Goomba and deflect a bit 
-	if (e->ny < 0)
-	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE_FOR_MARIO)
+	if (goomba->GetState() != GOOMBA_STATE_DIE_FOR_MARIO && goomba->GetState() != GOOMBA_STATE_DIE_FOR_SHELL) {
+		// jump on top >> kill Goomba and deflect a bit 
+		if (e->ny < 0)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE_FOR_MARIO);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
-	}
-	else // hit by Goomba
-	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE_FOR_MARIO)
+		else // hit by Goomba
 		{
 			GetHit();
 		}
@@ -107,7 +103,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	point+= COIN_POINT;
+	point+= SCORE_POINT_100;
 	coin++;
 }
 
@@ -121,7 +117,7 @@ void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
 	if (e->ny > 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
 		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
-		point += COIN_POINT;
+		point += SCORE_POINT_100;
 	}
 }
 
@@ -135,7 +131,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		SetLevel(MARIO_LEVEL_BIG);
 		StartUntouchable();
 		SetState(MARIO_STATE_SMALL_TO_BIG);
-		point += MUSHROOM_POINT;
+		point += SCORE_POINT_1000;
 	}
 }
 
@@ -144,11 +140,21 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 	int koopaState = koopa->GetState();
 	if (e->ny < 0) {
+		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 		switch (koopaState) {
 			case KOOPA_STATE_SHELL_MOVING:
+			{
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
+				point += SCORE_POINT_200;
+				scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_200, OBJECT_TYPE_SCORE_TEXT));
+				break;
+			}
 			case KOOPA_STATE_NORMAL: {
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
 				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
+				point += SCORE_POINT_100;
+				scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
 				break;
 			}
 			case KOOPA_STATE_RETURNING_TO_NORMAL:
@@ -157,6 +163,8 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				bool isPlayerLeft = (vx > 0) ? false : true;
 				koopa->SetIsPlayerLeft(isPlayerLeft);
 				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+				point += SCORE_POINT_100;
+				scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
 				break;
 			}
 		}
@@ -192,6 +200,7 @@ void CMario::OnCollisionWithParaGoomba(LPCOLLISIONEVENT e)
 		case PARA_GOOMBA_STATE_WALK:
 		case PARA_GOOMBA_STATE_FLY_UP:
 			paraGoomba->SetState(PARA_GOOMBA_STATE_LOST_WING);
+			point += SCORE_POINT_100;
 			break;
 		}
 
@@ -387,7 +396,6 @@ void CMario::Render()
 			break;
 		}
 	}
-
 	animations->Get(aniId)->Render(x, y);
 
 	// RenderBoundingBox();
@@ -434,6 +442,7 @@ void CMario::SetState(int state)
 				vy = -MARIO_JUMP_RUN_SPEED_Y;
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
+			isOnPlatform = false;
 		}
 		break;
 

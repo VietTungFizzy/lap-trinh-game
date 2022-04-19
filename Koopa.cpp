@@ -5,6 +5,7 @@
 #include "AssetIDs.h"
 #include "Goomba.h"
 #include "RewardingBrick.h"
+#include "PlayScene.h"
 void CKoopa::SetState(int state)
 {
 	boundaries_left = 0;
