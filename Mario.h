@@ -5,7 +5,6 @@
 #include "Animations.h"
 
 #include "debug.h"
-
 #pragma region PHYSICS_ATTRIBUTE
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -18,7 +17,7 @@
 
 #define MARIO_GRAVITY			0.001f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.2f
+#define MARIO_JUMP_DEFLECT_SPEED  0.3f
 #define MARIO_SLOW_DOWN_COEFFICIENT 5
 #pragma endregion
 
@@ -139,6 +138,7 @@ class CMario : public CGameObject
 	BOOLEAN isOnPlatform;
 	int point; 
 	int coin;
+	int comboCount;
 	// Handling collision logic
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);

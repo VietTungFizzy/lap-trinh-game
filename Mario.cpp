@@ -192,22 +192,25 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithParaGoomba(LPCOLLISIONEVENT e)
 {
 	CParaGoomba* paraGoomba = dynamic_cast<CParaGoomba*>(e->obj);
-	if (e->ny < 0) {
-		int paraGoombaState = paraGoomba->GetState();
-		switch (paraGoombaState) {
-		case PARA_GOOMBA_STATE_LOST_WING: paraGoomba->SetState(PARA_GOOMBA_STATE_DIE); break;
-		case PARA_GOOMBA_STATE_JUMP:
-		case PARA_GOOMBA_STATE_WALK:
-		case PARA_GOOMBA_STATE_FLY_UP:
-			paraGoomba->SetState(PARA_GOOMBA_STATE_LOST_WING);
-			point += SCORE_POINT_100;
-			break;
-		}
+	int paraGoombaState = paraGoomba->GetState();
+	if (paraGoombaState != PARA_GOOMBA_STATE_DIE) {
+		if (e->ny < 0) {
 
-		vy = (vx > 0) ? MARIO_JUMP_DEFLECT_SPEED : -MARIO_JUMP_DEFLECT_SPEED;
-	}
-	else {
-		GetHit();
+			switch (paraGoombaState) {
+			case PARA_GOOMBA_STATE_LOST_WING: paraGoomba->SetState(PARA_GOOMBA_STATE_DIE); break;
+			case PARA_GOOMBA_STATE_JUMP:
+			case PARA_GOOMBA_STATE_WALK:
+			case PARA_GOOMBA_STATE_FLY_UP:
+				paraGoomba->SetState(PARA_GOOMBA_STATE_LOST_WING);
+				point += SCORE_POINT_100;
+				break;
+			}
+
+			vy = (vx > 0) ? MARIO_JUMP_DEFLECT_SPEED : -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else {
+			GetHit();
+		}
 	}
 }
 

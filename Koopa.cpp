@@ -100,37 +100,73 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CKoopa::Render()
 {
-	if (state != KOOPA_STATE_SHELL_STAY_STILL) {
-		int aniId = KOOPA_ANI_ID_WALKING_LEFT;
-		switch (state) {
-		case KOOPA_STATE_NORMAL:
-			aniId = (vx > 0) ? KOOPA_ANI_ID_WALKING_RIGHT : KOOPA_ANI_ID_WALKING_LEFT;
-			break;
-		case KOOPA_STATE_SHELL_MOVING:
-			aniId = KOOPA_ANI_ID_SHELL;
-			break;
-		case KOOPA_STATE_RETURNING_TO_NORMAL:
+	if (koopaType == KOOPA_TYPE_RED) {
+		if (state != KOOPA_STATE_SHELL_STAY_STILL) {
+			int aniId = KOOPA_RED_ANI_ID_WALKING_LEFT;
+			switch (state) {
+			case KOOPA_STATE_NORMAL:
+				aniId = (vx > 0) ? KOOPA_RED_ANI_ID_WALKING_RIGHT : KOOPA_RED_ANI_ID_WALKING_LEFT;
+				break;
+			case KOOPA_STATE_SHELL_MOVING:
+				aniId = KOOPA_RED_ANI_ID_SHELL;
+				break;
+			case KOOPA_STATE_RETURNING_TO_NORMAL:
 			{
 				ULONGLONG t = GetTickCount64() - timer;
 				if (t < KOOPA_TIME_RETURNING_TO_NORMAL / 2) {
-					aniId = KOOPA_ANI_ID_TRY_TO_POP_OUT_FULL_TIME;
+					aniId = KOOPA_RED_ANI_ID_TRY_TO_POP_OUT_FULL_TIME;
 				}
 				else if (t < KOOPA_TIME_RETURNING_TO_NORMAL / 4) {
-					aniId = KOOPA_ANI_ID_TRY_TO_POP_OUT_HALF_TIME;
+					aniId = KOOPA_RED_ANI_ID_TRY_TO_POP_OUT_HALF_TIME;
 				}
 				else if (t < KOOPA_TIME_RETURNING_TO_NORMAL) {
-					aniId = KOOPA_ANI_ID_TRY_TO_POP_OUT_QUARTER_TIME;
+					aniId = KOOPA_RED_ANI_ID_TRY_TO_POP_OUT_QUARTER_TIME;
 				}
 				break;
 			}
+			}
+			CAnimations* animations = CAnimations::GetInstance();
+			animations->Get(aniId)->Render(x, y + KOOPA_RENDER_OFFSET_Y);
 		}
-		CAnimations* animations = CAnimations::GetInstance();
-		animations->Get(aniId)->Render(x, y + KOOPA_RENDER_OFFSET_Y);
+		else {
+			CSprites* sprites = CSprites::GetInstance();
+			sprites->Get(KOOPA_RED_SPRITE_ID_SHELL)->Draw(x, y);
+		}
 	}
-	else {
-		CSprites* sprites = CSprites::GetInstance();
-		sprites->Get(KOOPA_SPRITE_ID_SHELL)->Draw(x, y);
+	else if (koopaType == KOOPA_TYPE_GREEN) {
+		if (state != KOOPA_STATE_SHELL_STAY_STILL) {
+			int aniId = KOOPA_GREEN_ANI_ID_WALKING_LEFT;
+			switch (state) {
+			case KOOPA_STATE_NORMAL:
+				aniId = (vx > 0) ? KOOPA_GREEN_ANI_ID_WALKING_RIGHT : KOOPA_GREEN_ANI_ID_WALKING_LEFT;
+				break;
+			case KOOPA_STATE_SHELL_MOVING:
+				aniId = KOOPA_GREEN_ANI_ID_SHELL;
+				break;
+			case KOOPA_STATE_RETURNING_TO_NORMAL:
+			{
+				ULONGLONG t = GetTickCount64() - timer;
+				if (t < KOOPA_TIME_RETURNING_TO_NORMAL / 2) {
+					aniId = KOOPA_GREEN_ANI_ID_TRY_TO_POP_OUT_FULL_TIME;
+				}
+				else if (t < KOOPA_TIME_RETURNING_TO_NORMAL / 4) {
+					aniId = KOOPA_GREEN_ANI_ID_TRY_TO_POP_OUT_HALF_TIME;
+				}
+				else if (t < KOOPA_TIME_RETURNING_TO_NORMAL) {
+					aniId = KOOPA_GREEN_ANI_ID_TRY_TO_POP_OUT_QUARTER_TIME;
+				}
+				break;
+			}
+			}
+			CAnimations* animations = CAnimations::GetInstance();
+			animations->Get(aniId)->Render(x, y + KOOPA_RENDER_OFFSET_Y);
+		}
+		else {
+			CSprites* sprites = CSprites::GetInstance();
+			sprites->Get(KOOPA_GREEN_SPRITE_ID_SHELL)->Draw(x, y);
+		}
 	}
+	
 	// RenderBoundingBox();
 }
 

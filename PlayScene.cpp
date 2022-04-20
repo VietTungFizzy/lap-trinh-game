@@ -200,7 +200,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_VENUS_FIRE_TRAP: obj = new CVenusFireTrap(x, y, object_type); break;
-	case OBJECT_TYPE_KOOPA: obj = new CKoopa(x, y, object_type); break;
+	case OBJECT_TYPE_KOOPA: {
+		int koopa_type = atoi(tokens[3].c_str());
+		obj = new CKoopa(x, y, object_type, koopa_type);
+		break;
+	}
 	case OBJECT_TYPE_PARA_GOOMBA: obj = new CParaGoomba(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
