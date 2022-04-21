@@ -51,5 +51,6 @@ protected:
 public:
 	CParaGoomba(float x, float y, int type);
 	virtual void SetState(int state);
+
 };
 

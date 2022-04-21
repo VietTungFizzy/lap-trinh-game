@@ -33,7 +33,10 @@ void CKoopa::SetState(int state)
 		case KOOPA_STATE_NORMAL: 
 		{
 			y -= (KOOPA_BBOX_HEIGHT_NORMAL - KOOPA_BBOX_HEIGHT_SHELL) / 2;
-			vx = KOOPA_NORMAL_SPEED;
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			float p_x, p_y;
+			scene->GetPlayer()->GetPosition(p_x, p_y);
+			vx = (x > p_x) ? -KOOPA_NORMAL_SPEED : KOOPA_NORMAL_SPEED;
 			break;
 		}
 	}

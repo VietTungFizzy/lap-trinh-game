@@ -18,6 +18,7 @@
 #include "VenusFireTrap.h"
 #include "Koopa.h"
 #include "ParaGoomba.h"
+#include "ParaKoopa.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -206,6 +207,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_PARA_GOOMBA: obj = new CParaGoomba(x, y, object_type); break;
+	case OBJECT_TYPE_PARA_KOOPA: obj = new CParaKoopa(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
