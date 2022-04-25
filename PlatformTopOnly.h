@@ -15,7 +15,7 @@ public:
 	{
 	}
 
-	void Render() { CPlatform::Render(); RenderBoundingBox(); }
+	void Render() { CPlatform::Render(); }
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void GetBoundingBox(float& l, float& t, float& r, float& b) { CPlatform::GetBoundingBox(l, t, r, b); }
 };

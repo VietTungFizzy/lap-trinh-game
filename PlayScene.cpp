@@ -348,8 +348,9 @@ void CPlayScene::Update(DWORD dt)
 	if (newCamX < leftBoundaries) newCamX = leftBoundaries;
 	if (newCamX > rightBoundaries) newCamX = rightBoundaries;
 
-	//CGame::GetInstance()->SetCamPos(newCamX, 0.0f /*newCamY*/);
-	CGame::GetInstance()->SetCamPos(newCamX, (bottomBoundaries - SCREEN_HEIGHT));
+
+	CGame::GetInstance()->SetCamPos(newCamX, newCamY); // FOR TESTING ONLY
+	//CGame::GetInstance()->SetCamPos(newCamX, (bottomBoundaries - SCREEN_HEIGHT));
 	PurgeDeletedObjects();
 }
 

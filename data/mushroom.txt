@@ -1,3 +1,6 @@
 # id	left	top	right	bottom	texture_id
 [SPRITES]
+# RED MUSHROOM
 62000	300	189	315	204	20
+# 1-UP MUSHROOM
+62001	64	0	79	15	22
