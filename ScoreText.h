@@ -7,10 +7,12 @@
 #define SCORE_TEXT_100 61000
 #define SCORE_TEXT_200 61002
 #define SCORE_TEXT_1000 61001
+#define SCORE_TEXT_400  61003
 
 #define SCORE_POINT_100 100
 #define SCORE_POINT_1000 1000
 #define SCORE_POINT_200 200
+#define SCORE_POINT_400 400
 class CScoreText :
     public CGameObject
 {

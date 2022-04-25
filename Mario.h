@@ -115,6 +115,10 @@
 #define MARIO_UNTOUCHABLE_TIME 1000
 #define MINIMUM_ACCEL_VALUE 1e-4
 
+#define NO_COMBO 0
+#define COMBO_100 1
+#define COMBO_200 2
+#define COMBO_400 3
 #pragma endregion
 
 #pragma region LEVEL
@@ -147,11 +151,13 @@ class CMario : public CGameObject
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithParaGoomba(LPCOLLISIONEVENT e);
+	void OnCollisionWithParaKoopa(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
 private:
 	void GetHit();
+	void Scoring();
 
 public:
 	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)

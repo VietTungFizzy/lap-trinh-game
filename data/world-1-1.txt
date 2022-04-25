@@ -457,6 +457,8 @@ data/bullet.txt
 
 # PARA KOOPA
 12	1328	288
+12	1376	288
+12	1424	288
 
 # COIN
 4	1072	320

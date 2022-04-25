@@ -14,6 +14,7 @@
 #include "ParaGoomba.h"
 #include "ScoreText.h"
 #include "PlayScene.h"
+#include "ParaKoopa.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -61,7 +62,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
+		if (e->ny < 0) {
+			isOnPlatform = true;
+			comboCount = NO_COMBO;
+		}
 	}
 	else 
 	if (e->nx != 0 && e->obj->IsBlocking())
@@ -80,6 +84,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		break;
 	case OBJECT_TYPE_KOOPA: OnCollisionWithKoopa(e); break;
 	case OBJECT_TYPE_PARA_GOOMBA: OnCollisionWithParaGoomba(e); break;
+	case OBJECT_TYPE_PARA_KOOPA: OnCollisionWithParaKoopa(e); break;
 	}
 }
 
@@ -140,21 +145,18 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 	int koopaState = koopa->GetState();
 	if (e->ny < 0) {
-		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 		switch (koopaState) {
 			case KOOPA_STATE_SHELL_MOVING:
 			{
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
 				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
-				point += SCORE_POINT_200;
-				scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_200, OBJECT_TYPE_SCORE_TEXT));
+				Scoring();
 				break;
 			}
 			case KOOPA_STATE_NORMAL: {
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
 				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
-				point += SCORE_POINT_100;
-				scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
+				Scoring();
 				break;
 			}
 			case KOOPA_STATE_RETURNING_TO_NORMAL:
@@ -163,8 +165,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				bool isPlayerLeft = (vx > 0) ? false : true;
 				koopa->SetIsPlayerLeft(isPlayerLeft);
 				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
-				point += SCORE_POINT_100;
-				scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
+				Scoring();
 				break;
 			}
 		}
@@ -202,7 +203,7 @@ void CMario::OnCollisionWithParaGoomba(LPCOLLISIONEVENT e)
 			case PARA_GOOMBA_STATE_WALK:
 			case PARA_GOOMBA_STATE_FLY_UP:
 				paraGoomba->SetState(PARA_GOOMBA_STATE_LOST_WING);
-				point += SCORE_POINT_100;
+				Scoring();
 				break;
 			}
 
@@ -210,6 +211,63 @@ void CMario::OnCollisionWithParaGoomba(LPCOLLISIONEVENT e)
 		}
 		else {
 			GetHit();
+		}
+	}
+}
+
+void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
+{
+	CParaKoopa* koopa = dynamic_cast<CParaKoopa*>(e->obj);
+	int koopaState = koopa->GetState();
+	if (e->ny < 0) {
+		switch (koopaState) {
+		case PARA_KOOPA_STATE_SHELL_MOVING:
+		{
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			koopa->SetState(PARA_KOOPA_STATE_SHELL_STAY_STILL);
+			Scoring();
+			break;
+		}
+		case PARA_KOOPA_STATE_NORMAL_WITHOUT_WING: {
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			koopa->SetState(PARA_KOOPA_STATE_SHELL_STAY_STILL);
+			Scoring();
+			break;
+		}
+		case PARA_KOOPA_STATE_NORMAL_WITH_WING: {
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			koopa->SetState(PARA_KOOPA_STATE_NORMAL_WITHOUT_WING);
+			Scoring();
+			break;
+		}
+		case PARA_KOOPA_STATE_RETURNING_TO_NORMAL:
+		case PARA_KOOPA_STATE_SHELL_STAY_STILL:
+		{
+			bool isPlayerLeft = (vx > 0) ? false : true;
+			koopa->SetIsPlayerLeft(isPlayerLeft);
+			koopa->SetState(PARA_KOOPA_STATE_SHELL_MOVING);
+			Scoring();
+			break;
+		}
+		}
+	}
+	else {
+		switch (koopaState) {
+		case PARA_KOOPA_STATE_NORMAL_WITHOUT_WING:
+		case PARA_KOOPA_STATE_NORMAL_WITH_WING:
+			GetHit();
+			break;
+		case PARA_KOOPA_STATE_RETURNING_TO_NORMAL:
+		case PARA_KOOPA_STATE_SHELL_STAY_STILL:
+		{
+			bool isPlayerLeft = (e->nx > 0) ? false : true;
+			koopa->SetIsPlayerLeft(isPlayerLeft);
+			koopa->SetState(PARA_KOOPA_STATE_SHELL_MOVING);
+			break;
+		}
+		case PARA_KOOPA_STATE_SHELL_MOVING:
+			if (koopa->GetCauseDamageMode()) GetHit();
+			break;
 		}
 	}
 }
@@ -297,6 +355,32 @@ void CMario::GetHit()
 		{
 			DebugOut(L">>> Mario DIE >>> \n");
 			SetState(MARIO_STATE_DIE);
+		}
+	}
+}
+
+void CMario::Scoring()
+{
+	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	comboCount++;
+	switch (comboCount) {
+		case COMBO_100:
+		{
+			point += SCORE_POINT_100;
+			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
+			break;
+		}
+		case COMBO_200:
+		{
+			point += SCORE_POINT_200;
+			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_200, OBJECT_TYPE_SCORE_TEXT));
+			break;
+		}
+		case COMBO_400:
+		{
+			point += SCORE_POINT_400;
+			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_400, OBJECT_TYPE_SCORE_TEXT));
+			break;
 		}
 	}
 }

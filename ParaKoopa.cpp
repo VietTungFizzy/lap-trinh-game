@@ -28,11 +28,16 @@ void CParaKoopa::SetState(int state)
 	case PARA_KOOPA_STATE_NORMAL_WITHOUT_WING:
 	{
 		// Is previous state is returning to normal
-		if(this->state == PARA_KOOPA_STATE_RETURNING_TO_NORMAL) y -= (PARA_KOOPA_BBOX_HEIGHT_NORMAL - PARA_KOOPA_BBOX_HEIGHT_SHELL) / 2;
-		CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-		float p_x, p_y;
-		scene->GetPlayer()->GetPosition(p_x, p_y);
-		vx = (x > p_x) ? -PARA_KOOPA_NORMAL_SPEED : PARA_KOOPA_NORMAL_SPEED;
+		if (this->state == PARA_KOOPA_STATE_RETURNING_TO_NORMAL) {
+			y -= (PARA_KOOPA_BBOX_HEIGHT_NORMAL - PARA_KOOPA_BBOX_HEIGHT_SHELL) / 2;
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			float p_x, p_y;
+			scene->GetPlayer()->GetPosition(p_x, p_y);
+			vx = (x > p_x) ? -PARA_KOOPA_NORMAL_SPEED : PARA_KOOPA_NORMAL_SPEED;
+		}
+		else {
+			vx = -PARA_KOOPA_NORMAL_SPEED;
+		}
 		break;
 	}
 	case PARA_KOOPA_STATE_NORMAL_WITH_WING:
@@ -122,6 +127,22 @@ void CParaKoopa::Render()
 			aniId = (vx > 0) ? PARA_KOOPA_ANI_ID_WALKING_RIGHT : PARA_KOOPA_ANI_ID_WALKING_LEFT;
 			break;
 		}
+		case PARA_KOOPA_STATE_SHELL_STAY_STILL: aniId = PARA_KOOPA_ANI_ID_SHELL_STAY_STILL; break;
+		case PARA_KOOPA_STATE_SHELL_MOVING: aniId = PARA_KOOPA_ANI_ID_SHELL_MOVING; break;
+		case PARA_KOOPA_STATE_RETURNING_TO_NORMAL:
+		{
+			ULONGLONG t = GetTickCount64() - timer;
+			if (t < PARA_KOOPA_TIME_RETURNING_TO_NORMAL / 2) {
+				aniId = PARA_KOOPA_ANI_ID_TRY_TO_POP_OUT_FULL_TIME;
+			}
+			else if (t < PARA_KOOPA_TIME_RETURNING_TO_NORMAL / 4) {
+				aniId = PARA_KOOPA_ANI_ID_TRY_TO_POP_OUT_HALF_TIME;
+			}
+			else if (t < PARA_KOOPA_TIME_RETURNING_TO_NORMAL) {
+				aniId = PARA_KOOPA_ANI_ID_TRY_TO_POP_OUT_QUARTER_TIME;
+			}
+			break;
+		}
 	}
 	animations->Get(aniId)->Render(x, y + PARA_KOOPA_RENDER_OFFSET_Y);
 }
@@ -147,7 +168,8 @@ void CParaKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
-		vy = -PARA_KOOPA_JUMP_SPEED;
+		if (state == PARA_KOOPA_STATE_NORMAL_WITH_WING) vy = -PARA_KOOPA_JUMP_SPEED;
+		else vy = 0;
 	}
 	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
