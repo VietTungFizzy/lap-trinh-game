@@ -126,6 +126,9 @@
     <ClInclude Include="ParaKoopa.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="SuperLeaf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -218,5 +221,49 @@
     <ClCompile Include="ParaKoopa.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
+    <ClCompile Include="SuperLeaf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\brick.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\bullet.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\coin.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\decorated.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\enemy.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\mario.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\mushroom.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\pipe.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\platform.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\score_text.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\world-1-1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="mario-sample.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\super_leaf.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
