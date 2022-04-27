@@ -57,16 +57,32 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 					CMario* player = (CMario*)scence->GetPlayer();
 					if (player->GetLevel() == MARIO_LEVEL_SMALL) {
-						reward = new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM);
+						float px, py;
+						player->GetPosition(px, py);
+						rewardDirection = (px > x) ? MUSHROOM_DIRECTION_LEFT : MUSHROOM_DIRECTION_RIGHT;
+						reward = new CMushroom(x, y, rewardDirection, MUSHROOM_TYPE_SUPER, OBJECT_TYPE_MUSHROOM);
 						scence->AddObjects(reward, true);
 						reward->SetState(MUSHROOM_STATE_INACTIVE);
 					}
 					else if (player->GetLevel() == MARIO_LEVEL_BIG) {
-						reward = new CMushroom(x, y, rewardDirection, OBJECT_TYPE_MUSHROOM);
+						reward = new CMushroom(x, y, rewardDirection, MUSHROOM_TYPE_SUPER, OBJECT_TYPE_MUSHROOM);
 						scence->AddObjects(reward, true);
 						reward->SetState(MUSHROOM_STATE_INACTIVE);
 					}
 					
+					SetState(REWARDING_BRICK_REWARD_GO_UP_STATE);
+				}
+				else if (rewarding == REWARDING_1_UP_MUSHROOM) {
+					initY = temp;
+					yEffect = temp;
+					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+					CMario* player = (CMario*)scence->GetPlayer();
+					float px, py;
+					player->GetPosition(px, py);
+					rewardDirection = (px > x) ? MUSHROOM_DIRECTION_LEFT : MUSHROOM_DIRECTION_RIGHT;
+					reward = new CMushroom(x, y, rewardDirection, MUSHROOM_TYPE_1_UP, OBJECT_TYPE_MUSHROOM);
+					scence->AddObjects(reward, true);
+					reward->SetState(MUSHROOM_STATE_INACTIVE);
 					SetState(REWARDING_BRICK_REWARD_GO_UP_STATE);
 				}
 			}

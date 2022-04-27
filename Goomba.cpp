@@ -57,8 +57,7 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 			SetState(GOOMBA_STATE_CONTACT_WITH_SHELL);
 			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			CMario* player = (CMario*)scene->GetPlayer();
-			player->AddPoint(SCORE_POINT_100);
-			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
+			player->ScoringPointWithoutCombo(SCORE_POINT_100);
 			this->nx = e->nx;
 			break;
 		}

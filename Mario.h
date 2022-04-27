@@ -157,7 +157,7 @@ class CMario : public CGameObject
 	int GetAniIdSmall();
 private:
 	void GetHit();
-	void Scoring();
+	void ScoringWithCombo();
 
 public:
 	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
@@ -191,7 +191,9 @@ public:
 	void SetLevel(int l);
 	int GetLevel() { return this->level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
+	
 	void AddPoint(int point) { this->point += point; }
+	void ScoringPointWithoutCombo(int point);
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

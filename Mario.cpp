@@ -130,13 +130,20 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	if (e->obj->GetState() == MUSHROOM_STATE_ACTIVE) {
 		e->obj->SetState(MUSHROOM_STATE_EATEN);
+		// Align scoring text to above mario head
 		float l, t, r, b;
 		GetBoundingBox(l, t, r, b);
 		e->obj->SetPosition(x, t );
-		SetLevel(MARIO_LEVEL_BIG);
-		StartUntouchable();
-		SetState(MARIO_STATE_SMALL_TO_BIG);
-		point += SCORE_POINT_1000;
+		CMushroom* mushroom = (CMushroom*)e->obj;
+		if (mushroom->GetMushroomType() == MUSHROOM_TYPE_SUPER) {
+			SetLevel(MARIO_LEVEL_BIG);
+			StartUntouchable();
+			SetState(MARIO_STATE_SMALL_TO_BIG);
+			ScoringPointWithoutCombo(SCORE_POINT_1000);
+		}
+		else {
+			DebugOut(L">>>>>>>>> Add 1 life to player <<<<<<<<");
+		}
 	}
 }
 
@@ -150,13 +157,13 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			{
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
 				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
-				Scoring();
+				ScoringWithCombo();
 				break;
 			}
 			case KOOPA_STATE_NORMAL: {
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
 				koopa->SetState(KOOPA_STATE_SHELL_STAY_STILL);
-				Scoring();
+				ScoringWithCombo();
 				break;
 			}
 			case KOOPA_STATE_RETURNING_TO_NORMAL:
@@ -165,7 +172,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				bool isPlayerLeft = (vx > 0) ? false : true;
 				koopa->SetIsPlayerLeft(isPlayerLeft);
 				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
-				Scoring();
+				ScoringWithCombo();
 				break;
 			}
 		}
@@ -203,7 +210,7 @@ void CMario::OnCollisionWithParaGoomba(LPCOLLISIONEVENT e)
 			case PARA_GOOMBA_STATE_WALK:
 			case PARA_GOOMBA_STATE_FLY_UP:
 				paraGoomba->SetState(PARA_GOOMBA_STATE_LOST_WING);
-				Scoring();
+				ScoringWithCombo();
 				break;
 			}
 
@@ -225,19 +232,19 @@ void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
 		{
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 			koopa->SetState(PARA_KOOPA_STATE_SHELL_STAY_STILL);
-			Scoring();
+			ScoringWithCombo();
 			break;
 		}
 		case PARA_KOOPA_STATE_NORMAL_WITHOUT_WING: {
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 			koopa->SetState(PARA_KOOPA_STATE_SHELL_STAY_STILL);
-			Scoring();
+			ScoringWithCombo();
 			break;
 		}
 		case PARA_KOOPA_STATE_NORMAL_WITH_WING: {
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 			koopa->SetState(PARA_KOOPA_STATE_NORMAL_WITHOUT_WING);
-			Scoring();
+			ScoringWithCombo();
 			break;
 		}
 		case PARA_KOOPA_STATE_RETURNING_TO_NORMAL:
@@ -246,7 +253,7 @@ void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
 			bool isPlayerLeft = (vx > 0) ? false : true;
 			koopa->SetIsPlayerLeft(isPlayerLeft);
 			koopa->SetState(PARA_KOOPA_STATE_SHELL_MOVING);
-			Scoring();
+			ScoringWithCombo();
 			break;
 		}
 		}
@@ -359,7 +366,7 @@ void CMario::GetHit()
 	}
 }
 
-void CMario::Scoring()
+void CMario::ScoringWithCombo()
 {
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	comboCount++;
@@ -575,6 +582,20 @@ void CMario::SetState(int state)
 	}
 
 	CGameObject::SetState(state);
+}
+
+void CMario::ScoringPointWithoutCombo(int point)
+{
+	int scoreTextId = SCORE_TEXT_100;
+	switch (point) {
+	case SCORE_POINT_100: scoreTextId = SCORE_TEXT_100; break;
+	case SCORE_POINT_1000: scoreTextId = SCORE_TEXT_1000; break;
+	case SCORE_POINT_200: scoreTextId = SCORE_TEXT_200; break;
+	case SCORE_POINT_400: scoreTextId = SCORE_TEXT_400; break;
+	}
+	point += point;
+	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	scene->AddObjects(new CScoreText(x, y, scoreTextId, OBJECT_TYPE_SCORE_TEXT));
 }
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
