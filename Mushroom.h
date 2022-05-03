@@ -17,19 +17,22 @@
 #define MUSHROOM_TEXT_GO_UP_SPEED 0.2f
 #define MUSHROOM_SPEED_REDUCTION 0.85f
 #define MUSHROOM_EPSILON (1e-3)
+#define MUSHROOM_GO_UP_DISTANCE 15
+#define MUSHROOM_GO_UP_SPEED 0.01f
 
 #define MUSHROOM_DIRECTION_LEFT -1
 #define MUSHROOM_DIRECTION_RIGHT 1
 
 #define MUSHROOM_TYPE_SUPER 0
 #define MUSHROOM_TYPE_1_UP 1
+
 class CMushroom :
     public CGameObject
 {
 private:
 	float ay;
 	int type;
-
+	float initY;
 protected:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

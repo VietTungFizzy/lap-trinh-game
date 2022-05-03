@@ -7,6 +7,7 @@
 #include "PlayScene.h"
 #include "AssetIDs.h"
 #include "ScoreText.h"
+#include "SuperLeaf.h"
 
 CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, int spriteId): CBrick(x, y, spriteId, type)
 {
@@ -16,7 +17,6 @@ CRewardingBrick::CRewardingBrick(float x, float y, int rewarding, int type, int 
 	this->xEffect = x;
 	this->yEffect = y;
 	this->vyEffect = 0.0f;
-	this->reward = NULL;
 	this->rewardDirection = MUSHROOM_DIRECTION_LEFT;
 }
 void CRewardingBrick::Render()
@@ -52,10 +52,9 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					SetState(REWARDING_BRICK_COIN_GO_UP_STATE);
 				}
 				else if (rewarding == REWARDING_SUPER_ITEM) {
-					initY = temp;
-					yEffect = temp;
 					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 					CMario* player = (CMario*)scence->GetPlayer();
+					CGameObject* reward;
 					if (player->GetLevel() == MARIO_LEVEL_SMALL) {
 						float px, py;
 						player->GetPosition(px, py);
@@ -65,16 +64,15 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						reward->SetState(MUSHROOM_STATE_INACTIVE);
 					}
 					else if (player->GetLevel() == MARIO_LEVEL_BIG) {
-						reward = new CMushroom(x, y, rewardDirection, MUSHROOM_TYPE_SUPER, OBJECT_TYPE_MUSHROOM);
+						reward = new CSuperLeaf(x, y, OBJECT_TYPE_SUPER_LEAF);
 						scence->AddObjects(reward, true);
-						reward->SetState(MUSHROOM_STATE_INACTIVE);
+						reward->SetState(SUPER_LEAF_STATE_GO_UP);
 					}
 					
-					SetState(REWARDING_BRICK_REWARD_GO_UP_STATE);
+					SetState(REWARDING_BRICK_FINISHED_STATE);
 				}
 				else if (rewarding == REWARDING_1_UP_MUSHROOM) {
-					initY = temp;
-					yEffect = temp;
+					CGameObject* reward;
 					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 					CMario* player = (CMario*)scence->GetPlayer();
 					float px, py;
@@ -83,7 +81,7 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					reward = new CMushroom(x, y, rewardDirection, MUSHROOM_TYPE_1_UP, OBJECT_TYPE_MUSHROOM);
 					scence->AddObjects(reward, true);
 					reward->SetState(MUSHROOM_STATE_INACTIVE);
-					SetState(REWARDING_BRICK_REWARD_GO_UP_STATE);
+					SetState(REWARDING_BRICK_FINISHED_STATE);
 				}
 			}
 			break;
@@ -110,17 +108,6 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			scene->AddObjects(new CScoreText(xEffect, yEffect, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
 			SetState(REWARDING_BRICK_FINISHED_STATE);
 			break;
-		}
-		case REWARDING_BRICK_REWARD_GO_UP_STATE:
-		{
-			yEffect += vyEffect * dt;
-			reward->SetPosition(xEffect, yEffect);
-			if (reward->GetType() == OBJECT_TYPE_MUSHROOM) {
-				if (abs(initY - yEffect) > REWARDING_BRICK_MUSHROOM_GO_UP_DISTANCE) {
-					reward->SetState(MUSHROOM_STATE_ACTIVE);
-					SetState(REWARDING_BRICK_FINISHED_STATE);
-				}
-			}
 		}
 		default: break;
 	}
@@ -150,11 +137,6 @@ void CRewardingBrick::SetState(int state)
 		case REWARDING_BRICK_COIN_GO_DOWN_STATE:
 		{
 			vyEffect = REWARDING_BRICK_COIN_SPEED;
-			break;
-		}
-		case REWARDING_BRICK_REWARD_GO_UP_STATE:
-		{
-			if(reward->GetType() == OBJECT_TYPE_MUSHROOM) vyEffect = -REWARDING_BRICK_MUSHROOM_GO_UP_SPEED;
 			break;
 		}
 		default: break;

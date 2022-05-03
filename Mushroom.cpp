@@ -15,10 +15,20 @@ void CMushroom::GetBoundingBox(float& l, float& t, float& r, float& b)
 
 void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == MUSHROOM_STATE_ACTIVE) {
-		vy += ay * dt;
-		CGameObject::Update(dt, coObjects);
-		CCollision::GetInstance()->Process(this, dt, coObjects);
+	switch (state) {
+		case MUSHROOM_STATE_INACTIVE:
+		{
+			y += vy * dt;
+			if (abs(y - initY) > MUSHROOM_GO_UP_DISTANCE) SetState(MUSHROOM_STATE_ACTIVE);
+			break;
+		}
+		case MUSHROOM_STATE_ACTIVE:
+		{
+			vy += ay * dt;
+			CGameObject::Update(dt, coObjects);
+			CCollision::GetInstance()->Process(this, dt, coObjects);
+			break;
+		}
 	}
 }
 
@@ -58,12 +68,21 @@ CMushroom::CMushroom(float x, float y, int dir, int mushroomType, int objectType
 	ay = MUSHROOM_GRAVITY;
 	vx = dir * MUSHROOM_SPEED;
 	type = mushroomType;
+	initY = y;
 }
 
 void CMushroom::SetState(int state)
 {
-	if (state == MUSHROOM_STATE_EATEN) {
+	switch (state) {
+	case MUSHROOM_STATE_EATEN:
 		Delete();
+		break;
+	case MUSHROOM_STATE_INACTIVE:
+		vy = -MUSHROOM_GO_UP_SPEED;
+		break;
+	case MUSHROOM_STATE_ACTIVE:
+		vy = 0;
+		break;
 	}
 	CGameObject::SetState(state);
 }

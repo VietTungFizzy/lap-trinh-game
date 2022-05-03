@@ -14,7 +14,7 @@
 
 #define SUPER_LEAF_GO_UP_SPEED 0.05f
 
-#define SUPER_LEAF_BEZIER_CURVE_COEFFICIENT 500
+#define SUPER_LEAF_BEZIER_CURVE_COEFFICIENT 500.0f
 class CSuperLeaf :
     public CGameObject
 {
@@ -24,6 +24,8 @@ private:
 	float x0, y0;
 	float x1, y1;
 	float x2, y2;
+	
+	float initY;
 
 private:
 	void calculateBezierPoint(float& x, float& y, float t);
@@ -32,7 +34,6 @@ protected:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();
 public:
-	CSuperLeaf(float _x, float _y, int type);
 	CSuperLeaf(float _x, float _y, int type);
 	void SetState(int state);
 };

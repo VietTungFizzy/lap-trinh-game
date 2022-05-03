@@ -195,7 +195,7 @@ void CCollision::Filter( LPGAMEOBJECT objSrc,
 		if (c->obj->IsDeleted()) continue; 
 
 		// ignore collision event with object having IsBlocking = 0 (like coin, mushroom, etc)
-		if (filterBlock == 1 && !c->obj->IsBlocking()) continue;
+		if (filterBlock == 1 && c->obj->IsBlocking() == 0) continue;
 		if (c->obj->GetType() == OBJECT_TYPE_PLATFORM_TOP_ONLY) {
 			if(c->ny > 0 || c->nx != 0) continue;
 		}
@@ -224,7 +224,7 @@ void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* co
 
 	coEvents.clear();
 
-	if (objSrc->IsCollidable())
+	if (objSrc->IsCollidable() == 1)
 	{
 		Scan(objSrc, dt, coObjects, coEvents);
 	}

@@ -127,7 +127,7 @@
       <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="SuperLeaf.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,7 +222,7 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="SuperLeaf.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
