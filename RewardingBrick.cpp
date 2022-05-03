@@ -65,8 +65,8 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 					else if (player->GetLevel() == MARIO_LEVEL_BIG) {
 						reward = new CSuperLeaf(x, y, OBJECT_TYPE_SUPER_LEAF);
-						scence->AddObjects(reward, true);
-						reward->SetState(SUPER_LEAF_STATE_GO_UP);
+						scence->AddObjects(reward, false);
+						reward->SetState(SUPER_LEAF_STATE_GO_UP_INVISIBLE);
 					}
 					
 					SetState(REWARDING_BRICK_FINISHED_STATE);

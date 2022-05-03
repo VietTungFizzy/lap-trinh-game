@@ -11,24 +11,23 @@
 #define SUPER_LEAF_STATE_SWING_RIGHT 2
 #define SUPER_LEAF_STATE_SWING_LEFT 3
 #define SUPER_LEAF_STATE_EATEN 4
+#define SUPER_LEAF_STATE_GO_UP_INVISIBLE 5
 
-#define SUPER_LEAF_GO_UP_SPEED 0.05f
-
-#define SUPER_LEAF_BEZIER_CURVE_COEFFICIENT 500.0f
+#define SUPER_LEAF_GO_UP_BEFORE_SWING_SPEED 0.1f
+#define SUPER_LEAF_GO_UP_BEFORE_SWING_DISTANCE 40
+#define SUPER_LEAF_INVISIBLE_DISTANCE 12
+#define SUPER_LEAF_GRAVITY 0.04f
+#define SUPER_LEAF_GO_HORIZONTAL_SPEED 0.05f
+#define SUPER_LEAF_HORIZONTAL_RANGE 32
+#define SUPER_LEAF_GO_UP_SPEED 0.015f
 class CSuperLeaf :
     public CGameObject
 {
 private:
-	int counter;
-	bool isSwingClockwise;
-	float x0, y0;
-	float x1, y1;
-	float x2, y2;
-	
-	float initY;
+	float initY, initX;
+	float boundaryRight, boundaryLeft;
+	bool isHalfWay;
 
-private:
-	void calculateBezierPoint(float& x, float& y, float t);
 protected:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
