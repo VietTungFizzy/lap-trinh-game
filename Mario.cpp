@@ -21,15 +21,12 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if (state == MARIO_STATE_BIG_TO_RACCOON || state == MARIO_STATE_RACCOON_TO_BIG) {
-		if (GetTickCount64() - transition_timer > MARIO_TRANSFORM_BIG_AND_RACCOON) {
-			transition_timer = 0;
-			SetState(MARIO_STATE_IDLE);
-		}
-		else return;
-	}
-	if (state == MARIO_STATE_BIG_TO_SMALL || state == MARIO_STATE_SMALL_TO_BIG) {
-		if (GetTickCount64() - transition_timer > MARIO_TRANSFORM_SMALL_AND_BIG) {
+	// Transition logic
+	if (state == MARIO_STATE_BIG_TO_RACCOON || 
+		state == MARIO_STATE_RACCOON_TO_BIG ||
+		state == MARIO_STATE_BIG_TO_SMALL || 
+		state == MARIO_STATE_SMALL_TO_BIG) {
+		if (GetTickCount64() - transition_timer > GetTransitionTime()) {
 			transition_timer = 0;
 			SetState(MARIO_STATE_IDLE);
 		}
@@ -486,6 +483,13 @@ void CMario::ScoringWithCombo()
 	}
 }
 
+ULONGLONG CMario::GetTransitionTime()
+{
+	if (state == MARIO_STATE_BIG_TO_SMALL || state == MARIO_STATE_SMALL_TO_BIG) return MARIO_TRANSFORM_SMALL_AND_BIG_TIME;
+	if (state == MARIO_STATE_BIG_TO_RACCOON || state == MARIO_STATE_RACCOON_TO_BIG) return MARIO_TRANSFORM_BIG_AND_RACCOON_TIME;
+	return 0;
+}
+
 //
 // Get animdation ID for big Mario
 //
@@ -605,12 +609,12 @@ void CMario::SetState(int state)
 
 	if (this->state == MARIO_STATE_BIG_TO_SMALL ||
 		this->state == MARIO_STATE_SMALL_TO_BIG) {
-		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_SMALL_AND_BIG) return;
+		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_SMALL_AND_BIG_TIME) return;
 	}
 
 	if (this->state == MARIO_STATE_BIG_TO_RACCOON ||
 		this->state == MARIO_STATE_RACCOON_TO_BIG) {
-		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_BIG_AND_RACCOON) return;
+		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_BIG_AND_RACCOON_TIME) return;
 	}
 
 	switch (state)

@@ -144,8 +144,8 @@
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
 #define MARIO_UNTOUCHABLE_TIME 1000
-#define MARIO_TRANSFORM_BIG_AND_RACCOON 400
-#define MARIO_TRANSFORM_SMALL_AND_BIG 600
+#define MARIO_TRANSFORM_BIG_AND_RACCOON_TIME 400
+#define MARIO_TRANSFORM_SMALL_AND_BIG_TIME 600
 #define MINIMUM_ACCEL_VALUE 1e-4
 
 #define NO_COMBO 0
@@ -202,6 +202,7 @@ private:
 	void GetHit();
 	void ScoringWithCombo();
 	void ResetUntouchable() { untouchable = 0; untouchable_start = 0; }
+	ULONGLONG GetTransitionTime();
 public:
 	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
 	{
