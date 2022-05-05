@@ -18,3 +18,24 @@ height	240
 20	textures\misc.png
 21	textures\stage_title.png
 22	textures\misc_1.png
+
+# META NOTE
+# SPRITE ID RANGE
+# >= 11000 ==> mario
+# >= 20000 ==> brick
+# >= 21000 ==> effect
+# >= 22000 ==> pipe
+# >= 31000 ==> enemy
+# >= 33500 ==> bullet
+# >= 40000 ==> coin
+# >= 51000 ==> platform
+# >= 60000 ==> decorated
+# >= 61000 ==> score text
+# >= 62000 ==> mushroom
+# >= 63000 ==> super leaf
+# ANIMATION ID RANGE
+# >= 400 ==> mario
+# >= 3000 ==> effect
+# >= 5000 ==> enemy
+# >= 5500 ==> bullet
+# >= 11000 ==> coin

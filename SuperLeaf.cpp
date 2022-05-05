@@ -55,6 +55,8 @@ void CSuperLeaf::Render()
 	else spriteId = SUPER_LEAF_SPRITE_ID_LEFT;
 	CSprites* s = CSprites::GetInstance();
 	s->Get(spriteId)->Draw(x, y);
+
+	RenderBoundingBox();
 }
 
 CSuperLeaf::CSuperLeaf(float x, float y, int type): CGameObject(x, y, type)

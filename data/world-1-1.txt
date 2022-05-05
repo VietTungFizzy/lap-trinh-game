@@ -15,6 +15,7 @@ data/mushroom.txt
 data/enemy.txt
 data/bullet.txt
 data/super_leaf.txt
+data/effect.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

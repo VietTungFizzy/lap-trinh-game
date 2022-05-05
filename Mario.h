@@ -39,7 +39,7 @@
 
 #define MARIO_STATE_SMALL_TO_BIG	700
 #define MARIO_STATE_BIG_TO_SMALL	701
-
+#define MARIO_STATE_BIG_TO_RACCOON	702
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -92,6 +92,36 @@
 
 #define ID_ANI_MARIO_SMALL_TO_BIG_RIGHT 1700
 #define ID_ANI_MARIO_SMALL_TO_BIG_LEFT 1701
+
+#define ID_ANI_MARIO_BIG_TO_RACCOON 3000
+
+// RACCOON
+#define ID_ANI_MARIO_RACCOON_IDLE_LEFT 1800
+#define ID_ANI_MARIO_RACCOON_IDLE_RIGHT 1802
+
+#define ID_ANI_MARIO_RACCOON_WALK_LEFT 1801
+#define ID_ANI_MARIO_RACCOON_WALK_RIGHT 1803
+
+#define ID_ANI_MARIO_RACCOON_JUMP_LEFT 1804
+#define ID_ANI_MARIO_RACCOON_JUMP_RIGHT 1805
+
+#define ID_ANI_MARIO_RACCOON_BRACE_LEFT 1806
+#define ID_ANI_MARIO_RACCOON_BRACE_RIGHT 1807
+
+#define	ID_ANI_MARIO_RACCOON_SIT_LEFT	1808
+#define	ID_ANI_MARIO_RACCOON_SIT_RIGHT	1809
+
+#define ID_ANI_MARIO_RACCOON_FLY_LEFT	1810
+#define ID_ANI_MARIO_RACCOON_FLY_RIGHT	1811
+
+#define ID_ANI_MARIO_RACCOON_RUN_NO_POWER_LEFT 1812
+#define ID_ANI_MARIO_RACCOON_RUN_NO_POWER_RIGHT 1813
+
+#define ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_LEFT 1814
+#define ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_RIGHT 1815
+
+#define ID_ANI_MARIO_RACCOON_TURNING_FROM_LEFT_TO_RIGHT 1816
+#define ID_ANI_MARIO_RACCOON_TURNING_FROM_RIGHT_TO_LEFT 1817
 #pragma endregion
 
 
@@ -113,12 +143,15 @@
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
 #define MARIO_UNTOUCHABLE_TIME 1000
+#define MARIO_TRANSFORM_TO_RACCOON_TIME 400
 #define MINIMUM_ACCEL_VALUE 1e-4
 
 #define NO_COMBO 0
 #define COMBO_100 1
 #define COMBO_200 2
 #define COMBO_400 3
+
+#define MARIO_MAX_POWER 50
 #pragma endregion
 
 #pragma region LEVEL
@@ -130,7 +163,9 @@
 #pragma endregion
 class CMario : public CGameObject
 {
+private:
 	BOOLEAN isSitting;
+	BOOLEAN isMaxPower;
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -143,6 +178,9 @@ class CMario : public CGameObject
 	int point; 
 	int coin;
 	int comboCount;
+	int powerCount;
+
+private:
 	// Handling collision logic
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -152,13 +190,15 @@ class CMario : public CGameObject
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithParaGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithParaKoopa(LPCOLLISIONEVENT e);
+	void OnCollisionWithSuperLeaf(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
-private:
+	int GetAniIdRaccoon();
+
 	void GetHit();
 	void ScoringWithCombo();
-
+	void ResetUntouchable() { untouchable = 0; untouchable_start = 0; }
 public:
 	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
 	{
@@ -173,6 +213,9 @@ public:
 		isOnPlatform = false;
 		point = 0;
 		bottomBoundary = b;
+
+		powerCount = 0;
+		isMaxPower = false;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();

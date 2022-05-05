@@ -219,6 +219,7 @@
     <Text Include="data\bullet.txt" />
     <Text Include="data\coin.txt" />
     <Text Include="data\decorated.txt" />
+    <Text Include="data\effect.txt" />
     <Text Include="data\enemy.txt" />
     <Text Include="data\mario.txt" />
     <Text Include="data\mushroom.txt" />

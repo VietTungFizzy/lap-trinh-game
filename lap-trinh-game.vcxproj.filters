@@ -265,5 +265,8 @@
     <Text Include="data\super_leaf.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="data\effect.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

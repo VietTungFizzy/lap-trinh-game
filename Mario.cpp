@@ -21,8 +21,17 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (state == MARIO_STATE_BIG_TO_RACCOON) {
+		if (GetTickCount64() - untouchable_start > MARIO_TRANSFORM_TO_RACCOON_TIME) {
+			ResetUntouchable();
+			state = MARIO_STATE_IDLE; // CANNOT change state via SetState function
+		}
+		else return;
+	}
+
 	vy += ay * dt;
 	vx += ax * dt;
+
 	if (abs(vx) > abs(maxVx)) {
 		// Add momentum effect when mario change from walking to idle
 		if (state == MARIO_STATE_IDLE) {
@@ -35,19 +44,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			vx = maxVx;
 		}
 	}
+
 	if (y > bottomBoundary) {
 		SetState(MARIO_STATE_DIE);
 	}
+	
 	// reset untouchable timer if untouchable time has passed
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
-		untouchable_start = 0;
-		untouchable = 0;
+		ResetUntouchable();
 
-		if (this->state == MARIO_STATE_BIG_TO_SMALL || this->state == MARIO_STATE_SMALL_TO_BIG) {
+		if (state == MARIO_STATE_BIG_TO_SMALL || state == MARIO_STATE_SMALL_TO_BIG) {
 			state = MARIO_STATE_IDLE;
 		}
 	}
+
+	// Handling power logic
+	if (abs(vx) != MARIO_RUNNING_SPEED) powerCount--;
+	else powerCount++;
+	if (powerCount < 0) powerCount = 0;
+	if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
+	isMaxPower = (powerCount >= MARIO_MAX_POWER);
+
+
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -85,6 +104,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_KOOPA: OnCollisionWithKoopa(e); break;
 	case OBJECT_TYPE_PARA_GOOMBA: OnCollisionWithParaGoomba(e); break;
 	case OBJECT_TYPE_PARA_KOOPA: OnCollisionWithParaKoopa(e); break;
+	case OBJECT_TYPE_SUPER_LEAF: OnCollisionWithSuperLeaf(e); break;
 	}
 }
 
@@ -279,6 +299,13 @@ void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
 	}
 }
 
+void CMario::OnCollisionWithSuperLeaf(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+	SetState(MARIO_STATE_BIG_TO_RACCOON);
+	SetLevel(MARIO_LEVEL_RACCOON);
+}
+
 //
 // Get animation ID for small Mario
 //
@@ -345,6 +372,62 @@ int CMario::GetAniIdSmall()
 			}
 
 	if (aniId == -1) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
+
+	return aniId;
+}
+
+int CMario::GetAniIdRaccoon()
+{
+	int aniId = ID_ANI_MARIO_RACCOON_IDLE_LEFT;
+	if (!isOnPlatform) {
+		aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_JUMP_RIGHT : ID_ANI_MARIO_RACCOON_JUMP_LEFT;
+	}
+	else {
+		if (isSitting) {
+			aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_SIT_RIGHT : ID_ANI_MARIO_RACCOON_SIT_LEFT;
+		}
+		else {
+			if (vx == 0) {
+				if (state == MARIO_STATE_IDLE) {
+					aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_IDLE_RIGHT : ID_ANI_MARIO_RACCOON_IDLE_LEFT;
+				}
+				else {
+					if (nx > 0) {
+						aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RACCOON_RUN_NO_POWER_RIGHT : ID_ANI_MARIO_RACCOON_WALK_RIGHT;
+					}
+					else {
+						aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RACCOON_RUN_NO_POWER_LEFT : ID_ANI_MARIO_RACCOON_WALK_LEFT;
+					}
+				}
+			}
+			else if (vx > 0) {
+				if (ax < 0) {
+					aniId = ID_ANI_MARIO_RACCOON_BRACE_RIGHT;
+				}
+				else {
+					if (ax == MARIO_ACCEL_RUN_X) {
+						aniId = (isMaxPower) ? ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_RIGHT : ID_ANI_MARIO_RACCOON_RUN_NO_POWER_RIGHT;
+					}
+					else {
+						aniId = ID_ANI_MARIO_RACCOON_WALK_RIGHT;
+					}
+				}
+			}
+			else { // vx < 0
+				if (ax > 0) {
+					aniId = ID_ANI_MARIO_RACCOON_BRACE_LEFT;
+				}
+				else {
+					if (ax == -MARIO_ACCEL_RUN_X) {
+						aniId = (isMaxPower) ? ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_LEFT : ID_ANI_MARIO_RACCOON_RUN_NO_POWER_LEFT;
+					}
+					else {
+						aniId = ID_ANI_MARIO_RACCOON_WALK_LEFT;
+					}
+				}
+			}
+		}
+	}
 
 	return aniId;
 }
@@ -481,12 +564,19 @@ void CMario::Render()
 			aniId = (nx > 0) ? ID_ANI_MARIO_BIG_TO_SMALL_RIGHT : ID_ANI_MARIO_BIG_TO_SMALL_LEFT;
 			break;
 		}
+		case MARIO_STATE_BIG_TO_RACCOON:
+		{
+			aniId = ID_ANI_MARIO_BIG_TO_RACCOON;
+			break;
+		}
 		default:
 		{
 			if (level == MARIO_LEVEL_BIG)
 				aniId = GetAniIdBig();
 			else if (level == MARIO_LEVEL_SMALL)
 				aniId = GetAniIdSmall();
+			else // level == MARIO_LEVEL_RACCOON
+				aniId = GetAniIdRaccoon();
 			break;
 		}
 	}
@@ -499,9 +589,17 @@ void CMario::Render()
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE ||
-		this->state == MARIO_STATE_BIG_TO_SMALL ||
-		this->state == MARIO_STATE_SMALL_TO_BIG) return;
+	if (this->state == MARIO_STATE_DIE) return;
+
+	if (this->state == MARIO_STATE_BIG_TO_SMALL ||
+		this->state == MARIO_STATE_SMALL_TO_BIG) {
+		if (GetTickCount64() - untouchable_start <= MARIO_UNTOUCHABLE_TIME) return;
+	}
+
+	if (this->state == MARIO_STATE_BIG_TO_RACCOON) {
+		if (GetTickCount64() - untouchable_start <= MARIO_TRANSFORM_TO_RACCOON_TIME) return;
+	}
+
 	switch (state)
 	{
 	case MARIO_STATE_RUNNING_RIGHT:
@@ -573,11 +671,15 @@ void CMario::SetState(int state)
 		vx = 0;
 		ax = 0;
 		break;
-
 	case MARIO_STATE_BIG_TO_SMALL:
 	case MARIO_STATE_SMALL_TO_BIG:
 		ax = 0;
 		vx = 0;
+		break;
+	case MARIO_STATE_BIG_TO_RACCOON:
+		ax = 0;
+		vx = 0;
+		StartUntouchable();
 		break;
 	}
 
@@ -600,7 +702,7 @@ void CMario::ScoringPointWithoutCombo(int point)
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (level==MARIO_LEVEL_BIG)
+	if (level==MARIO_LEVEL_BIG || level == MARIO_LEVEL_RACCOON)
 	{
 		if (isSitting)
 		{
