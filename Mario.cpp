@@ -21,10 +21,17 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if (state == MARIO_STATE_BIG_TO_RACCOON) {
-		if (GetTickCount64() - untouchable_start > MARIO_TRANSFORM_TO_RACCOON_TIME) {
-			ResetUntouchable();
-			state = MARIO_STATE_IDLE; // CANNOT change state via SetState function
+	if (state == MARIO_STATE_BIG_TO_RACCOON || state == MARIO_STATE_RACCOON_TO_BIG) {
+		if (GetTickCount64() - transition_timer > MARIO_TRANSFORM_BIG_AND_RACCOON) {
+			transition_timer = 0;
+			SetState(MARIO_STATE_IDLE);
+		}
+		else return;
+	}
+	if (state == MARIO_STATE_BIG_TO_SMALL || state == MARIO_STATE_SMALL_TO_BIG) {
+		if (GetTickCount64() - transition_timer > MARIO_TRANSFORM_SMALL_AND_BIG) {
+			transition_timer = 0;
+			SetState(MARIO_STATE_IDLE);
 		}
 		else return;
 	}
@@ -53,10 +60,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
 		ResetUntouchable();
-
-		if (state == MARIO_STATE_BIG_TO_SMALL || state == MARIO_STATE_SMALL_TO_BIG) {
-			state = MARIO_STATE_IDLE;
-		}
 	}
 
 	// Handling power logic
@@ -438,7 +441,15 @@ void CMario::GetHit()
 	{
 		if (level > MARIO_LEVEL_SMALL)
 		{
-			level = MARIO_LEVEL_SMALL;
+			if (level == MARIO_LEVEL_RACCOON) {
+				SetLevel(MARIO_LEVEL_BIG);
+				SetState(MARIO_STATE_RACCOON_TO_BIG);
+			}
+			else {
+				SetLevel(MARIO_LEVEL_SMALL);
+				SetState(MARIO_STATE_BIG_TO_SMALL);
+			}
+			
 			StartUntouchable();
 		}
 		else
@@ -564,9 +575,10 @@ void CMario::Render()
 			aniId = (nx > 0) ? ID_ANI_MARIO_BIG_TO_SMALL_RIGHT : ID_ANI_MARIO_BIG_TO_SMALL_LEFT;
 			break;
 		}
+		case MARIO_STATE_RACCOON_TO_BIG:
 		case MARIO_STATE_BIG_TO_RACCOON:
 		{
-			aniId = ID_ANI_MARIO_BIG_TO_RACCOON;
+			aniId = ID_ANI_MARIO_BIG_RACCOON_TRANSITION;
 			break;
 		}
 		default:
@@ -593,11 +605,12 @@ void CMario::SetState(int state)
 
 	if (this->state == MARIO_STATE_BIG_TO_SMALL ||
 		this->state == MARIO_STATE_SMALL_TO_BIG) {
-		if (GetTickCount64() - untouchable_start <= MARIO_UNTOUCHABLE_TIME) return;
+		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_SMALL_AND_BIG) return;
 	}
 
-	if (this->state == MARIO_STATE_BIG_TO_RACCOON) {
-		if (GetTickCount64() - untouchable_start <= MARIO_TRANSFORM_TO_RACCOON_TIME) return;
+	if (this->state == MARIO_STATE_BIG_TO_RACCOON ||
+		this->state == MARIO_STATE_RACCOON_TO_BIG) {
+		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_BIG_AND_RACCOON) return;
 	}
 
 	switch (state)
@@ -673,13 +686,11 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_BIG_TO_SMALL:
 	case MARIO_STATE_SMALL_TO_BIG:
-		ax = 0;
-		vx = 0;
-		break;
 	case MARIO_STATE_BIG_TO_RACCOON:
+	case MARIO_STATE_RACCOON_TO_BIG:
 		ax = 0;
 		vx = 0;
-		StartUntouchable();
+		transition_timer = GetTickCount64();
 		break;
 	}
 
@@ -731,7 +742,8 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 void CMario::SetLevel(int l)
 {
 	// Adjust position to avoid falling off platform
-	if (this->level == MARIO_LEVEL_SMALL)
+	if (this->level == MARIO_LEVEL_SMALL ||
+		(this->level == MARIO_LEVEL_BIG && l == MARIO_LEVEL_SMALL))
 	{
 		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
 	}

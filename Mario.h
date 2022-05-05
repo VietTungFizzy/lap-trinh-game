@@ -40,6 +40,7 @@
 #define MARIO_STATE_SMALL_TO_BIG	700
 #define MARIO_STATE_BIG_TO_SMALL	701
 #define MARIO_STATE_BIG_TO_RACCOON	702
+#define MARIO_STATE_RACCOON_TO_BIG	703
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -93,7 +94,7 @@
 #define ID_ANI_MARIO_SMALL_TO_BIG_RIGHT 1700
 #define ID_ANI_MARIO_SMALL_TO_BIG_LEFT 1701
 
-#define ID_ANI_MARIO_BIG_TO_RACCOON 3000
+#define ID_ANI_MARIO_BIG_RACCOON_TRANSITION 3000
 
 // RACCOON
 #define ID_ANI_MARIO_RACCOON_IDLE_LEFT 1800
@@ -143,7 +144,8 @@
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
 
 #define MARIO_UNTOUCHABLE_TIME 1000
-#define MARIO_TRANSFORM_TO_RACCOON_TIME 400
+#define MARIO_TRANSFORM_BIG_AND_RACCOON 400
+#define MARIO_TRANSFORM_SMALL_AND_BIG 600
 #define MINIMUM_ACCEL_VALUE 1e-4
 
 #define NO_COMBO 0
@@ -174,6 +176,7 @@ private:
 	int level; 
 	int untouchable; 
 	ULONGLONG untouchable_start;
+	ULONGLONG transition_timer;
 	BOOLEAN isOnPlatform;
 	int point; 
 	int coin;
@@ -216,6 +219,8 @@ public:
 
 		powerCount = 0;
 		isMaxPower = false;
+
+		transition_timer = 0;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
