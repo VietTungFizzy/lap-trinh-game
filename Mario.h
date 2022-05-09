@@ -19,6 +19,10 @@
 
 #define MARIO_JUMP_DEFLECT_SPEED  0.3f
 #define MARIO_SLOW_DOWN_COEFFICIENT 5
+
+#define MARIO_FLY_UP_SPEED 0.2f
+#define MARIO_FLY_LEFT_SPEED 0.1f
+#define MARIO_FLY_RIGHT_SPEED 0.1f
 #pragma endregion
 
 #pragma region STATE
@@ -41,6 +45,10 @@
 #define MARIO_STATE_BIG_TO_SMALL	701
 #define MARIO_STATE_BIG_TO_RACCOON	702
 #define MARIO_STATE_RACCOON_TO_BIG	703
+
+#define MARIO_STATE_FLY_UP 800
+
+#define MARIO_STATE_SLOW_FALLING 900
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -123,6 +131,9 @@
 
 #define ID_ANI_MARIO_RACCOON_TURNING_FROM_LEFT_TO_RIGHT 1816
 #define ID_ANI_MARIO_RACCOON_TURNING_FROM_RIGHT_TO_LEFT 1817
+
+#define ID_ANI_MARIO_RACCOON_SLOW_FALLING_RIGHT	1818
+#define ID_ANI_MARIO_RACCOON_SLOW_FALLING_LEFT 1819
 #pragma endregion
 
 
@@ -243,6 +254,9 @@ public:
 	
 	void AddPoint(int point) { this->point += point; }
 	void ScoringPointWithoutCombo(int point);
-
+	
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+	bool isFullPower() { return isMaxPower; }
+	bool isOnTheGround() { return isOnPlatform; }
 };

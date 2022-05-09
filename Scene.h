@@ -28,12 +28,12 @@ public:
 };
 typedef CScene * LPSCENE;
 
-
+#define KEY_DELAY 250
 class CSceneKeyHandler : public CKeyEventHandler
 {
 protected: 
 	CScene * scence; 
-
+	ULONGLONG timer;
 public:
 	virtual void KeyState(BYTE *states) = 0;
 	virtual void OnKeyDown(int KeyCode) = 0;
