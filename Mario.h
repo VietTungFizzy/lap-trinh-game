@@ -46,8 +46,9 @@
 #define MARIO_STATE_RACCOON_TO_BIG	703
 
 #define MARIO_STATE_FLY_UP 800
+#define MARIO_STATE_SLOW_FALLING 801
 
-#define MARIO_STATE_SLOW_FALLING 900
+#define MARIO_STATE_KICKING 900
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -182,6 +183,9 @@ private:
 	BOOLEAN isOnPlatform;
 	BOOLEAN isSlowFalling;
 
+	BOOLEAN isGrabbing;
+	CGameObject* grabbedObj;
+
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -198,6 +202,7 @@ private:
 	int comboCount;
 	int powerCount;
 
+	
 private:
 	// Handling collision logic
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);

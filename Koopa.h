@@ -53,6 +53,8 @@ class CKoopa :
     public CGameObject
 {
 private:
+    BOOLEAN isGrabbed;
+
     ULONGLONG timer;
     float boundaries_left, boundaries_right;
     bool isPlayerLeft, isCauseDamageOn;
@@ -68,6 +70,7 @@ public:
         this->ay = KOOPA_GRAVITY;
         this->isCauseDamageOn = true;
         this->koopaType = koopaType;
+        this->isGrabbed = false;
     }
 
     virtual void SetState(int state);

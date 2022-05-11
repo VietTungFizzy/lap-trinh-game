@@ -55,7 +55,7 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	{
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
-			// TODO: need to find way to detect slow falling
+			// TODO: need to find a better way to detect slow falling
 			if (!mario->getSlowFallingFlag() && !mario->isFullPower()) {
 				mario->SetState(MARIO_STATE_RELEASE_JUMP);
 			}

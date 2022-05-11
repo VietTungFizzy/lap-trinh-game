@@ -72,6 +72,8 @@ void CParaKoopa::GetBoundingBox(float& left, float& top, float& right, float& bo
 
 void CParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isGrabbed) return;
+
 	vy += ay * dt;
 	vx += ax * dt;
 

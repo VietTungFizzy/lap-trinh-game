@@ -50,6 +50,8 @@ class CParaKoopa :
     public CGameObject
 {
 private:
+    BOOLEAN isGrabbed;
+
     float ax, ay;
     bool isCauseDamageOn, isPlayerLeft;
     ULONGLONG timer;
@@ -61,6 +63,7 @@ public:
         this->ay = PARA_KOOPA_GRAVITY;
         SetState(PARA_KOOPA_STATE_NORMAL_WITH_WING);
         this->vx = -PARA_KOOPA_NORMAL_SPEED;
+        this->isGrabbed = false;
     }
 
     virtual void SetState(int state);

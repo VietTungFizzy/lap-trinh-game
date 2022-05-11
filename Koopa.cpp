@@ -6,6 +6,7 @@
 #include "Goomba.h"
 #include "RewardingBrick.h"
 #include "PlayScene.h"
+
 void CKoopa::SetState(int state)
 {
 	boundaries_left = 0;
@@ -42,6 +43,7 @@ void CKoopa::SetState(int state)
 	}
 	CGameObject::SetState(state);
 }
+
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	if (state == KOOPA_STATE_NORMAL) {
@@ -63,6 +65,8 @@ void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (isGrabbed) return;
+
 	vy += ay * dt;
 	vx += ax * dt;
 	switch (state) {
