@@ -21,8 +21,7 @@
 #define MARIO_SLOW_DOWN_COEFFICIENT 5
 
 #define MARIO_FLY_UP_SPEED 0.2f
-#define MARIO_FLY_LEFT_SPEED 0.1f
-#define MARIO_FLY_RIGHT_SPEED 0.1f
+#define MARIO_SLOW_FALLING_SPEED 0.025f
 #pragma endregion
 
 #pragma region STATE
@@ -132,8 +131,8 @@
 #define ID_ANI_MARIO_RACCOON_TURNING_FROM_LEFT_TO_RIGHT 1816
 #define ID_ANI_MARIO_RACCOON_TURNING_FROM_RIGHT_TO_LEFT 1817
 
-#define ID_ANI_MARIO_RACCOON_SLOW_FALLING_RIGHT	1818
-#define ID_ANI_MARIO_RACCOON_SLOW_FALLING_LEFT 1819
+#define ID_ANI_MARIO_RACCOON_SLOW_FALLING_RIGHT	1819
+#define ID_ANI_MARIO_RACCOON_SLOW_FALLING_LEFT 1818
 #pragma endregion
 
 
@@ -157,6 +156,7 @@
 #define MARIO_UNTOUCHABLE_TIME 1000
 #define MARIO_TRANSFORM_BIG_AND_RACCOON_TIME 400
 #define MARIO_TRANSFORM_SMALL_AND_BIG_TIME 600
+#define MARIO_MAX_POWER_DECREASE_TIME 3000
 #define MINIMUM_ACCEL_VALUE 1e-4
 
 #define NO_COMBO 0
@@ -179,6 +179,8 @@ class CMario : public CGameObject
 private:
 	BOOLEAN isSitting;
 	BOOLEAN isMaxPower;
+	BOOLEAN isOnPlatform;
+
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -188,7 +190,8 @@ private:
 	int untouchable; 
 	ULONGLONG untouchable_start;
 	ULONGLONG transition_timer;
-	BOOLEAN isOnPlatform;
+	ULONGLONG countdown_timer; // countdown before max power decrease
+
 	int point; 
 	int coin;
 	int comboCount;
@@ -222,7 +225,7 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY; 
 
-		level = MARIO_LEVEL_BIG;
+		level = MARIO_LEVEL_RACCOON;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
@@ -233,6 +236,7 @@ public:
 		isMaxPower = false;
 
 		transition_timer = 0;
+		countdown_timer = 0;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();

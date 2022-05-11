@@ -18,15 +18,17 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
-			if (mario->isFullPower() && GetTickCount64() - timer <= KEY_DELAY) mario->SetState(MARIO_STATE_FLY_UP);
+			if (mario->isOnTheGround()) {
+				mario->SetState(MARIO_STATE_JUMP);
+			}
 			else {
-				if (mario->isOnTheGround()) {
-					mario->SetState(MARIO_STATE_JUMP);
-				}
-				else {
-					mario->SetState(MARIO_STATE_SLOW_FALLING);
+				bool isPlayerSpammingKey = GetTickCount64() - timer <= KEY_DELAY;
+				if (isPlayerSpammingKey) {
+					if (mario->isFullPower()) mario->SetState(MARIO_STATE_FLY_UP);
+					else mario->SetState(MARIO_STATE_SLOW_FALLING);
 				}
 			}
+			timer = GetTickCount64();
 		}
 		else {
 			mario->SetState(MARIO_STATE_JUMP);
@@ -56,10 +58,10 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	{
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
-			if (GetTickCount64() - timer > KEY_DELAY) {
+			// TODO: need to find way to detect slow falling
+			if (!mario->isFullPower()) {
 				mario->SetState(MARIO_STATE_RELEASE_JUMP);
 			}
-			timer = GetTickCount64();
 		}
 		else {
 			mario->SetState(MARIO_STATE_RELEASE_JUMP);
@@ -92,4 +94,6 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 	else {
 		mario->SetState(MARIO_STATE_IDLE);
 	}
+
+
 }
