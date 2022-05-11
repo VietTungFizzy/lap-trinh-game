@@ -75,7 +75,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	// DebugOutTitle(L"powerCount: %d maxPower: %d", powerCount, isMaxPower);
 	// DebugOutTitle(L"nx: %d", nx);
-	DebugOutTitle(L"[DEBUG] vy: %f\n", vy);
+	// DebugOutTitle(L"[DEBUG] vy: %f\n", vy);
 	if (powerCount < 0) powerCount = 0;
 	if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
 	isMaxPower = (powerCount >= MARIO_MAX_POWER);
@@ -83,7 +83,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		countdown_timer = GetTickCount64();
 	}
 
-
+	isSlowFalling = false;
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -399,7 +399,7 @@ int CMario::GetAniIdRaccoon()
 	if (!isOnPlatform) {
 		if (!isMaxPower) {
 			//if (state == MARIO_STATE_SLOW_FALLING) {
-			if(vy < 0.2f) {
+			if(isSlowFalling) {
 				aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_SLOW_FALLING_RIGHT : ID_ANI_MARIO_RACCOON_SLOW_FALLING_LEFT;
 			}
 			else {
@@ -730,6 +730,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_SLOW_FALLING:
 		vy = MARIO_SLOW_FALLING_SPEED;
+		isSlowFalling = true;
 		break;
 	}
 

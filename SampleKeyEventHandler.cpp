@@ -43,9 +43,6 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_0:
 		mario->SetState(MARIO_STATE_DIE);
 		break;
-	case DIK_R: // reset
-		//Reload();
-		break;
 	}
 }
 
@@ -59,7 +56,7 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
 			// TODO: need to find way to detect slow falling
-			if (!mario->isFullPower()) {
+			if (!mario->getSlowFallingFlag() && !mario->isFullPower()) {
 				mario->SetState(MARIO_STATE_RELEASE_JUMP);
 			}
 		}
@@ -94,6 +91,5 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 	else {
 		mario->SetState(MARIO_STATE_IDLE);
 	}
-
 
 }

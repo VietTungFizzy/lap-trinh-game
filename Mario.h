@@ -180,6 +180,7 @@ private:
 	BOOLEAN isSitting;
 	BOOLEAN isMaxPower;
 	BOOLEAN isOnPlatform;
+	BOOLEAN isSlowFalling;
 
 	float maxVx;
 	float ax;				// acceleration on x 
@@ -234,6 +235,7 @@ public:
 
 		powerCount = 0;
 		isMaxPower = false;
+		isSlowFalling = false;
 
 		transition_timer = 0;
 		countdown_timer = 0;
@@ -263,4 +265,5 @@ public:
 
 	bool isFullPower() { return isMaxPower; }
 	bool isOnTheGround() { return isOnPlatform; }
+	bool getSlowFallingFlag() { return isSlowFalling; }
 };

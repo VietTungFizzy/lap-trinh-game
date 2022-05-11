@@ -28,7 +28,6 @@ public:
 };
 typedef CScene * LPSCENE;
 
-#define KEY_DELAY 250
 class CSceneKeyHandler : public CKeyEventHandler
 {
 protected: 

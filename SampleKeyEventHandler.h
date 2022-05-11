@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Scene.h"
-
+#define KEY_DELAY 250
 class CSampleKeyHandler: public CSceneKeyHandler
 {
 public:
