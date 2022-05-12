@@ -73,9 +73,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 		else powerCount++;
 	}
-	// DebugOutTitle(L"powerCount: %d maxPower: %d", powerCount, isMaxPower);
-	// DebugOutTitle(L"nx: %d", nx);
-	// DebugOutTitle(L"[DEBUG] vy: %f\n", vy);
 	if (powerCount < 0) powerCount = 0;
 	if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
 	isMaxPower = (powerCount >= MARIO_MAX_POWER);
@@ -83,7 +80,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		countdown_timer = GetTickCount64();
 	}
 
-	isSlowFalling = false;
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -456,7 +452,6 @@ int CMario::GetAniIdRaccoon()
 			}
 		}
 	}
-	// DebugOut(L"[DEBUG] aniId: %d\n", aniId);
 	return aniId;
 }
 

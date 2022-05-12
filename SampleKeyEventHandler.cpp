@@ -92,4 +92,5 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_IDLE);
 	}
 
+	if (GetTickCount64() - timer > KEY_DELAY) mario->setSlowFallingFlag(false);
 }

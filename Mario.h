@@ -271,4 +271,5 @@ public:
 	bool isFullPower() { return isMaxPower; }
 	bool isOnTheGround() { return isOnPlatform; }
 	bool getSlowFallingFlag() { return isSlowFalling; }
+	void setSlowFallingFlag(bool flag) { isSlowFalling = flag; }
 };
