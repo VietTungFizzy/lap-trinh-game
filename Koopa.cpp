@@ -102,11 +102,8 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			break;
 		}
 	}
-	if (isGrabbed) {
-		vx = 0;
-		vy = 0;
-	}
-	else {
+	
+	if (!isGrabbed) {
 		CGameObject::Update(dt, coObjects);
 		CCollision::GetInstance()->Process(this, dt, coObjects);
 	}

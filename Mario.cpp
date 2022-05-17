@@ -21,17 +21,6 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	// Transition logic
-	if (state == MARIO_STATE_BIG_TO_RACCOON || 
-		state == MARIO_STATE_RACCOON_TO_BIG ||
-		state == MARIO_STATE_BIG_TO_SMALL || 
-		state == MARIO_STATE_SMALL_TO_BIG) {
-		if (GetTickCount64() - transition_timer > GetTransitionTime()) {
-			transition_timer = 0;
-			SetState(MARIO_STATE_IDLE);
-		}
-		else return;
-	}
 	/*
 	if (!isSlowFalling) {
 		vy += ay * dt;
@@ -111,7 +100,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (level == MARIO_LEVEL_SMALL) {
 				gy -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 4;
 			}
-			DebugOutTitle(L"gx: %f gy: %f", gx, gy);
 			grabbedObj->SetPosition(gx, gy);
 		}
 	}
@@ -255,8 +243,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			case KOOPA_STATE_RETURNING_TO_NORMAL:
 			case KOOPA_STATE_SHELL_STAY_STILL:
 			{
-				bool isPlayerLeft = (e->nx > 0) ? false : true;
-				koopa->SetIsPlayerLeft(isPlayerLeft);
+				koopa->SetIsPlayerLeft((e->nx < 0));
 				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
 				break;
 			}
@@ -268,11 +255,18 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 	else if (e->nx != 0) {
 		if (koopa->GetGrabbedFlag()) return;
-		CGame* game = CGame::GetInstance();
-		if (koopa->GetState() == KOOPA_STATE_SHELL_STAY_STILL && game->IsKeyDown(DIK_A)) {
-			koopa->SetGrabbedFlag(true);
-			isGrabbing = true;
-			grabbedObj = koopa;
+		if (koopa->GetState() == KOOPA_STATE_SHELL_STAY_STILL) {
+			CGame* game = CGame::GetInstance();
+			if (game->IsKeyDown(DIK_A)) {
+				koopa->SetGrabbedFlag(true);
+				isGrabbing = true;
+				grabbedObj = koopa;
+				return;
+			}
+			
+			bool isPlayerLeft = (e->nx > 0) ? false : true;
+			koopa->SetIsPlayerLeft(isPlayerLeft);
+			koopa->SetState(PARA_KOOPA_STATE_SHELL_MOVING);
 			return;
 		}
 
@@ -365,11 +359,17 @@ void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
 	}
 	else if (e->nx != 0) {
 		if (koopa->GetGrabbedFlag()) return;
-		CGame* game = CGame::GetInstance();
-		if (koopa->GetState() == PARA_KOOPA_STATE_SHELL_STAY_STILL && game->IsKeyDown(DIK_A)) {
-			koopa->SetGrabbedFlag(true);
-			isGrabbing = true;
-			grabbedObj = koopa;
+		if (koopa->GetState() == PARA_KOOPA_STATE_SHELL_STAY_STILL) {
+			CGame* game = CGame::GetInstance();
+			if (game->IsKeyDown(DIK_A)) {
+				koopa->SetGrabbedFlag(true);
+				isGrabbing = true;
+				grabbedObj = koopa;
+				return;
+			}
+			bool isPlayerLeft = (e->nx > 0) ? false : true;
+			koopa->SetIsPlayerLeft(isPlayerLeft);
+			koopa->SetState(PARA_KOOPA_STATE_SHELL_MOVING);
 			return;
 		}
 
@@ -590,7 +590,7 @@ void CMario::GetHit()
 				SetState(MARIO_STATE_RACCOON_TO_BIG);
 			}
 			else {
-				SetLevel(MARIO_LEVEL_SMALL);
+				// SetLevel(MARIO_LEVEL_SMALL);
 				SetState(MARIO_STATE_BIG_TO_SMALL);
 			}
 			
@@ -628,13 +628,6 @@ void CMario::ScoringWithCombo()
 			break;
 		}
 	}
-}
-
-ULONGLONG CMario::GetTransitionTime()
-{
-	if (state == MARIO_STATE_BIG_TO_SMALL || state == MARIO_STATE_SMALL_TO_BIG) return MARIO_TRANSFORM_SMALL_AND_BIG_TIME;
-	if (state == MARIO_STATE_BIG_TO_RACCOON || state == MARIO_STATE_RACCOON_TO_BIG) return MARIO_TRANSFORM_BIG_AND_RACCOON_TIME;
-	return 0;
 }
 
 //
@@ -788,18 +781,28 @@ void CMario::SetState(int state)
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return;
 
+	if (this->state == MARIO_STATE_BIG_TO_SMALL) {
+		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_SMALL_AND_BIG_TIME) return;
+		else {
+			transition_timer = 0;
+			SetLevel(MARIO_LEVEL_SMALL);
+		}
+	}
 	if (this->state == MARIO_STATE_BIG_TO_SMALL ||
 		this->state == MARIO_STATE_SMALL_TO_BIG) {
 		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_SMALL_AND_BIG_TIME) return;
+		transition_timer = 0;
 	}
 
 	if (this->state == MARIO_STATE_BIG_TO_RACCOON ||
 		this->state == MARIO_STATE_RACCOON_TO_BIG) {
 		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_BIG_AND_RACCOON_TIME) return;
+		transition_timer = 0;
 	}
 
 	if (this->state == MARIO_STATE_KICKING) {
 		if (GetTickCount64() - transition_timer <= MARIO_KICKING_TIME) return;
+		transition_timer = 0;
 	}
 
 	switch (state)

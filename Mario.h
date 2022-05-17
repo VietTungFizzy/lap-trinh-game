@@ -272,7 +272,7 @@ private:
 	void GetHit();
 	void ScoringWithCombo();
 	void ResetUntouchable() { untouchable = 0; untouchable_start = 0; }
-	ULONGLONG GetTransitionTime();
+
 public:
 	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
 	{
@@ -281,7 +281,7 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY; 
 
-		level = MARIO_LEVEL_SMALL;
+		level = MARIO_LEVEL_BIG;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
