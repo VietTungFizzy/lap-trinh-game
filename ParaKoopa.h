@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Koopa.h"
 #pragma region BBOX
 #define PARA_KOOPA_BBOX_WIDTH 16
 #define PARA_KOOPA_BBOX_HEIGHT_NORMAL 24
@@ -36,7 +37,7 @@
 #pragma endregion
 
 #pragma region TIMER SETTINGS
-#define PARA_KOOPA_TIME_BEFORE_START_RETURNING_TO_NORMAL 2000
+#define PARA_KOOPA_TIME_BEFORE_START_RETURNING_TO_NORMAL 4000
 #define PARA_KOOPA_TIME_RETURNING_TO_NORMAL 2000
 #define PARA_KOOPA_TIME_NOT_CAUSE_DAMAGE 100
 #pragma endregion
@@ -47,17 +48,15 @@
 #define PARA_KOOPA_RENDER_WING_OFFSET_Y 5
 #pragma endregion
 class CParaKoopa :
-    public CGameObject
+    public CKoopa
 {
+    /*
 private:
-    BOOLEAN isGrabbed;
-
     float ax, ay;
-    bool isCauseDamageOn, isPlayerLeft;
     ULONGLONG timer;
-
+    */
 public:
-    CParaKoopa(float x, float y, int type): CGameObject(x, y, type) {
+    CParaKoopa(float x, float y, int type, int koopaType = KOOPA_TYPE_RED): CKoopa(x, y, type, koopaType) {
         this->isCauseDamageOn = true;
         this->ax = 0;
         this->ay = PARA_KOOPA_GRAVITY;
@@ -69,6 +68,10 @@ public:
     virtual void SetState(int state);
     bool GetCauseDamageMode() { return this->isCauseDamageOn; }
     void SetIsPlayerLeft(bool isPlayerLeft) { this->isPlayerLeft = isPlayerLeft; }
+    /*
+    void SetGrabbedFlag(bool flag) { isGrabbed = flag; }
+    bool GetGrabbedFlag() { return isGrabbed; }
+    */
 protected:
     virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
     virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
@@ -76,7 +79,9 @@ protected:
 
     virtual void OnNoCollision(DWORD dt);
     virtual void OnCollisionWith(LPCOLLISIONEVENT e);
-    virtual int IsCollidable() { return 1; };
+    /*
+    virtual int IsCollidable() { return 1; }
     virtual int IsBlocking() { return 0; }
+    */
 };
 

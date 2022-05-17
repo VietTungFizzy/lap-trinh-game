@@ -18,6 +18,7 @@ void CParaKoopa::SetState(int state)
 		vx = isPlayerLeft ? PARA_KOOPA_SHELL_SPEED : -PARA_KOOPA_SHELL_SPEED;
 		timer = GetTickCount64();
 		isCauseDamageOn = false;
+		isGrabbed = false;
 		break;
 	}
 	case PARA_KOOPA_STATE_RETURNING_TO_NORMAL:
@@ -38,6 +39,7 @@ void CParaKoopa::SetState(int state)
 		else {
 			vx = -PARA_KOOPA_NORMAL_SPEED;
 		}
+		isGrabbed = false;
 		break;
 	}
 	case PARA_KOOPA_STATE_NORMAL_WITH_WING:
@@ -72,7 +74,6 @@ void CParaKoopa::GetBoundingBox(float& left, float& top, float& right, float& bo
 
 void CParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (isGrabbed) return;
 
 	vy += ay * dt;
 	vx += ax * dt;
@@ -103,9 +104,14 @@ void CParaKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			break;
 		}
 	}
-
-	CGameObject::Update(dt, coObjects);
-	CCollision::GetInstance()->Process(this, dt, coObjects);
+	if (isGrabbed) {
+		vx = 0;
+		vy = 0;
+	}
+	else {
+		CGameObject::Update(dt, coObjects);
+		CCollision::GetInstance()->Process(this, dt, coObjects);
+	}
 }
 
 void CParaKoopa::Render()

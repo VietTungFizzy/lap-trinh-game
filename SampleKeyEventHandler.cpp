@@ -53,6 +53,12 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	switch (KeyCode)
 	{
+	case DIK_A:
+		if (mario->getGrabbingFlag()) {
+			// Set state kicking
+			mario->SetState(MARIO_STATE_KICKING);
+		}
+		break;
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
 			// TODO: need to find a better way to detect slow falling

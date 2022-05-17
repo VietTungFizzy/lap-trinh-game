@@ -39,7 +39,7 @@
 #pragma endregion
 
 #pragma region TIMER SETTINGS
-#define KOOPA_TIME_BEFORE_START_RETURNING_TO_NORMAL 2000
+#define KOOPA_TIME_BEFORE_START_RETURNING_TO_NORMAL 4000
 #define KOOPA_TIME_RETURNING_TO_NORMAL 2000
 #define KOOPA_TIME_NOT_CAUSE_DAMAGE 100
 #pragma endregion
@@ -53,13 +53,14 @@ class CKoopa :
     public CGameObject
 {
 private:
-    BOOLEAN isGrabbed;
-
-    ULONGLONG timer;
     float boundaries_left, boundaries_right;
+    int koopaType;
+
+protected:
+    BOOLEAN isGrabbed;
+    ULONGLONG timer;
     bool isPlayerLeft, isCauseDamageOn;
     float ax, ay;
-    int koopaType;
 public:
     CKoopa(float x, float y, int type, int koopaType) : CGameObject(x,y,type){
         this->state = KOOPA_STATE_NORMAL;
@@ -77,6 +78,8 @@ public:
     void SetIsPlayerLeft(bool isPlayerLeft) { this->isPlayerLeft = isPlayerLeft; }
 
     bool GetCauseDamageMode() { return this->isCauseDamageOn; }
+    void SetGrabbedFlag(bool flag) { isGrabbed = flag; }
+    bool GetGrabbedFlag() { return isGrabbed; }
 protected:
     virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
     virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

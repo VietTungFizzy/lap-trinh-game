@@ -34,7 +34,7 @@ height	240
 # >= 62000 ==> mushroom
 # >= 63000 ==> super leaf
 # ANIMATION ID RANGE
-# >= 400 ==> mario
+# >= 100 ==> mario
 # >= 3000 ==> effect
 # >= 5000 ==> enemy
 # >= 5500 ==> bullet

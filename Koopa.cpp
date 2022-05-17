@@ -24,6 +24,7 @@ void CKoopa::SetState(int state)
 			vx = isPlayerLeft ? KOOPA_SHELL_SPEED : -KOOPA_SHELL_SPEED;
 			timer = GetTickCount64();
 			isCauseDamageOn = false;
+			isGrabbed = false;
 			break;
 		}
 		case KOOPA_STATE_RETURNING_TO_NORMAL:
@@ -38,6 +39,7 @@ void CKoopa::SetState(int state)
 			float p_x, p_y;
 			scene->GetPlayer()->GetPosition(p_x, p_y);
 			vx = (x > p_x) ? -KOOPA_NORMAL_SPEED : KOOPA_NORMAL_SPEED;
+			isGrabbed = false;
 			break;
 		}
 	}
@@ -65,7 +67,6 @@ void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (isGrabbed) return;
 
 	vy += ay * dt;
 	vx += ax * dt;
@@ -101,8 +102,14 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			break;
 		}
 	}
-	CGameObject::Update(dt, coObjects);
-	CCollision::GetInstance()->Process(this, dt, coObjects);
+	if (isGrabbed) {
+		vx = 0;
+		vy = 0;
+	}
+	else {
+		CGameObject::Update(dt, coObjects);
+		CCollision::GetInstance()->Process(this, dt, coObjects);
+	}
 }
 
 void CKoopa::Render()
