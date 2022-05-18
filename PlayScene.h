@@ -12,7 +12,7 @@ class CPlayScene: public CScene
 {
 private:
 	int leftBoundaries, rightBoundaries, bottomBoundaries;
-
+	BOOLEAN isCameraYLocked;
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
@@ -45,6 +45,7 @@ public:
 
 	void Clear();
 	void PurgeDeletedObjects();
+	void AdjustCameraPosition();
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 };

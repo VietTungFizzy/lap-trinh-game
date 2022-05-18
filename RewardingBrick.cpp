@@ -63,7 +63,7 @@ void CRewardingBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						scence->AddObjects(reward, true);
 						reward->SetState(MUSHROOM_STATE_INACTIVE);
 					}
-					else if (player->GetLevel() == MARIO_LEVEL_BIG) {
+					else {
 						reward = new CSuperLeaf(x, y, OBJECT_TYPE_SUPER_LEAF);
 						scence->AddObjects(reward, false);
 						reward->SetState(SUPER_LEAF_STATE_GO_UP_INVISIBLE);

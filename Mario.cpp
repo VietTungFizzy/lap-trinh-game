@@ -380,8 +380,14 @@ void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithSuperLeaf(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	SetState(MARIO_STATE_BIG_TO_RACCOON);
-	SetLevel(MARIO_LEVEL_RACCOON);
+	if (level != MARIO_LEVEL_RACCOON) {
+		SetState(MARIO_STATE_BIG_TO_RACCOON);
+		SetLevel(MARIO_LEVEL_RACCOON);
+	}
+	else {
+		ScoringPointWithoutCombo(SCORE_POINT_1000);
+	}
+	
 }
 
 //
@@ -917,7 +923,7 @@ void CMario::ScoringPointWithoutCombo(int point)
 	case SCORE_POINT_200: scoreTextId = SCORE_TEXT_200; break;
 	case SCORE_POINT_400: scoreTextId = SCORE_TEXT_400; break;
 	}
-	point += point;
+	this->point += point;
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	scene->AddObjects(new CScoreText(x, y, scoreTextId, OBJECT_TYPE_SCORE_TEXT));
 }

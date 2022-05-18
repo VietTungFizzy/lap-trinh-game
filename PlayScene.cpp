@@ -24,14 +24,6 @@
 
 using namespace std;
 
-CPlayScene::CPlayScene(int id, LPCWSTR filePath):
-	CScene(id, filePath)
-{
-	player = NULL;
-	key_handler = new CSampleKeyHandler(this);
-}
-
-
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
@@ -44,6 +36,14 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define MAX_SCENE_LINE 1024
 #define SCREEN_HEIGHT 240
 #define CAMERA_CHECKING_OFFSET 16
+
+CPlayScene::CPlayScene(int id, LPCWSTR filePath):
+	CScene(id, filePath)
+{
+	player = NULL;
+	key_handler = new CSampleKeyHandler(this);
+	isCameraYLocked = false;
+}
 
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
@@ -338,19 +338,8 @@ void CPlayScene::Update(DWORD dt)
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
-	// Update camera to follow mario
-	float newCamX, newCamY;
-	player->GetPosition(newCamX, newCamY);
-	
-	newCamX -= game->GetBackBufferWidth() / 2;
-	newCamY -= game->GetBackBufferHeight() / 2;
+	AdjustCameraPosition();
 
-	if (newCamX < leftBoundaries) newCamX = leftBoundaries;
-	if (newCamX > rightBoundaries) newCamX = rightBoundaries;
-
-
-	CGame::GetInstance()->SetCamPos(newCamX, newCamY); // FOR TESTING ONLY
-	//CGame::GetInstance()->SetCamPos(newCamX, (bottomBoundaries - SCREEN_HEIGHT));
 	PurgeDeletedObjects();
 }
 
@@ -439,4 +428,39 @@ void CPlayScene::PurgeDeletedObjects()
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(), CPlayScene::IsGameObjectDeleted),
 		objects.end());
+}
+
+void CPlayScene::AdjustCameraPosition()
+{
+	CGame* game = CGame::GetInstance();
+	CMario* mario = (CMario*)player;
+	// Update camera to follow mario
+	float newCamX, newCamY;
+	player->GetPosition(newCamX, newCamY);
+
+	newCamX -= game->GetBackBufferWidth() / 2;
+	newCamY -= game->GetBackBufferHeight() / 2;
+
+	if (newCamX < leftBoundaries) newCamX = leftBoundaries;
+	if (newCamX > rightBoundaries) newCamX = rightBoundaries;
+
+	if (mario->GetLevel() != MARIO_LEVEL_RACCOON) {
+		if (isCameraYLocked) {
+			newCamY = bottomBoundaries - SCREEN_HEIGHT;
+		}
+		else {
+			if (newCamY > (bottomBoundaries - SCREEN_HEIGHT)) {
+				newCamY = bottomBoundaries - SCREEN_HEIGHT;
+				isCameraYLocked = true;
+			}
+		}
+	}
+	else {
+		isCameraYLocked = false;
+	}
+	
+	if (newCamY < 0) newCamY = 0;
+	if (newCamY > (bottomBoundaries - SCREEN_HEIGHT)) newCamY = bottomBoundaries - SCREEN_HEIGHT;
+
+	CGame::GetInstance()->SetCamPos(newCamX, newCamY);
 }
