@@ -1,0 +1,10 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+# SUPER LEAF LEFT
+63000	80	0	95	15	22
+
+# SUPER LEAF RIGHT
+63001	80	16	95	31	22
+
+# SWITCH BLOCK
+63100	64	32	79	47	22

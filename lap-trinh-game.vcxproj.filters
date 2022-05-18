@@ -262,7 +262,7 @@
     <Text Include="mario-sample.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="data\super_leaf.txt">
+    <Text Include="data\item.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\effect.txt">

@@ -14,7 +14,7 @@ data/score_text.txt
 data/mushroom.txt
 data/enemy.txt
 data/bullet.txt
-data/super_leaf.txt
+data/item.txt
 data/effect.txt
 #
 [OBJECTS]

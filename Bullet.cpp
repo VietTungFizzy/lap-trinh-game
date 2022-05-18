@@ -26,7 +26,8 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CBullet::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
-	animations->Get(BULLET_ANI_ID)->Render(x, y);
+	int aniId = (vx > 0) ? BULLET_COUNTER_CLOCKWISE_ANI_ID : BULLET_CLOCKWISE_ANI_ID;
+	animations->Get(aniId)->Render(x, y);
 }
 
 CBullet::CBullet(float x, float y, int type, int direction) : CGameObject(x, y, type)
