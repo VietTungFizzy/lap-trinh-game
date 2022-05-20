@@ -30,15 +30,6 @@ int CVenusFireTrap::decideWhereToLook()
 	}
 }
 
-bool CVenusFireTrap::isPlayerInRange()
-{
-	float p_x, p_y, l, t, r, b;
-	player->GetPosition(p_x, p_y);
-	GetBoundingBox(l, t, r, b);
-	return ((p_x > l - VENUS_FIRE_TRAP_MAX_RANGE && p_x < l - VENUS_FIRE_TRAP_MIN_RANGE) || 
-		(p_x < r + VENUS_FIRE_TRAP_MAX_RANGE && p_x > r + VENUS_FIRE_TRAP_MIN_RANGE));
-}
-
 bool CVenusFireTrap::isPlayerTooClose()
 {
 	float p_x, p_y, l, t, r, b;
@@ -108,7 +99,7 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				SetState(VENUS_FIRE_TRAP_GO_DOWN_STATE);
 			}
 			else {
-				if (isPlayerInRange() && !isShot) {
+				if (isPlayerInRange(VENUS_FIRE_TRAP_MAX_RANGE, VENUS_FIRE_TRAP_MIN_RANGE) && !isShot) {
 					CPlayScene* scence = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 					float x_bullet, y_bullet;
 					int angleFly;
@@ -150,19 +141,19 @@ void CVenusFireTrap::Render()
 		int aniId = -1;
 		switch (direction) {
 		case VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT:
-			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT;
+			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT(venusFireType);
 			break;
 		case VENUS_FIRE_TRAP_LOOK_DOWN_LEFT:
-			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_LEFT;
+			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_LEFT(venusFireType);
 			break;
 		case VENUS_FIRE_TRAP_LOOK_UP_LEFT:
-			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_UP_LEFT;
+			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_UP_LEFT(venusFireType);
 			break;
 		case VENUS_FIRE_TRAP_LOOK_UP_RIGHT:
-			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_UP_RIGHT;
+			aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_UP_RIGHT(venusFireType);
 			break;
 		}
-		if (aniId == -1) aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT;
+		if (aniId == -1) aniId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT(venusFireType);
 		CAnimations* animations = CAnimations::GetInstance();
 		animations->Get(aniId)->Render(x, y);
 	}
@@ -172,19 +163,19 @@ void CVenusFireTrap::Render()
 		int spriteId = -1;
 		switch (direction) {
 		case VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT:
-			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_DOWN_RIGHT;
+			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_DOWN_RIGHT(venusFireType);
 			break;
 		case VENUS_FIRE_TRAP_LOOK_DOWN_LEFT:
-			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_DOWN_LEFT;
+			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_DOWN_LEFT(venusFireType);
 			break;
 		case VENUS_FIRE_TRAP_LOOK_UP_LEFT:
-			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_UP_LEFT;
+			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_UP_LEFT(venusFireType);
 			break;
 		case VENUS_FIRE_TRAP_LOOK_UP_RIGHT:
-			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_UP_RIGHT;
+			spriteId = VENUS_FIRE_TRAP_SPRITE_ID_LOOK_UP_RIGHT(venusFireType);
 			break;
 		}
-		if (spriteId == -1) spriteId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT;
+		if (spriteId == -1) spriteId = ID_ANI_VENUS_FIRE_TRAP_LOOK_DOWN_RIGHT(venusFireType);
 		CSprites* s = CSprites::GetInstance();
 		s->Get(spriteId)->Draw(x, y);
 	}
@@ -210,7 +201,7 @@ void CVenusFireTrap::SetState(int state)
 	CGameObject::SetState(state);
 }
 
-CVenusFireTrap::CVenusFireTrap(float x, float y, int type): CGameObject(x, y, type)
+CVenusFireTrap::CVenusFireTrap(float x, float y, int type, int venusFireType): CPlant(x, y, type)
 {
 	player = NULL;
 	state = VENUS_FIRE_TRAP_INACTIVE_STATE;
@@ -218,4 +209,5 @@ CVenusFireTrap::CVenusFireTrap(float x, float y, int type): CGameObject(x, y, ty
 	topY = y - VENUS_FIRE_TRAP_TRAVEL_DISTANCE;
 	pivotPoint_y = y - VENUS_FIRE_TRAP_TRAVEL_DISTANCE;
 	isShot = false;
+	this->venusFireType = venusFireType;
 }

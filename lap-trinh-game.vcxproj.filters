@@ -129,6 +129,12 @@
     <ClInclude Include="SuperLeaf.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="PiranhaPlant.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -223,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="SuperLeaf.cpp">
       <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="PiranhaPlant.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

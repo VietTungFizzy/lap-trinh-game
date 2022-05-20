@@ -19,6 +19,7 @@
 #include "Koopa.h"
 #include "ParaGoomba.h"
 #include "ParaKoopa.h"
+#include "PiranhaPlant.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -200,7 +201,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-	case OBJECT_TYPE_VENUS_FIRE_TRAP: obj = new CVenusFireTrap(x, y, object_type); break;
+	case OBJECT_TYPE_VENUS_FIRE_TRAP: {
+		int venus_fire_type = atoi(tokens[3].c_str());
+		obj = new CVenusFireTrap(x, y, object_type, venus_fire_type); 
+		break; 
+	}
 	case OBJECT_TYPE_KOOPA: {
 		int koopa_type = atoi(tokens[3].c_str());
 		obj = new CKoopa(x, y, object_type, koopa_type);
@@ -208,6 +213,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_PARA_GOOMBA: obj = new CParaGoomba(x, y, object_type); break;
 	case OBJECT_TYPE_PARA_KOOPA: obj = new CParaKoopa(x, y, object_type); break;
+	case OBJECT_TYPE_PIRANHA_PLANT: obj = new CPiranhaPlant(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
@@ -302,6 +308,13 @@ void CPlayScene::Load()
 
 	f.close();
 
+	for (size_t i = 0; i < objects.size(); i++) {
+		if (dynamic_cast<CPlant*>(objects[i])) {
+			CPlant* t = (CPlant*)objects[i];
+			t->SetPlayer(player);
+		}
+	}
+
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
@@ -325,10 +338,6 @@ void CPlayScene::Update(DWORD dt)
 	{
 		objects[i]->GetPosition(x, y);
 		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b) {
-			if (dynamic_cast<CVenusFireTrap*>(objects[i])) {
-				CVenusFireTrap* t = (CVenusFireTrap*)objects[i];
-				t->SetPlayer(player);
-			}
 			objects[i]->Update(dt, &coObjects);
 		}
 			
