@@ -134,6 +134,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_PORTAL: OnCollisionWithPortal(e); break;
 	case OBJECT_TYPE_REWARDING_BRICK: OnCollisionWithRewardingBrick(e); break;
 	case OBJECT_TYPE_MUSHROOM:	OnCollisionWithMushroom(e); break;
+	case OBJECT_TYPE_PIRANHA_PLANT:
 	case OBJECT_TYPE_BULLET:
 	case OBJECT_TYPE_VENUS_FIRE_TRAP:	
 		GetHit(); 
