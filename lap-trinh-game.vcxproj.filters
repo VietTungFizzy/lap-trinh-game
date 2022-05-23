@@ -135,6 +135,9 @@
     <ClInclude Include="Plant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SwitchBrick.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -235,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Plant.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SwitchBrick.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

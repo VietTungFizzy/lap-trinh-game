@@ -43,6 +43,11 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_0:
 		mario->SetState(MARIO_STATE_DIE);
 		break;
+	case DIK_R:
+		{
+			((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->SetSwitchOn();
+			break;
+		}
 	}
 }
 

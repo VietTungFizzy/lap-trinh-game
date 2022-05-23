@@ -5,12 +5,11 @@
 #include "AssetIDs.h"
 #include "Goomba.h"
 #include "RewardingBrick.h"
+#include "SwitchBrick.h"
 #include "PlayScene.h"
 
 void CKoopa::SetState(int state)
 {
-	boundaries_left = 0;
-	boundaries_right = 0;
 	switch (state) {
 		case KOOPA_STATE_SHELL_STAY_STILL:
 		{
@@ -192,24 +191,27 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->obj->GetType() == OBJECT_TYPE_MARIO ||
 		e->obj->GetType() == OBJECT_TYPE_GOOMBA) return;
 
-	if (e->obj->GetType() == OBJECT_TYPE_REWARDING_BRICK && 
-		e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE &&
-		e->nx != 0 &&
-		state == KOOPA_STATE_SHELL_MOVING) {
-		CRewardingBrick* obj = (CRewardingBrick*)e->obj;
-		obj->SetRewardDirection(-e->nx);
-		obj->SetState(REWARDING_BRICK_GO_UP_STATE);
+	if (e->nx != 0 && state == KOOPA_STATE_SHELL_MOVING) {
+		if (e->obj->GetType() == OBJECT_TYPE_REWARDING_BRICK &&
+			e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
+			CRewardingBrick* obj = (CRewardingBrick*)e->obj;
+			obj->SetRewardDirection(-e->nx);
+			obj->SetState(REWARDING_BRICK_GO_UP_STATE);
+		}
+		if (e->obj->GetType() == OBJECT_TYPE_SWITCH_BRICK &&
+			e->obj->GetState() == SWITCH_BRICK_STATE_BRICK) {
+			e->obj->SetState(SWITCH_BRICK_STATE_DESTROYED);
+		}
 	}
+	
 
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
-		if (boundaries_left == 0 && boundaries_right == 0 && state != KOOPA_STATE_SHELL_MOVING) {
-			float l, t, r, b;
-			e->obj->GetBoundingBox(l, t, r, b);
-			boundaries_left = l + KOOPA_BBOX_WIDTH / 2;
-			boundaries_right = r - KOOPA_BBOX_WIDTH / 2;
-		}
+		float l, t, r, b;
+		e->obj->GetBoundingBox(l, t, r, b);
+		boundaries_left = l;
+		boundaries_right = r;
 	}
 	else if (e->nx != 0 && e->obj->IsBlocking())
 	{

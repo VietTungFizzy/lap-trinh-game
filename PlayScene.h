@@ -13,6 +13,8 @@ class CPlayScene: public CScene
 private:
 	int leftBoundaries, rightBoundaries, bottomBoundaries;
 	BOOLEAN isCameraYLocked;
+	BOOLEAN isSwitchOn;
+	ULONGLONG timer;
 protected: 
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
@@ -48,6 +50,9 @@ public:
 	void AdjustCameraPosition();
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
+
+	void SetSwitchOn() { isSwitchOn = true; timer = GetTickCount64(); }
+	bool GetSwitchStatus() { return isSwitchOn; }
 };
 
 typedef CPlayScene* LPPLAYSCENE;

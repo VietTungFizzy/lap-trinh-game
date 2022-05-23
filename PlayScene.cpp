@@ -20,6 +20,7 @@
 #include "ParaGoomba.h"
 #include "ParaKoopa.h"
 #include "PiranhaPlant.h"
+#include "SwitchBrick.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -37,6 +38,7 @@ using namespace std;
 #define MAX_SCENE_LINE 1024
 #define SCREEN_HEIGHT 240
 #define CAMERA_CHECKING_OFFSET 16
+#define SWITCH_ON_TIME 3000
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	CScene(id, filePath)
@@ -44,6 +46,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	player = NULL;
 	key_handler = new CSampleKeyHandler(this);
 	isCameraYLocked = false;
+	isSwitchOn = false;
+	timer = 0;
 }
 
 void CPlayScene::_ParseSection_SPRITES(string line)
@@ -214,6 +218,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_PARA_GOOMBA: obj = new CParaGoomba(x, y, object_type); break;
 	case OBJECT_TYPE_PARA_KOOPA: obj = new CParaKoopa(x, y, object_type); break;
 	case OBJECT_TYPE_PIRANHA_PLANT: obj = new CPiranhaPlant(x, y, object_type); break;
+	case OBJECT_TYPE_SWITCH_BRICK: obj = new CSwitchBrick(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
@@ -320,6 +325,13 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
+	if (isSwitchOn) {
+		if (GetTickCount64() - timer > SWITCH_ON_TIME) {
+			isSwitchOn = false;
+			timer = 0;
+		}
+	}
+
 	// We know that Mario is the last object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	float cam_t, cam_l, cam_r, cam_b, x, y;

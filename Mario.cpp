@@ -15,6 +15,7 @@
 #include "ScoreText.h"
 #include "PlayScene.h"
 #include "ParaKoopa.h"
+#include "SwitchBrick.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -143,6 +144,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_PARA_GOOMBA: OnCollisionWithParaGoomba(e); break;
 	case OBJECT_TYPE_PARA_KOOPA: OnCollisionWithParaKoopa(e); break;
 	case OBJECT_TYPE_SUPER_LEAF: OnCollisionWithSuperLeaf(e); break;
+	case OBJECT_TYPE_SWITCH_BRICK: OnCollisionWithSwitchBrick(e); break;
 	}
 }
 
@@ -389,6 +391,13 @@ void CMario::OnCollisionWithSuperLeaf(LPCOLLISIONEVENT e)
 		ScoringPointWithoutCombo(SCORE_POINT_1000);
 	}
 	
+}
+
+void CMario::OnCollisionWithSwitchBrick(LPCOLLISIONEVENT e)
+{
+	if (e->obj->GetState() == SWITCH_BRICK_STATE_COIN) {
+		e->obj->SetState(SWITCH_BRICK_STATE_COIN_EATEN);
+	}
 }
 
 //
