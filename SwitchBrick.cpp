@@ -18,9 +18,11 @@ void CSwitchBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CSwitchBrick::Render()
 {
-	CAnimations* animations = CAnimations::GetInstance();
-	int aniId = (state == SWITCH_BRICK_STATE_BRICK) ? ID_ANI_SWITCH_BRICK_STATE_BRICK : ID_ANI_SWITCH_BRICK_STATE_COIN;
-	animations->Get(aniId)->Render(x, y);
+	if (state == SWITCH_BRICK_STATE_BRICK || state == SWITCH_BRICK_STATE_COIN) {
+		CAnimations* animations = CAnimations::GetInstance();
+		int aniId = (state == SWITCH_BRICK_STATE_BRICK) ? ID_ANI_SWITCH_BRICK_STATE_BRICK : ID_ANI_SWITCH_BRICK_STATE_COIN;
+		animations->Get(aniId)->Render(x, y);
+	}
 }
 
 void CSwitchBrick::SetState(int state)

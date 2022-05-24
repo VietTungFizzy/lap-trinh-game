@@ -265,6 +265,7 @@ private:
 	void OnCollisionWithParaKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithSuperLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithSwitchBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();

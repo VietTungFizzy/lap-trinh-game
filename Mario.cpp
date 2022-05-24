@@ -16,6 +16,7 @@
 #include "PlayScene.h"
 #include "ParaKoopa.h"
 #include "SwitchBrick.h"
+#include "PSwitch.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -145,6 +146,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_PARA_KOOPA: OnCollisionWithParaKoopa(e); break;
 	case OBJECT_TYPE_SUPER_LEAF: OnCollisionWithSuperLeaf(e); break;
 	case OBJECT_TYPE_SWITCH_BRICK: OnCollisionWithSwitchBrick(e); break;
+	case OBJECT_TYPE_P_SWITCH: OnCollisionWithPSwitch(e); break;
 	}
 }
 
@@ -397,6 +399,19 @@ void CMario::OnCollisionWithSwitchBrick(LPCOLLISIONEVENT e)
 {
 	if (e->obj->GetState() == SWITCH_BRICK_STATE_COIN) {
 		e->obj->SetState(SWITCH_BRICK_STATE_COIN_EATEN);
+	}
+}
+
+void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
+{
+	if (e->obj->GetState() == P_SWITCH_STATE_NORMAL) {
+		if (e->ny < 0) {
+			e->obj->SetState(P_SWITCH_STATE_PRESSED);
+			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetSwitchOn();
+		}
+		else if (e->nx != 0) {
+			vx = 0;
+		}
 	}
 }
 

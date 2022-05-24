@@ -38,4 +38,5 @@ height	240
 # >= 3000 ==> effect
 # >= 5000 ==> enemy
 # >= 5500 ==> bullet
+# >= 6000 ==> item
 # >= 11000 ==> coin
