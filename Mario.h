@@ -206,6 +206,7 @@
 #define MARIO_TRANSFORM_SMALL_AND_BIG_TIME 600
 #define MARIO_MAX_POWER_DECREASE_TIME 3000
 #define MARIO_KICKING_TIME 100
+#define MARIO_TAIL_ATTACK_TIME 350
 
 #define MINIMUM_ACCEL_VALUE 1e-4
 
@@ -225,6 +226,7 @@
 #define MARIO_LEVEL_RACCOON 3
 
 #pragma endregion
+
 class CMario : public CGameObject
 {
 private:
@@ -232,6 +234,7 @@ private:
 	BOOLEAN isMaxPower;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isSlowFalling;
+	BOOLEAN isWaggingTail;
 
 	BOOLEAN isGrabbing;
 	CGameObject* grabbedObj;
@@ -246,6 +249,7 @@ private:
 	ULONGLONG untouchable_start;
 	ULONGLONG transition_timer;
 	ULONGLONG countdown_timer; // countdown before max power decrease
+	ULONGLONG short_action_timer; // Mostly use for kicking, tail attack,...
 
 	int point; 
 	int coin;
@@ -326,4 +330,6 @@ public:
 	void setSlowFallingFlag(bool flag) { isSlowFalling = flag; }
 	
 	bool getGrabbingFlag() { return isGrabbing; }
+
+	void TailAttack() { isWaggingTail = true; short_action_timer = GetTickCount64(); }
 };

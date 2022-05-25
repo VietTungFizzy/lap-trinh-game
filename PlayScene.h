@@ -43,6 +43,11 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
+	// Dynamically add object to play scene
+	// If add at the beginning of list of objects, it guarantees
+	// the object will be rendered behind all object
+	// If add at the end of list of objects, it guarantees
+	// the object will be rendered on top all object
 	void AddObjects(LPGAMEOBJECT obj, bool isAddAtTheBeginning = false);
 
 	void Clear();

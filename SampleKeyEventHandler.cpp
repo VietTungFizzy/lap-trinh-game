@@ -13,6 +13,12 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 
 	switch (KeyCode)
 	{
+	case DIK_A:
+		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
+			mario->TailAttack();
+			key_timer[DIK_A] = GetTickCount64();
+		}
+		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT);
 		break;
@@ -22,13 +28,13 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 				mario->SetState(MARIO_STATE_JUMP);
 			}
 			else {
-				bool isPlayerSpammingKey = GetTickCount64() - timer <= KEY_DELAY;
+				bool isPlayerSpammingKey = GetTickCount64() - key_timer[DIK_S] <= KEY_DELAY;
 				if (isPlayerSpammingKey) {
 					if (mario->isFullPower()) mario->SetState(MARIO_STATE_FLY_UP);
 					else mario->SetState(MARIO_STATE_SLOW_FALLING);
 				}
 			}
-			timer = GetTickCount64();
+			key_timer[DIK_S] = GetTickCount64();
 		}
 		else {
 			mario->SetState(MARIO_STATE_JUMP);
@@ -43,11 +49,6 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_0:
 		mario->SetState(MARIO_STATE_DIE);
 		break;
-	case DIK_R:
-		{
-			((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->SetSwitchOn();
-			break;
-		}
 	}
 }
 
@@ -56,6 +57,7 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	//DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	
 	switch (KeyCode)
 	{
 	case DIK_A:
@@ -85,16 +87,21 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 {
 	LPGAME game = CGame::GetInstance();
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	ULONGLONG now = GetTickCount64();
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		if (game->IsKeyDown(DIK_A) && mario->isOnTheGround())
+		if (game->IsKeyDown(DIK_A) && 
+			mario->isOnTheGround() &&
+			now - key_timer[DIK_A] > KEY_DELAY)
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		else
 			mario->SetState(MARIO_STATE_WALKING_RIGHT);
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (game->IsKeyDown(DIK_A) && mario->isOnTheGround())
+		if (game->IsKeyDown(DIK_A) && 
+			mario->isOnTheGround() &&
+			now - key_timer[DIK_A] > KEY_DELAY)
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		else
 			mario->SetState(MARIO_STATE_WALKING_LEFT);
@@ -103,5 +110,5 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_IDLE);
 	}
 
-	if (GetTickCount64() - timer > KEY_DELAY) mario->setSlowFallingFlag(false);
+	if (now - key_timer[DIK_S] > KEY_DELAY) mario->setSlowFallingFlag(false);
 }

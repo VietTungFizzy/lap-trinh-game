@@ -106,6 +106,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	// Handling tail attack logic
+	if (isWaggingTail) {
+		if (GetTickCount64() - short_action_timer > MARIO_TAIL_ATTACK_TIME) {
+			isWaggingTail = false;
+			short_action_timer = 0;
+		}
+	}
+
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -522,6 +530,10 @@ int CMario::GetAniIdRaccoon()
 		aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_KICKING_RIGHT : ID_ANI_MARIO_RACCOON_KICKING_LEFT;
 		return aniId;
 	}
+	if (isWaggingTail) {
+		aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_TURNING_FROM_RIGHT_TO_LEFT : ID_ANI_MARIO_RACCOON_TURNING_FROM_LEFT_TO_RIGHT;
+		return aniId;
+	}
 
 	if (!isOnPlatform) {
 		if (isGrabbing) {
@@ -832,8 +844,8 @@ void CMario::SetState(int state)
 	}
 
 	if (this->state == MARIO_STATE_KICKING) {
-		if (GetTickCount64() - transition_timer <= MARIO_KICKING_TIME) return;
-		transition_timer = 0;
+		if (GetTickCount64() - short_action_timer <= MARIO_KICKING_TIME) return;
+		short_action_timer = 0;
 	}
 
 	switch (state)
@@ -931,7 +943,7 @@ void CMario::SetState(int state)
 			int koopaState = (grabbedObj->GetType() == OBJECT_TYPE_KOOPA ? KOOPA_STATE_SHELL_MOVING : PARA_KOOPA_STATE_SHELL_MOVING);
 			koopa->SetIsPlayerLeft((nx > 0));
 			koopa->SetState(koopaState);
-			transition_timer = GetTickCount64();
+			short_action_timer = GetTickCount64();
 			break;
 		}
 	}

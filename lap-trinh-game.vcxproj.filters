@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Object">
       <UniqueIdentifier>{f05f40ab-f464-40e9-aa60-505c4097afef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Object\Effect">
+      <UniqueIdentifier>{e836f7e2-6577-49c2-be48-2009765a571c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -120,9 +123,6 @@
     <ClInclude Include="ParaGoomba.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreText.h">
-      <Filter>Header Files\Object</Filter>
-    </ClInclude>
     <ClInclude Include="ParaKoopa.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
@@ -140,6 +140,12 @@
     </ClInclude>
     <ClInclude Include="PSwitch.h">
       <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreText.h">
+      <Filter>Header Files\Object\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokenBrickEffect.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="PSwitch.cpp">
       <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokenBrickEffect.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

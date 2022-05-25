@@ -150,6 +150,7 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="AssetIDs.h" />
     <ClInclude Include="Brick.h" />
+    <ClInclude Include="BrokenBrickEffect.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="InvinsibleBrick.h" />
     <ClInclude Include="Coin.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="BrokenBrickEffect.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="InvinsibleBrick.cpp" />
     <ClCompile Include="Coin.cpp" />

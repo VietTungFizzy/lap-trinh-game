@@ -1,4 +1,5 @@
 #include "SwitchBrick.h"
+#include "BrokenBrickEffect.h"
 #include "Animations.h"
 #include "PlayScene.h"
 
@@ -31,6 +32,13 @@ void CSwitchBrick::SetState(int state)
 	case SWITCH_BRICK_STATE_COIN_EATEN:
 		Delete();
 		break;
+	case SWITCH_BRICK_STATE_DESTROYED:
+		{
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			scene->AddObjects(new CBrokenBrickEffect(x, y));
+			Delete();
+			break;
+		}
 	}
 
 	CGameObject::SetState(state);
