@@ -83,5 +83,7 @@ public:
 
 	void Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
+	bool DetectOverlap(LPGAMEOBJECT objSrc, LPGAMEOBJECT objDest);
+
 	static CCollision* GetInstance();
 };

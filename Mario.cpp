@@ -17,9 +17,36 @@
 #include "ParaKoopa.h"
 #include "SwitchBrick.h"
 #include "PSwitch.h"
+#include "MarioTail.h"
 
 #include "debug.h"
 #include "Collision.h"
+
+CMario::CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
+{
+	isSitting = false;
+	maxVx = 0.0f;
+	ax = 0.0f;
+	ay = MARIO_GRAVITY;
+
+	level = MARIO_LEVEL_RACCOON;
+	untouchable = 0;
+	untouchable_start = -1;
+	isOnPlatform = false;
+	point = 0;
+	bottomBoundary = b;
+
+	powerCount = 0;
+	isMaxPower = false;
+	isSlowFalling = false;
+
+	transition_timer = 0;
+	countdown_timer = 0;
+
+	marioTail = new CMarioTail(x, y);
+	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	scene->AddObjects(marioTail);
+}
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -111,6 +138,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (GetTickCount64() - short_action_timer > MARIO_TAIL_ATTACK_TIME) {
 			isWaggingTail = false;
 			short_action_timer = 0;
+			marioTail->SetState(MARIO_TAIL_STATE_INACTIVE);
+		}
+		else {
+			float tail_x, tail_y;
+			if (nx > 0) {
+				tail_x = x + MARIO_BIG_BBOX_WIDTH / 2 + MARIO_TAIL_BBOX_WIDTH / 2 - 1;
+			}
+			else {
+				tail_x = x - (MARIO_BIG_BBOX_WIDTH / 2 + MARIO_TAIL_BBOX_WIDTH / 2 + 1);
+			}
+			tail_y = y + MARIO_BIG_BBOX_HEIGHT / 4;
+			marioTail->SetPosition(tail_x, tail_y);
+			marioTail->SetState(MARIO_TAIL_STATE_ACTIVE);
 		}
 	}
 
@@ -413,7 +453,7 @@ void CMario::OnCollisionWithSwitchBrick(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
 {
 	if (e->obj->GetState() == P_SWITCH_STATE_NORMAL) {
-		if (e->ny < 0) {
+		if (e->ny != 0) {
 			e->obj->SetState(P_SWITCH_STATE_PRESSED);
 			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->SetSwitchOn();
 		}

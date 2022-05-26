@@ -12,7 +12,7 @@
 
 # BRICK BROKEN LEFT & RIGHT
 21010	80	32	87	40	22
-21011	88	32	87	95	22
+21011	88	32	95	40	22
 
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...

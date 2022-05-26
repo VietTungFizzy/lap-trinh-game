@@ -37,7 +37,7 @@ using namespace std;
 
 #define MAX_SCENE_LINE 1024
 #define SCREEN_HEIGHT 240
-#define CAMERA_CHECKING_OFFSET 16
+#define CAMERA_CHECKING_OFFSET 32
 #define SWITCH_ON_TIME 3000
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):

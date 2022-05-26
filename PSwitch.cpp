@@ -11,8 +11,6 @@ void CPSwitch::GetBoundingBox(float& left, float& top, float& right, float& bott
 
 void CPSwitch::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CGameObject::Update(dt, coObjects);
-	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
 void CPSwitch::Render()
@@ -22,16 +20,3 @@ void CPSwitch::Render()
 	animations->Get(aniId)->Render(x, y);
 }
 
-void CPSwitch::OnNoCollision(DWORD dt)
-{
-	x += vx * dt;
-	y += vy * dt;
-}
-
-void CPSwitch::OnCollisionWith(LPCOLLISIONEVENT e)
-{
-	if (e->ny != 0 && e->obj->IsBlocking())
-	{
-		vy = 0;
-	}
-}

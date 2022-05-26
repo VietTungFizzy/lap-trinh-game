@@ -1,6 +1,7 @@
 #include "BrokenBrickEffect.h"
 #include "Sprites.h"
 #include "AssetIDs.h"
+#include "debug.h"
 
 void CBrokenBrickEffect::Render()
 {

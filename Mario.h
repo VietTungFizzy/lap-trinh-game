@@ -239,6 +239,8 @@ private:
 	BOOLEAN isGrabbing;
 	CGameObject* grabbedObj;
 
+	CGameObject* marioTail;
+
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -280,27 +282,7 @@ private:
 	void ResetUntouchable() { untouchable = 0; untouchable_start = 0; }
 
 public:
-	CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
-	{
-		isSitting = false;
-		maxVx = 0.0f;
-		ax = 0.0f;
-		ay = MARIO_GRAVITY; 
-
-		level = MARIO_LEVEL_RACCOON;
-		untouchable = 0;
-		untouchable_start = -1;
-		isOnPlatform = false;
-		point = 0;
-		bottomBoundary = b;
-
-		powerCount = 0;
-		isMaxPower = false;
-		isSlowFalling = false;
-
-		transition_timer = 0;
-		countdown_timer = 0;
-	}
+	CMario(float x, float y, int b, int type);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);

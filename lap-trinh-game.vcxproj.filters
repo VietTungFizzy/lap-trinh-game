@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Object\Effect">
       <UniqueIdentifier>{e836f7e2-6577-49c2-be48-2009765a571c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Object\Effect">
+      <UniqueIdentifier>{3b3c0768-3044-4499-9095-5c23a07cc987}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -145,7 +148,10 @@
       <Filter>Header Files\Object\Effect</Filter>
     </ClInclude>
     <ClInclude Include="BrokenBrickEffect.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Object\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioTail.h">
+      <Filter>Header Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +239,6 @@
     <ClCompile Include="ParaGoomba.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreText.cpp">
-      <Filter>Source Files\Object</Filter>
-    </ClCompile>
     <ClCompile Include="ParaKoopa.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
@@ -255,7 +258,13 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="BrokenBrickEffect.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreText.cpp">
+      <Filter>Source Files\Object\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioTail.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

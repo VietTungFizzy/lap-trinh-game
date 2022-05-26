@@ -351,3 +351,33 @@ void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* co
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
+
+bool CCollision::DetectOverlap(LPGAMEOBJECT objSrc, LPGAMEOBJECT objDest)
+{
+	float src_l, src_t, src_r, src_b;
+	float dest_l, dest_t, dest_r, dest_b;
+
+	objSrc->GetBoundingBox(src_l, src_t, src_r, src_b);
+	objDest->GetBoundingBox(dest_l, dest_t, dest_r, dest_b);
+
+	if (src_l >= dest_l &&
+		src_l <= dest_r &&
+		src_t >= dest_t &&
+		src_b <= dest_b) return true;
+	
+	if (src_r >= dest_l &&
+		src_r <= dest_r &&
+		src_b >= dest_t &&
+		src_b <= dest_b) return true;
+	
+	if (src_l >= dest_l &&
+		src_l <= dest_r &&
+		src_b >= dest_t &&
+		src_b <= dest_b) return true;
+
+	if (src_r >= dest_l &&
+		src_r <= dest_r &&
+		src_t >= dest_t &&
+		src_b <= dest_b) return true;
+	return false;
+}
