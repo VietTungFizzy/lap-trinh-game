@@ -36,9 +36,11 @@ using namespace std;
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
+#define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
-#define CAMERA_CHECKING_OFFSET 32
 #define SWITCH_ON_TIME 3000
+
+#define CAMERA_CHECKING_OFFSET 32
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	CScene(id, filePath)
@@ -174,8 +176,20 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	break;
 	case OBJECT_TYPE_DECORATED:
 	{
-		int sprite_id = atoi(tokens[3].c_str());
-		obj = new CDecoratedObject(x, y, sprite_id, object_type);
+		if (tokens.size() == DECORATED_OBJECT_SINGLE_CELL_PARAMS) {
+			int sprite_id = atoi(tokens[3].c_str());
+			obj = new CDecoratedObject(x, y, sprite_id, object_type);
+		}
+		else if (tokens.size() == DECORATED_OBJECT_MULTIPLE_CELL_PARAMS) {
+			int length = atoi(tokens[3].c_str());
+			int height = atoi(tokens[4].c_str());
+			int sprite_id = atoi(tokens[5].c_str());
+			obj = new CDecoratedObject(x, y, sprite_id, object_type, length, height);
+		}
+		else {
+			DebugOut(L"[ERROR] The input is invalid\n");
+			return;
+		}
 		decoratedObjects.push_back(obj);
 		return;
 		break;
@@ -334,12 +348,6 @@ void CPlayScene::Update(DWORD dt)
 
 	// We know that Mario is the last object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-	float cam_t, cam_l, cam_r, cam_b, x, y;
-	CGame* game = CGame::GetInstance();
-	game->GetCamPos(cam_l, cam_t);
-	cam_r = cam_l + game->GetBackBufferWidth() + CAMERA_CHECKING_OFFSET;
-	cam_b = cam_t + game->GetBackBufferHeight() + CAMERA_CHECKING_OFFSET;
-	
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
@@ -348,8 +356,7 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->GetPosition(x, y);
-		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b) {
+		if (isInCamera(objects[i])) {
 			objects[i]->Update(dt, &coObjects);
 		}
 			
@@ -366,24 +373,16 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	float cam_t, cam_l, cam_r, cam_b, x, y;
-	CGame* game = CGame::GetInstance();
-	game->GetCamPos(cam_l, cam_t);
-	cam_r = cam_l + game->GetBackBufferWidth() + CAMERA_CHECKING_OFFSET;
-	cam_b = cam_t + game->GetBackBufferHeight() + CAMERA_CHECKING_OFFSET;
 	// Always render decorated objects first
 	for (int i = 0; i < decoratedObjects.size(); i++) {
-		decoratedObjects[i]->GetPosition(x, y);
-		if (cam_l < x && x < cam_r && cam_t < y && y < cam_b)
+		if (isInCamera(decoratedObjects[i])) {
 			decoratedObjects[i]->Render();
+		}
+		
 	}
 
 	for (int i = 0; i < objects.size(); i++) {
-		objects[i]->GetPosition(x, y);
-		if (dynamic_cast<CPlatform*>(objects[i])) {
-			objects[i]->Render();
-		}
-		else if(cam_l < x && x < cam_r && cam_t < y && y < cam_b)
+		if(isInCamera(objects[i]) || dynamic_cast<CPlatform*>(objects[i]))
 			objects[i]->Render();
 	}
 	player->Render();
@@ -431,6 +430,59 @@ void CPlayScene::Unload()
 
 bool CPlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
 
+bool CPlayScene::isInCamera(LPGAMEOBJECT obj)
+{
+	CGame* game = CGame::GetInstance();
+	float cam_t, cam_l, cam_r, cam_b;
+	float obj_l, obj_t, obj_r, obj_b;
+	game->GetCamPos(cam_l, cam_t);
+	cam_r = cam_l + game->GetBackBufferWidth() + CAMERA_CHECKING_OFFSET;
+	cam_b = cam_t + game->GetBackBufferHeight() + CAMERA_CHECKING_OFFSET;
+	obj->GetBoundingBox(obj_l, obj_t, obj_r, obj_b);
+
+	if (cam_l >= obj_l &&
+		cam_l <= obj_r &&
+		cam_t >= obj_t &&
+		cam_b <= obj_b) return true;
+
+	if (obj_l >= cam_l &&
+		obj_l <= cam_r &&
+		obj_t >= cam_t &&
+		obj_b <= cam_b) return true;
+
+	if (cam_r >= obj_l &&
+		cam_r <= obj_r &&
+		cam_b >= obj_t &&
+		cam_b <= obj_b) return true;
+
+	if (obj_r >= cam_l &&
+		obj_r <= cam_r &&
+		obj_b >= cam_t &&
+		obj_b <= cam_b) return true;
+
+	if (cam_l >= obj_l &&
+		cam_l <= obj_r &&
+		cam_b >= obj_t &&
+		cam_b <= obj_b) return true;
+
+	if (obj_l >= cam_l &&
+		obj_l <= cam_r &&
+		obj_b >= cam_t &&
+		obj_b <= cam_b) return true;
+
+	if (cam_r >= obj_l &&
+		cam_r <= obj_r &&
+		cam_t >= obj_t &&
+		cam_b <= obj_b) return true;
+
+	if (obj_r >= cam_l &&
+		obj_r <= cam_r &&
+		obj_t >= cam_t &&
+		obj_b <= cam_b) return true;
+
+	return false;
+}
+
 void CPlayScene::PurgeDeletedObjects()
 {
 	vector<LPGAMEOBJECT>::iterator it;
@@ -463,7 +515,7 @@ void CPlayScene::AdjustCameraPosition()
 	newCamY -= game->GetBackBufferHeight() / 2;
 
 	if (newCamX < leftBoundaries) newCamX = leftBoundaries;
-	if (newCamX > rightBoundaries) newCamX = rightBoundaries;
+	if (newCamX > rightBoundaries - SCREEN_WIDTH) newCamX = rightBoundaries - SCREEN_WIDTH;
 
 	if (mario->GetLevel() != MARIO_LEVEL_RACCOON) {
 		if (isCameraYLocked) {

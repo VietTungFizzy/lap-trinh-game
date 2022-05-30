@@ -135,9 +135,6 @@
     <ClInclude Include="PiranhaPlant.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Plant.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SwitchBrick.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
@@ -151,6 +148,9 @@
       <Filter>Header Files\Object\Effect</Filter>
     </ClInclude>
     <ClInclude Include="MarioTail.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
@@ -248,9 +248,6 @@
     <ClCompile Include="PiranhaPlant.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Plant.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SwitchBrick.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
@@ -264,6 +261,9 @@
       <Filter>Source Files\Object\Effect</Filter>
     </ClCompile>
     <ClCompile Include="MarioTail.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>

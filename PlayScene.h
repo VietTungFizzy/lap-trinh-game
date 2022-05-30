@@ -58,6 +58,8 @@ public:
 
 	void SetSwitchOn() { isSwitchOn = true; timer = GetTickCount64(); }
 	bool GetSwitchStatus() { return isSwitchOn; }
+
+	bool isInCamera(LPGAMEOBJECT obj);
 };
 
 typedef CPlayScene* LPPLAYSCENE;

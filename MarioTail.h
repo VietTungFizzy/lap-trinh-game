@@ -13,7 +13,7 @@ class CMarioTail :
 protected:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
-	virtual void Render() { RenderBoundingBox(); };
+	virtual void Render() {};
 public:
 	CMarioTail(float x, float y) : CGameObject(x, y, OBJECT_TYPE_MARIO_TAIL) {
 		SetState(MARIO_TAIL_STATE_INACTIVE);

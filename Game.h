@@ -18,7 +18,6 @@ using namespace std;
 #define KEYBOARD_STATE_SIZE 256
 
 
-
 /*
 	Our simple game framework
 */

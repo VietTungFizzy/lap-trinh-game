@@ -2,8 +2,6 @@
 
 #include "GameObject.h"
 
-#define PLATFORM_TYPE_SOLID 0
-#define PLATFORM_TYPE_TOP_ONLY 1
 // 
 // The most popular type of object in Mario! 
 // 
