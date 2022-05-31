@@ -152,6 +152,7 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="BrokenBrickEffect.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="InvinsibleBrick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Portal.h" />
     <ClInclude Include="PSwitch.h" />
     <ClInclude Include="RewardingBrick.h" />
+    <ClInclude Include="RouletteCard.h" />
     <ClInclude Include="SampleKeyEventHandler.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ScoreText.h" />
@@ -193,6 +195,7 @@
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="BrokenBrickEffect.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="InvinsibleBrick.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -216,6 +219,7 @@
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="PSwitch.cpp" />
     <ClCompile Include="RewardingBrick.cpp" />
+    <ClCompile Include="RouletteCard.cpp" />
     <ClCompile Include="SampleKeyEventHandler.cpp" />
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -233,6 +237,7 @@
     <Text Include="data\decorated.txt" />
     <Text Include="data\effect.txt" />
     <Text Include="data\enemy.txt" />
+    <Text Include="data\goal.txt" />
     <Text Include="data\mario.txt" />
     <Text Include="data\mushroom.txt" />
     <Text Include="data\pipe.txt" />

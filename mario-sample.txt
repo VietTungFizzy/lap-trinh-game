@@ -15,7 +15,6 @@ height	240
 0	textures\mario.png
 1	textures\mario_transition.png
 10	textures\enemies.png
-20	textures\misc.png
 21	textures\stage_title.png
 22	textures\misc_1.png
 
@@ -28,6 +27,7 @@ height	240
 # >= 31000 ==> enemy
 # >= 33500 ==> bullet
 # >= 40000 ==> coin
+# >= 41000 ==> goal
 # >= 51000 ==> platform
 # >= 60000 ==> decorated
 # >= 61000 ==> score text

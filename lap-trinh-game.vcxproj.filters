@@ -153,6 +153,12 @@
     <ClInclude Include="Plant.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Goal.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="RouletteCard.h">
+      <Filter>Header Files\Object\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -266,6 +272,12 @@
     <ClCompile Include="Plant.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="RouletteCard.cpp">
+      <Filter>Source Files\Object\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt">
@@ -308,6 +320,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\effect.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\goal.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

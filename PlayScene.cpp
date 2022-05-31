@@ -21,6 +21,7 @@
 #include "ParaKoopa.h"
 #include "PiranhaPlant.h"
 #include "SwitchBrick.h"
+#include "Goal.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -201,7 +202,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		
 		break;
 	}
-	case OBJECT_TYPE_INVINSIBLE_BRICK: obj = new CInvinsibleBrick(x, y, object_type); break;
+	case OBJECT_TYPE_INVINSIBLE_BRICK: {
+		int length = atoi(tokens[3].c_str());
+		int height = atoi(tokens[4].c_str());
+		obj = new CInvinsibleBrick(x, y, object_type, length, height); 
+		break;
+	}
 	case OBJECT_TYPE_PLATFORM_TOP_ONLY:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -233,6 +239,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_PARA_KOOPA: obj = new CParaKoopa(x, y, object_type); break;
 	case OBJECT_TYPE_PIRANHA_PLANT: obj = new CPiranhaPlant(x, y, object_type); break;
 	case OBJECT_TYPE_SWITCH_BRICK: obj = new CSwitchBrick(x, y, object_type); break;
+	case OBJECT_TYPE_GOAL: obj = new CGoal(x, y, object_type); break;
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

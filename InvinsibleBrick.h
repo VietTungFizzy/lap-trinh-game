@@ -8,8 +8,13 @@
 class CInvinsibleBrick :
     public CGameObject
 {
+private:
+	int length, height;
 public:
-	CInvinsibleBrick(float x, float y, int type) : CGameObject(x, y, type) {}
+	CInvinsibleBrick(float x, float y, int type, int length = 1, int height = 1) : CGameObject(x, y, type) {
+		this->length = length;
+		this->height = height;
+	}
 	void Render() { 
 		//RenderBoundingBox(); 
 	}

@@ -3,14 +3,8 @@
 
 void CBrick::Render()
 {
-	if (spriteId == ID_ANI_BRICK) {
-		CAnimations* animations = CAnimations::GetInstance();
-		animations->Get(ID_ANI_BRICK)->Render(x, y);
-	}
-	else {
-		CSprites* s = CSprites::GetInstance();
-		s->Get(this->spriteId)->Draw(x, y);
-	}
+	CSprites* s = CSprites::GetInstance();
+	s->Get(this->spriteId)->Draw(x, y);
 	//RenderBoundingBox();
 }
 
