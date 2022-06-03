@@ -55,6 +55,15 @@ void CRouletteCard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// Add text object to scene
 		scene->AddObjects(line_2);
 
+		// Create Card Object
+
+
+		// Adjust Card Object position
+
+		
+		// Add card object to scene
+
+
 		Delete();
 	}
 }

@@ -152,6 +152,7 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="BrokenBrickEffect.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Card.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="InvinsibleBrick.h" />
     <ClInclude Include="Coin.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="BrokenBrickEffect.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="InvinsibleBrick.cpp" />
     <ClCompile Include="Coin.cpp" />
@@ -235,6 +237,7 @@
   <ItemGroup>
     <Text Include="data\brick.txt" />
     <Text Include="data\bullet.txt" />
+    <Text Include="data\card.txt" />
     <Text Include="data\coin.txt" />
     <Text Include="data\decorated.txt" />
     <Text Include="data\effect.txt" />

@@ -30,6 +30,7 @@ height	240
 # >= 40000 ==> coin
 # >= 41000 ==> goal
 # >= 42000 ==> text
+# >= 43000 ==> card
 # >= 51000 ==> platform
 # >= 60000 ==> decorated
 # >= 61000 ==> score text

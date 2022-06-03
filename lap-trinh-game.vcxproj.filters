@@ -162,6 +162,9 @@
     <ClInclude Include="Text.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -284,6 +287,9 @@
     <ClCompile Include="Text.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt">
@@ -332,6 +338,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\text.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\card.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
