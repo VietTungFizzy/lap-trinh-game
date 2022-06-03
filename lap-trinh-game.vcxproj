@@ -184,6 +184,7 @@
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="SuperLeaf.h" />
     <ClInclude Include="SwitchBrick.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Utils.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="SuperLeaf.cpp" />
     <ClCompile Include="SwitchBrick.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireTrap.cpp" />
@@ -244,6 +246,7 @@
     <Text Include="data\platform.txt" />
     <Text Include="data\score_text.txt" />
     <Text Include="data\item.txt" />
+    <Text Include="data\text.txt" />
     <Text Include="data\world-1-1.txt" />
     <Text Include="mario-sample.txt" />
   </ItemGroup>

@@ -1,4 +1,6 @@
 #include "Goal.h"
+#include "PlayScene.h"
+#include "RouletteCard.h"
 
 void CGoal::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -41,6 +43,14 @@ void CGoal::SetState(int state)
 		break;
 	case GOAL_STATE_TOUCHED:
 		{
+			CPlayScene* scene = (CPlayScene * )CGame::GetInstance()->GetCurrentScene();
+			int rouletteCardState;
+			switch (this->state) {
+				case GOAL_STATE_MUSHROOM: rouletteCardState = ROULETTE_CARD_STATE_MUSHROOM; break;
+				case GOAL_STATE_FLOWER: rouletteCardState = ROULETTE_CARD_STATE_FLOWER; break;
+				case GOAL_STATE_STAR: rouletteCardState = ROULETTE_CARD_STATE_STAR; break;
+			}
+			scene->AddObjects(new CRouletteCard(x, y, rouletteCardState));
 			Delete();
 			break;
 		}

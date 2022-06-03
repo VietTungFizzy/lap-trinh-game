@@ -159,6 +159,9 @@
     <ClInclude Include="RouletteCard.h">
       <Filter>Header Files\Object\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -278,6 +281,9 @@
     <ClCompile Include="RouletteCard.cpp">
       <Filter>Source Files\Object\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt">
@@ -323,6 +329,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\goal.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\text.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

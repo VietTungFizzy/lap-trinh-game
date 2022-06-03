@@ -38,6 +38,14 @@ void CBrokenBrickEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// if (GetTickCount64() - timer > BROKEN_BRICK_EFFECT_TIME_DURATION) Delete();
 }
 
+void CBrokenBrickEffect::GetBoundingBox(float& l, float& t, float& r, float& b)
+{
+	l = x - BROKEN_BRICK_EFFECT_BBOX_WIDTH / 2;
+	t = y - BROKEN_BRICK_EFFECT_BBOX_HEIGHT / 2;
+	r = l + BROKEN_BRICK_EFFECT_BBOX_WIDTH;
+	b = t + BROKEN_BRICK_EFFECT_BBOX_HEIGHT;
+}
+
 CBrokenBrickEffect::CBrokenBrickEffect(float x, float y) : CGameObject(x, y, OBJECT_TYPE_BROKEN_BRICK_EFFECT)
 {
 	for (int i = 0; i < BROKEN_BRICK_EFFECT_RUBBLES_AMOUNT; i++) {

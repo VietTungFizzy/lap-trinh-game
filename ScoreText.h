@@ -13,6 +13,9 @@
 #define SCORE_POINT_1000 1000
 #define SCORE_POINT_200 200
 #define SCORE_POINT_400 400
+
+#define SCORE_TEXT_BBOX_WIDTH 16
+#define SCORE_TEXT_BBOX_HEIGHT 16
 class CScoreText :
     public CGameObject
 {
@@ -25,6 +28,8 @@ public:
     }
     void Render();
     void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-    void GetBoundingBox(float& l, float& t, float& r, float& b) {}
+    void GetBoundingBox(float& l, float& t, float& r, float& b);
+
+    virtual int IsBlocking() { return 0; }
 };
 

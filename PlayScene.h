@@ -34,6 +34,7 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 	
+	void AdjustCameraPosition();
 public: 
 	CPlayScene(int id, LPCWSTR filePath);
 
@@ -52,7 +53,6 @@ public:
 
 	void Clear();
 	void PurgeDeletedObjects();
-	void AdjustCameraPosition();
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 

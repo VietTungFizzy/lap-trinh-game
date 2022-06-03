@@ -17,6 +17,7 @@ data/bullet.txt
 data/item.txt
 data/effect.txt
 data/goal.txt
+data/text.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

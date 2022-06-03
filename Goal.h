@@ -18,14 +18,13 @@ class CGoal :
 {
 private:
 	ULONGLONG timer;
-protected:
+public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();
 
 	void SetState(int state);
 
-public:
 	CGoal(float x, float y, int type): CGameObject(x, y, type) {
 		SetState(GOAL_STATE_MUSHROOM);
 	}

@@ -18,6 +18,7 @@
 #include "SwitchBrick.h"
 #include "PSwitch.h"
 #include "MarioTail.h"
+#include "Goal.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -195,6 +196,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_SUPER_LEAF: OnCollisionWithSuperLeaf(e); break;
 	case OBJECT_TYPE_SWITCH_BRICK: OnCollisionWithSwitchBrick(e); break;
 	case OBJECT_TYPE_P_SWITCH: OnCollisionWithPSwitch(e); break;
+	case OBJECT_TYPE_GOAL: OnCollisionWithGoal(e); break;
 	}
 }
 
@@ -461,6 +463,11 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
 			vx = 0;
 		}
 	}
+}
+
+void CMario::OnCollisionWithGoal(LPCOLLISIONEVENT e)
+{
+	e->obj->SetState(GOAL_STATE_TOUCHED);
 }
 
 //

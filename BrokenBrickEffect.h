@@ -18,6 +18,9 @@
 #define RUBBLE_TOP_RIGHT 1
 #define RUBBLE_BOTTOM_LEFT 2
 #define RUBBLE_BOTTOM_RIGHT 3
+
+#define BROKEN_BRICK_EFFECT_BBOX_WIDTH 16
+#define BROKEN_BRICK_EFFECT_BBOX_HEIGHT 16
 struct Rubble {
     float vx, vy, x, y, ay;
 };
@@ -37,9 +40,11 @@ private:
 protected:
     void Render();
     void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-    void GetBoundingBox(float& l, float& t, float& r, float& b) {}
+    void GetBoundingBox(float& l, float& t, float& r, float& b);
 
+    
 public:
     CBrokenBrickEffect(float x, float y);
+    virtual int IsBlocking() { return 0; }
 };
 
