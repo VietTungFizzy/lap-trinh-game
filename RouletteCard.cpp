@@ -1,6 +1,7 @@
 #include "RouletteCard.h"
 #include "PlayScene.h"
 #include "Text.h"
+#include "Card.h"
 
 void CRouletteCard::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -56,13 +57,28 @@ void CRouletteCard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		scene->AddObjects(line_2);
 
 		// Create Card Object
+		CCard* card = new CCard(
+			cam_l + game->GetBackBufferWidth() / 2,
+			cam_t + game->GetBackBufferHeight() / 4,
+			OBJECT_TYPE_CARD);
 
+		// Adjust Card Object position according to line_2
+		float card_x, card_y;
+		card_x = text_x + (content.size() * CHARACTER_BBOX_WIDTH) + CHARACTER_BBOX_WIDTH * 2;
+		card_y = text_y;
+		card->SetPosition(card_x, card_y);
 
-		// Adjust Card Object position
+		// Change card display according to roulette card state
+		int card_state = CARD_STATE_STAR;
+		switch (state) {
+		case ROULETTE_CARD_STATE_MUSHROOM: card_state = CARD_STATE_MUSHROOM; break;
+		case ROULETTE_CARD_STATE_FLOWER: card_state = CARD_STATE_FLOWER; break;
+		case ROULETTE_CARD_STATE_STAR: card_state = CARD_STATE_STAR; break;
+		}
+		card->SetState(card_state);
 
-		
 		// Add card object to scene
-
+		scene->AddObjects(card);
 
 		Delete();
 	}

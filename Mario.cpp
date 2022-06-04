@@ -25,25 +25,23 @@
 
 CMario::CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
 {
-	isSitting = false;
 	maxVx = 0.0f;
 	ax = 0.0f;
 	ay = MARIO_GRAVITY;
 
-	level = MARIO_LEVEL_SMALL;
+	level = MARIO_LEVEL_RACCOON;
 	untouchable = 0;
 	untouchable_start = -1;
-	isOnPlatform = false;
 	point = 0;
 	bottomBoundary = b;
 
 	powerCount = 0;
-	isMaxPower = false;
-	isSlowFalling = false;
+
+	currentCutScene = -1;
 
 	transition_timer = 0;
 	countdown_timer = 0;
-
+	flag = 0;
 	marioTail = new CMarioTail(x, y);
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	scene->AddObjects(marioTail);
@@ -88,9 +86,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	
 	// Handling power logic
-	if (isMaxPower) {
-		if (GetTickCount64() - countdown_timer > MARIO_MAX_POWER_DECREASE_TIME && !isOnPlatform) {
-			isMaxPower = false;
+	if (IsFlagOn(FLAG_MAX_POWER)) {
+		if (GetTickCount64() - countdown_timer > MARIO_MAX_POWER_DECREASE_TIME && !IsFlagOn(FLAG_ON_PLATFORM)) {
+			SetFlagOff(FLAG_MAX_POWER);
 			powerCount--;
 		}
 	}
@@ -103,16 +101,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	if (powerCount < 0) powerCount = 0;
 	if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
-	isMaxPower = (powerCount >= MARIO_MAX_POWER);
-	if (isMaxPower && countdown_timer == 0) {
+	(powerCount >= MARIO_MAX_POWER) ? SetFlagOn(FLAG_MAX_POWER) : SetFlagOff(FLAG_MAX_POWER);
+	if (IsFlagOn(FLAG_MAX_POWER) && countdown_timer == 0) {
 		countdown_timer = GetTickCount64();
 	}
 
 	// Handling grabbing logic
-	if (isGrabbing) {
+	if (IsFlagOn(FLAG_GRABBING)) {
 		CKoopa * koopa = (CKoopa*)grabbedObj;
 		if (!koopa->GetGrabbedFlag()) {
-			isGrabbing = false;
+			SetFlagOff(FLAG_GRABBING);
 			grabbedObj = nullptr;
 		}
 		else {
@@ -135,9 +133,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	// Handling tail attack logic
-	if (isWaggingTail) {
+	if (IsFlagOn(FLAG_WAGGING_TAIL)) {
 		if (GetTickCount64() - short_action_timer > MARIO_TAIL_ATTACK_TIME) {
-			isWaggingTail = false;
+			SetFlagOff(FLAG_WAGGING_TAIL);
 			short_action_timer = 0;
 			marioTail->SetState(MARIO_TAIL_STATE_INACTIVE);
 		}
@@ -155,6 +153,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	if (IsFlagOn(FLAG_IN_CUT_SCENE)) {
+		if (currentCutScene == CUT_SCENE_COURSE_END) {
+			if (IsFlagOn(FLAG_ON_PLATFORM)) {
+				SetState(MARIO_STATE_WALKING_RIGHT);
+			}
+		}
+	}
+
+	DebugOutTitle(L"%d", flag);
+
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -170,7 +178,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vy = 0;
 		if (e->ny < 0) {
-			isOnPlatform = true;
+			SetFlagOn(FLAG_ON_PLATFORM);
 			comboCount = NO_COMBO;
 		}
 	}
@@ -314,7 +322,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			CGame* game = CGame::GetInstance();
 			if (game->IsKeyDown(DIK_A)) {
 				koopa->SetGrabbedFlag(true);
-				isGrabbing = true;
+				SetFlagOn(FLAG_GRABBING);
 				grabbedObj = koopa;
 				return;
 			}
@@ -418,7 +426,7 @@ void CMario::OnCollisionWithParaKoopa(LPCOLLISIONEVENT e)
 			CGame* game = CGame::GetInstance();
 			if (game->IsKeyDown(DIK_A)) {
 				koopa->SetGrabbedFlag(true);
-				isGrabbing = true;
+				SetFlagOn(FLAG_GRABBING);
 				grabbedObj = koopa;
 				return;
 			}
@@ -468,6 +476,9 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithGoal(LPCOLLISIONEVENT e)
 {
 	e->obj->SetState(GOAL_STATE_TOUCHED);
+	SetFlagOn(FLAG_IN_CUT_SCENE);
+	currentCutScene = CUT_SCENE_COURSE_END;
+	SetState(MARIO_STATE_IDLE);
 }
 
 //
@@ -481,9 +492,9 @@ int CMario::GetAniIdSmall()
 		return aniId;
 	}
 
-	if (!isOnPlatform)
+	if (!IsFlagOn(FLAG_ON_PLATFORM))
 	{
-		if (isGrabbing) {
+		if (IsFlagOn(FLAG_GRABBING)) {
 			aniId = (nx > 0) ? ID_ANI_MARIO_SMALL_JUMP_WHILE_GRABBING_RIGHT : ID_ANI_MARIO_SMALL_JUMP_WHILE_GRABBING_LEFT;
 		}
 		else {
@@ -504,7 +515,7 @@ int CMario::GetAniIdSmall()
 		}
 	}
 	else
-		if (isSitting)
+		if (IsFlagOn(FLAG_SITTING))
 		{
 			if (nx > 0)
 				aniId = ID_ANI_MARIO_SIT_RIGHT;
@@ -515,7 +526,7 @@ int CMario::GetAniIdSmall()
 			if (vx == 0)
 			{
 				if (state == MARIO_STATE_IDLE) {
-					if (isGrabbing) {
+					if (IsFlagOn(FLAG_GRABBING)) {
 						aniId = (nx > 0) ? ID_ANI_MARIO_SMALL_GRABBING_IDLE_RIGHT : ID_ANI_MARIO_SMALL_GRABBING_IDLE_LEFT;
 					}
 					else {
@@ -523,7 +534,7 @@ int CMario::GetAniIdSmall()
 					}
 				}
 				else {
-					if (isGrabbing) {
+					if (IsFlagOn(FLAG_GRABBING)) {
 						aniId = (nx > 0) ? ID_ANI_MARIO_SMALL_GRABBING_WALK_RIGHT : ID_ANI_MARIO_SMALL_GRABBING_WALK_LEFT;
 					}
 					else {
@@ -538,8 +549,8 @@ int CMario::GetAniIdSmall()
 			}
 			else if (vx > 0)
 			{
-				if (isGrabbing) {
-					aniId = (isMaxPower) ? ID_ANI_MARIO_SMALL_GRABBING_RUNNING_RIGHT : ID_ANI_MARIO_SMALL_GRABBING_WALK_RIGHT;
+				if (IsFlagOn(FLAG_GRABBING)) {
+					aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_SMALL_GRABBING_RUNNING_RIGHT : ID_ANI_MARIO_SMALL_GRABBING_WALK_RIGHT;
 				}
 				else {
 					if (ax < 0)
@@ -552,8 +563,8 @@ int CMario::GetAniIdSmall()
 			}
 			else // vx < 0
 			{
-				if (isGrabbing) {
-					aniId = (isMaxPower) ? ID_ANI_MARIO_SMALL_GRABBING_RUNNING_LEFT : ID_ANI_MARIO_SMALL_GRABBING_WALK_LEFT;
+				if (IsFlagOn(FLAG_GRABBING)) {
+					aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_SMALL_GRABBING_RUNNING_LEFT : ID_ANI_MARIO_SMALL_GRABBING_WALK_LEFT;
 				}
 				else {
 					if (ax > 0)
@@ -577,18 +588,18 @@ int CMario::GetAniIdRaccoon()
 		aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_KICKING_RIGHT : ID_ANI_MARIO_RACCOON_KICKING_LEFT;
 		return aniId;
 	}
-	if (isWaggingTail) {
+	if (IsFlagOn(FLAG_WAGGING_TAIL)) {
 		aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_TURNING_FROM_RIGHT_TO_LEFT : ID_ANI_MARIO_RACCOON_TURNING_FROM_LEFT_TO_RIGHT;
 		return aniId;
 	}
 
-	if (!isOnPlatform) {
-		if (isGrabbing) {
+	if (!IsFlagOn(FLAG_ON_PLATFORM)) {
+		if (IsFlagOn(FLAG_GRABBING)) {
 			aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_JUMP_WHILE_GRABBING_RIGHT : ID_ANI_MARIO_RACCOON_JUMP_WHILE_GRABBING_LEFT;
 		}
-		else if (!isMaxPower) 
+		else if (!IsFlagOn(FLAG_MAX_POWER))
 		{
-			if(isSlowFalling) {
+			if(IsFlagOn(FLAG_SLOW_FALLING)) {
 				aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_SLOW_FALLING_RIGHT : ID_ANI_MARIO_RACCOON_SLOW_FALLING_LEFT;
 			}
 			else {
@@ -600,13 +611,13 @@ int CMario::GetAniIdRaccoon()
 		}
 	}
 	else {
-		if (isSitting) {
+		if (IsFlagOn(FLAG_SITTING)) {
 			aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_SIT_RIGHT : ID_ANI_MARIO_RACCOON_SIT_LEFT;
 		}
 		else {
 			if (vx == 0) {
 				if (state == MARIO_STATE_IDLE) {
-					if (isGrabbing) {
+					if (IsFlagOn(FLAG_GRABBING)) {
 						aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_GRABBING_IDLE_RIGHT : ID_ANI_MARIO_RACCOON_GRABBING_IDLE_LEFT;
 					}
 					else {
@@ -614,7 +625,7 @@ int CMario::GetAniIdRaccoon()
 					}
 				}
 				else {
-					if (isGrabbing) {
+					if (IsFlagOn(FLAG_GRABBING)) {
 						aniId = (nx > 0) ? ID_ANI_MARIO_RACCOON_GRABBING_WALK_RIGHT : ID_ANI_MARIO_RACCOON_GRABBING_WALK_LEFT;
 					}
 					else {
@@ -628,8 +639,8 @@ int CMario::GetAniIdRaccoon()
 				}
 			}
 			else if (vx > 0) {
-				if (isGrabbing) {
-					aniId = (isMaxPower) ? ID_ANI_MARIO_RACCOON_GRABBING_RUNNING_RIGHT : ID_ANI_MARIO_RACCOON_GRABBING_WALK_RIGHT;
+				if (IsFlagOn(FLAG_GRABBING)) {
+					aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_RACCOON_GRABBING_RUNNING_RIGHT : ID_ANI_MARIO_RACCOON_GRABBING_WALK_RIGHT;
 				}
 				else {
 					if (ax < 0) {
@@ -637,7 +648,7 @@ int CMario::GetAniIdRaccoon()
 					}
 					else {
 						if (ax == MARIO_ACCEL_RUN_X) {
-							aniId = (isMaxPower) ? ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_RIGHT : ID_ANI_MARIO_RACCOON_RUN_NO_POWER_RIGHT;
+							aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_RIGHT : ID_ANI_MARIO_RACCOON_RUN_NO_POWER_RIGHT;
 						}
 						else {
 							aniId = ID_ANI_MARIO_RACCOON_WALK_RIGHT;
@@ -647,8 +658,8 @@ int CMario::GetAniIdRaccoon()
 				
 			}
 			else { // vx < 0
-				if (isGrabbing) {
-					aniId = (isMaxPower) ? ID_ANI_MARIO_RACCOON_GRABBING_RUNNING_LEFT : ID_ANI_MARIO_RACCOON_GRABBING_WALK_LEFT;
+				if (IsFlagOn(FLAG_GRABBING)) {
+					aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_RACCOON_GRABBING_RUNNING_LEFT : ID_ANI_MARIO_RACCOON_GRABBING_WALK_LEFT;
 				}
 				else {
 					if (ax > 0) {
@@ -656,7 +667,7 @@ int CMario::GetAniIdRaccoon()
 					}
 					else {
 						if (ax == -MARIO_ACCEL_RUN_X) {
-							aniId = (isMaxPower) ? ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_LEFT : ID_ANI_MARIO_RACCOON_RUN_NO_POWER_LEFT;
+							aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_RACCOON_RUN_FULL_POWER_LEFT : ID_ANI_MARIO_RACCOON_RUN_NO_POWER_LEFT;
 						}
 						else {
 							aniId = ID_ANI_MARIO_RACCOON_WALK_LEFT;
@@ -731,9 +742,9 @@ int CMario::GetAniIdBig()
 		return aniId;
 	}
 
-	if (!isOnPlatform)
+	if (!IsFlagOn(FLAG_ON_PLATFORM))
 	{
-		if (isGrabbing) {
+		if (IsFlagOn(FLAG_GRABBING)) {
 			aniId = (nx > 0) ? ID_ANI_MARIO_GRABBING_WALK_RIGHT : ID_ANI_MARIO_GRABBING_WALK_LEFT;
 		}
 		else {
@@ -754,7 +765,7 @@ int CMario::GetAniIdBig()
 		}
 	}
 	else
-		if (isSitting)
+		if (IsFlagOn(FLAG_SITTING))
 		{
 			if (nx > 0)
 				aniId = ID_ANI_MARIO_SIT_RIGHT;
@@ -765,7 +776,7 @@ int CMario::GetAniIdBig()
 			if (vx == 0)
 			{
 				if (state == MARIO_STATE_IDLE) {
-					if (isGrabbing) {
+					if (IsFlagOn(FLAG_GRABBING)) {
 						aniId = (nx > 0) ? ID_ANI_MARIO_GRABBING_IDLE_RIGHT : ID_ANI_MARIO_GRABBING_IDLE_LEFT;
 					}
 					else {
@@ -773,7 +784,7 @@ int CMario::GetAniIdBig()
 					}
 				}
 				else {
-					if (isGrabbing) {
+					if (IsFlagOn(FLAG_GRABBING)) {
 						aniId = (nx > 0) ? ID_ANI_MARIO_GRABBING_WALK_RIGHT : ID_ANI_MARIO_GRABBING_WALK_LEFT;
 					}
 					else {
@@ -789,8 +800,8 @@ int CMario::GetAniIdBig()
 			}
 			else if (vx > 0)
 			{
-				if (isGrabbing) {
-					aniId = (isMaxPower) ? ID_ANI_MARIO_GRABBING_RUNNING_RIGHT : ID_ANI_MARIO_GRABBING_WALK_RIGHT;
+				if (IsFlagOn(FLAG_GRABBING)) {
+					aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_GRABBING_RUNNING_RIGHT : ID_ANI_MARIO_GRABBING_WALK_RIGHT;
 				}
 				else {
 					if (ax < 0)
@@ -804,8 +815,8 @@ int CMario::GetAniIdBig()
 			}
 			else if (vx < 0)
 			{
-				if (isGrabbing) {
-					aniId = (isMaxPower) ? ID_ANI_MARIO_GRABBING_RUNNING_LEFT : ID_ANI_MARIO_GRABBING_WALK_LEFT;
+				if (IsFlagOn(FLAG_GRABBING)) {
+					aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_GRABBING_RUNNING_LEFT : ID_ANI_MARIO_GRABBING_WALK_LEFT;
 				}
 				else {
 					if (ax > 0)
@@ -859,7 +870,7 @@ void CMario::Render()
 			break;
 		}
 	}
-	// DebugOut(L"[DEBUG] aniId: %d\n", aniId);
+	DebugOut(L"[DEBUG] aniId: %d\n", aniId);
 	animations->Get(aniId)->Render(x, y);
 
 	// RenderBoundingBox();
@@ -898,38 +909,50 @@ void CMario::SetState(int state)
 	switch (state)
 	{
 	case MARIO_STATE_RUNNING_RIGHT:
-		if (isSitting) break;
+		if (IsFlagOn(FLAG_SITTING)) break;
 		maxVx = MARIO_RUNNING_SPEED;
 		ax = MARIO_ACCEL_RUN_X;
 		nx = 1;
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
-		if (isSitting) break;
+		if (IsFlagOn(FLAG_SITTING)) break;
 		maxVx = -MARIO_RUNNING_SPEED;
 		ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
-		if (isSitting) break;
+		if (IsFlagOn(FLAG_SITTING)) break;
 		maxVx = MARIO_WALKING_SPEED;
-		ax = MARIO_ACCEL_WALK_X;
+		if (IsFlagOn(FLAG_IN_CUT_SCENE)) {
+			ax = 0;
+			vx = MARIO_SPEED_WHEN_IN_CUT_SCENE;
+		}
+		else {
+			ax = MARIO_ACCEL_WALK_X;
+		}
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
-		if (isSitting) break;
+		if (IsFlagOn(FLAG_SITTING)) break;
 		maxVx = -MARIO_WALKING_SPEED;
-		ax = -MARIO_ACCEL_WALK_X;
+		if (IsFlagOn(FLAG_IN_CUT_SCENE)) {
+			ax = 0;
+			vx = -MARIO_SPEED_WHEN_IN_CUT_SCENE;
+		}
+		else {
+			ax = -MARIO_ACCEL_WALK_X;
+		}
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
-		if (isSitting) break;
-		if (isOnPlatform)
+		if (IsFlagOn(FLAG_SITTING)) break;
+		if (IsFlagOn(FLAG_ON_PLATFORM))
 		{
 			if (abs(this->vx) == MARIO_RUNNING_SPEED)
 				vy = -MARIO_JUMP_RUN_SPEED_Y;
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
-			isOnPlatform = false;
+			SetFlagOff(FLAG_ON_PLATFORM);
 		}
 		break;
 
@@ -938,20 +961,20 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_SIT:
-		if (isGrabbing) break;
-		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
+		if (IsFlagOn(FLAG_GRABBING)) break;
+		if (IsFlagOn(FLAG_ON_PLATFORM) && level != MARIO_LEVEL_SMALL)
 		{
 			state = MARIO_STATE_IDLE;
-			isSitting = true;
+			SetFlagOn(FLAG_SITTING);
 			vx = 0; vy = 0.0f;
 			y +=MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
 	case MARIO_STATE_SIT_RELEASE:
-		if (isSitting)
+		if (IsFlagOn(FLAG_SITTING))
 		{
-			isSitting = false;
+			SetFlagOff(FLAG_SITTING);
 			state = MARIO_STATE_IDLE;
 			y -= MARIO_SIT_HEIGHT_ADJUST;
 		}
@@ -977,15 +1000,15 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_FLY_UP:
 		vy = -MARIO_FLY_UP_SPEED;
-		isOnPlatform = false;
+		SetFlagOff(FLAG_ON_PLATFORM);
 		break;
 	case MARIO_STATE_SLOW_FALLING:
 		vy = MARIO_SLOW_FALLING_SPEED;
-		isSlowFalling = true;
+		SetFlagOn(FLAG_SLOW_FALLING);
 		break;
 	case MARIO_STATE_KICKING:
 		{
-			isGrabbing = false;
+			SetFlagOff(FLAG_GRABBING);
 			CKoopa* koopa = (CKoopa*)grabbedObj;
 			int koopaState = (grabbedObj->GetType() == OBJECT_TYPE_KOOPA ? KOOPA_STATE_SHELL_MOVING : PARA_KOOPA_STATE_SHELL_MOVING);
 			koopa->SetIsPlayerLeft((nx > 0));
@@ -1016,7 +1039,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 {
 	if (level==MARIO_LEVEL_BIG || level == MARIO_LEVEL_RACCOON)
 	{
-		if (isSitting)
+		if (IsFlagOn(FLAG_SITTING))
 		{
 			left = x - MARIO_BIG_SITTING_BBOX_WIDTH / 2;
 			top = y - MARIO_BIG_SITTING_BBOX_HEIGHT / 2;

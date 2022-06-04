@@ -24,6 +24,8 @@
 
 #define MARIO_FLY_UP_SPEED 0.2f
 #define MARIO_SLOW_FALLING_SPEED 0.025f
+
+#define MARIO_SPEED_WHEN_IN_CUT_SCENE 0.08f
 #pragma endregion
 
 #pragma region STATE
@@ -51,6 +53,7 @@
 #define MARIO_STATE_SLOW_FALLING 801
 
 #define MARIO_STATE_KICKING 900
+
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -227,19 +230,40 @@
 
 #pragma endregion
 
+#pragma region CUT_SCENE_ID
+#define CUT_SCENE_COURSE_END 0
+#pragma endregion
+
+#pragma region FLAG
+#define FLAG_SITTING 0
+#define FLAG_MAX_POWER 1
+#define FLAG_ON_PLATFORM 2
+#define FLAG_WAGGING_TAIL 3
+#define FLAG_IN_CUT_SCENE 4
+#define FLAG_GRABBING 5
+#define FLAG_SLOW_FALLING 6
+#pragma endregion
+
+
 class CMario : public CGameObject
 {
 private:
+	/*
 	BOOLEAN isSitting;
 	BOOLEAN isMaxPower;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isSlowFalling;
 	BOOLEAN isWaggingTail;
-
+	BOOLEAN isInCutScene;
+	*/
+	int currentCutScene;
+	/*
 	BOOLEAN isGrabbing;
+	*/
 	CGameObject* grabbedObj;
 
 	CGameObject* marioTail;
+	int flag;
 
 	float maxVx;
 	float ax;				// acceleration on x 
@@ -307,12 +331,15 @@ public:
 	
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
-	bool isFullPower() { return isMaxPower; }
-	bool isOnTheGround() { return isOnPlatform; }
-	bool getSlowFallingFlag() { return isSlowFalling; }
-	void setSlowFallingFlag(bool flag) { isSlowFalling = flag; }
-	
-	bool getGrabbingFlag() { return isGrabbing; }
+	bool IsFlagOn(int flagId) {
+		return (flag & (1 << flagId));
+	}
+	void SetFlagOn(int flagId) {
+		flag = flag | (1 << flagId);
+	}
+	void SetFlagOff(int flagId) {
+		flag = flag & ~(1 << flagId);
+	}
 
-	void TailAttack() { isWaggingTail = true; short_action_timer = GetTickCount64(); }
+	void TailAttack() { SetFlagOn(FLAG_WAGGING_TAIL); short_action_timer = GetTickCount64(); }
 };

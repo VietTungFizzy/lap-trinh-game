@@ -10,6 +10,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	CMario* mario = (CMario *)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer(); 
+	if (mario->IsFlagOn(FLAG_IN_CUT_SCENE)) return;
 
 	switch (KeyCode)
 	{
@@ -24,13 +25,13 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
-			if (mario->isOnTheGround()) {
+			if (mario->IsFlagOn(FLAG_ON_PLATFORM)) {
 				mario->SetState(MARIO_STATE_JUMP);
 			}
 			else {
 				bool isPlayerSpammingKey = GetTickCount64() - key_timer[DIK_S] <= KEY_DELAY;
 				if (isPlayerSpammingKey) {
-					if (mario->isFullPower()) mario->SetState(MARIO_STATE_FLY_UP);
+					if (mario->IsFlagOn(FLAG_MAX_POWER)) mario->SetState(MARIO_STATE_FLY_UP);
 					else mario->SetState(MARIO_STATE_SLOW_FALLING);
 				}
 			}
@@ -57,11 +58,12 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	//DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	
+	if (mario->IsFlagOn(FLAG_IN_CUT_SCENE)) return;
+
 	switch (KeyCode)
 	{
 	case DIK_A:
-		if (mario->getGrabbingFlag()) {
+		if (mario->IsFlagOn(FLAG_GRABBING)) {
 			// Set state kicking
 			mario->SetState(MARIO_STATE_KICKING);
 		}
@@ -69,7 +71,7 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON) {
 			// TODO: need to find a better way to detect slow falling
-			if (!mario->getSlowFallingFlag() && !mario->isFullPower()) {
+			if (!mario->IsFlagOn(FLAG_SLOW_FALLING) && !mario->IsFlagOn(FLAG_MAX_POWER)) {
 				mario->SetState(MARIO_STATE_RELEASE_JUMP);
 			}
 		}
@@ -87,11 +89,12 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 {
 	LPGAME game = CGame::GetInstance();
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario->IsFlagOn(FLAG_IN_CUT_SCENE)) return;
 	ULONGLONG now = GetTickCount64();
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
 		if (game->IsKeyDown(DIK_A) && 
-			mario->isOnTheGround() &&
+			mario->IsFlagOn(FLAG_ON_PLATFORM) &&
 			now - key_timer[DIK_A] > KEY_DELAY)
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		else
@@ -100,7 +103,7 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
 		if (game->IsKeyDown(DIK_A) && 
-			mario->isOnTheGround() &&
+			mario->IsFlagOn(FLAG_ON_PLATFORM) &&
 			now - key_timer[DIK_A] > KEY_DELAY)
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		else
@@ -110,5 +113,5 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_IDLE);
 	}
 
-	if (now - key_timer[DIK_S] > KEY_DELAY) mario->setSlowFallingFlag(false);
+	if (now - key_timer[DIK_S] > KEY_DELAY) mario->SetFlagOff(FLAG_SLOW_FALLING);
 }
