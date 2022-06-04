@@ -134,7 +134,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			return;
 		}
 		// Make sure add map settings before objects loading
-		obj = new CMario(x, y, bottomBoundaries, object_type);
+		obj = new CMario(x, y, object_type);
 		player = (CMario*)obj;
 		DebugOut(L"[INFO] Player object has been created!\n");
 		return;
@@ -260,9 +260,10 @@ void CPlayScene::_ParseSection_CAMERA_BOUNDARIES(string line)
 		return;
 	}
 
-	leftBoundaries = atoi(tokens[0].c_str());
-	bottomBoundaries = atoi(tokens[1].c_str());
-	rightBoundaries = atoi(tokens[2].c_str());
+	topBoundaries = atoi(tokens[0].c_str());
+	leftBoundaries = atoi(tokens[1].c_str());
+	bottomBoundaries = atoi(tokens[2].c_str());
+	rightBoundaries = atoi(tokens[3].c_str());
 }
 
 void CPlayScene::LoadAssets(LPCWSTR assetFile)
@@ -340,6 +341,12 @@ void CPlayScene::Load()
 			t->SetPlayer(player);
 		}
 	}
+
+	((CMario*)player)->SetBoundary(
+		leftBoundaries + MARIO_BOUNDARY_OFFSET, 
+		topBoundaries, 
+		rightBoundaries - MARIO_BOUNDARY_OFFSET, 
+		bottomBoundaries);
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }

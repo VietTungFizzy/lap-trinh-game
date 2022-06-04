@@ -11,7 +11,7 @@
 class CPlayScene: public CScene
 {
 private:
-	int leftBoundaries, rightBoundaries, bottomBoundaries;
+	int topBoundaries, leftBoundaries, rightBoundaries, bottomBoundaries;
 	BOOLEAN isCameraYLocked;
 	BOOLEAN isSwitchOn;
 	ULONGLONG timer;
@@ -60,6 +60,7 @@ public:
 	bool GetSwitchStatus() { return isSwitchOn; }
 
 	bool isInCamera(LPGAMEOBJECT obj);
+
 };
 
 typedef CPlayScene* LPPLAYSCENE;

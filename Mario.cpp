@@ -23,7 +23,7 @@
 #include "debug.h"
 #include "Collision.h"
 
-CMario::CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
+CMario::CMario(float x, float y, int type) : CGameObject(x, y, type)
 {
 	maxVx = 0.0f;
 	ax = 0.0f;
@@ -33,7 +33,7 @@ CMario::CMario(float x, float y, int b, int type) : CGameObject(x, y, type)
 	untouchable = 0;
 	untouchable_start = -1;
 	point = 0;
-	bottomBoundary = b;
+	bottomBoundary = leftBoundary = topBoundary = rightBoundary = 0;
 
 	powerCount = 0;
 
@@ -62,97 +62,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
-	if (abs(vx) > abs(maxVx)) {
-		// Add momentum effect when mario change from walking to idle
-		if (state == MARIO_STATE_IDLE) {
-			if (abs(ax) < MINIMUM_ACCEL_VALUE) {
-				vx = 0;
-				ax = 0;
-			}
-		}
-		else {
-			vx = maxVx;
-		}
-	}
-
-	if (y > bottomBoundary) {
-		SetState(MARIO_STATE_DIE);
-	}
-	
-	// reset untouchable timer if untouchable time has passed
-	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
-	{
-		ResetUntouchable();
-	}
-	
-	// Handling power logic
-	if (IsFlagOn(FLAG_MAX_POWER)) {
-		if (GetTickCount64() - countdown_timer > MARIO_MAX_POWER_DECREASE_TIME && !IsFlagOn(FLAG_ON_PLATFORM)) {
-			SetFlagOff(FLAG_MAX_POWER);
-			powerCount--;
-		}
-	}
-	else {
-		if (abs(vx) != MARIO_RUNNING_SPEED) {
-			powerCount--;
-			countdown_timer = 0;
-		}
-		else powerCount++;
-	}
-	if (powerCount < 0) powerCount = 0;
-	if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
-	(powerCount >= MARIO_MAX_POWER) ? SetFlagOn(FLAG_MAX_POWER) : SetFlagOff(FLAG_MAX_POWER);
-	if (IsFlagOn(FLAG_MAX_POWER) && countdown_timer == 0) {
-		countdown_timer = GetTickCount64();
-	}
-
-	// Handling grabbing logic
-	if (IsFlagOn(FLAG_GRABBING)) {
-		CKoopa * koopa = (CKoopa*)grabbedObj;
-		if (!koopa->GetGrabbedFlag()) {
-			SetFlagOff(FLAG_GRABBING);
-			grabbedObj = nullptr;
-		}
-		else {
-			float l, t, r, b; // mario bounding box
-			float gx, gy; // grabbed object x and y
-			GetBoundingBox(l, t, r, b);
-			if (nx > 0) {
-				gx = r + (grabbedObj->GetType() == OBJECT_TYPE_KOOPA ? KOOPA_BBOX_WIDTH : PARA_KOOPA_BBOX_WIDTH) / 2 - MARIO_GRABBING_OBJ_OFFSET;
-			}
-			else {
-				gx = l - (grabbedObj->GetType() == OBJECT_TYPE_KOOPA ? KOOPA_BBOX_WIDTH : PARA_KOOPA_BBOX_WIDTH) / 2 + MARIO_GRABBING_OBJ_OFFSET;
-			}
-			gx += vx * dt;
-			gy = y + vy * dt;
-			if (level == MARIO_LEVEL_SMALL) {
-				gy -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 4;
-			}
-			grabbedObj->SetPosition(gx, gy);
-		}
-	}
-
-	// Handling tail attack logic
-	if (IsFlagOn(FLAG_WAGGING_TAIL)) {
-		if (GetTickCount64() - short_action_timer > MARIO_TAIL_ATTACK_TIME) {
-			SetFlagOff(FLAG_WAGGING_TAIL);
-			short_action_timer = 0;
-			marioTail->SetState(MARIO_TAIL_STATE_INACTIVE);
-		}
-		else {
-			float tail_x, tail_y;
-			if (nx > 0) {
-				tail_x = x + MARIO_BIG_BBOX_WIDTH / 2 + MARIO_TAIL_BBOX_WIDTH / 2 - 1;
-			}
-			else {
-				tail_x = x - (MARIO_BIG_BBOX_WIDTH / 2 + MARIO_TAIL_BBOX_WIDTH / 2 + 1);
-			}
-			tail_y = y + MARIO_BIG_BBOX_HEIGHT / 4;
-			marioTail->SetPosition(tail_x, tail_y);
-			marioTail->SetState(MARIO_TAIL_STATE_ACTIVE);
-		}
-	}
-
 	if (IsFlagOn(FLAG_IN_CUT_SCENE)) {
 		if (currentCutScene == CUT_SCENE_COURSE_END) {
 			if (IsFlagOn(FLAG_ON_PLATFORM)) {
@@ -160,9 +69,108 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
+	else {
+		if (abs(vx) > abs(maxVx)) {
+			// Add momentum effect when mario change from walking to idle
+			if (state == MARIO_STATE_IDLE) {
+				if (abs(ax) < MINIMUM_ACCEL_VALUE) {
+					vx = 0;
+					ax = 0;
+				}
+			}
+			else {
+				vx = maxVx;
+			}
+		}
 
-	DebugOutTitle(L"%d", flag);
+		// Handling mario's interaction with boundary
+		if (y > bottomBoundary) {
+			SetState(MARIO_STATE_DIE);
+		}
+		else {
+			float l, t, r, b;
+			GetBoundingBox(l, t, r, b);
+			float dx = vx * dt;
+			if (l + dx <= leftBoundary || r + dx >= rightBoundary) vx = 0;
+		}
 
+
+		// reset untouchable timer if untouchable time has passed
+		if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+		{
+			ResetUntouchable();
+		}
+
+		// Handling power logic
+		if (IsFlagOn(FLAG_MAX_POWER)) {
+			if (GetTickCount64() - countdown_timer > MARIO_MAX_POWER_DECREASE_TIME && !IsFlagOn(FLAG_ON_PLATFORM)) {
+				SetFlagOff(FLAG_MAX_POWER);
+				powerCount--;
+			}
+		}
+		else {
+			if (abs(vx) != MARIO_RUNNING_SPEED) {
+				powerCount--;
+				countdown_timer = 0;
+			}
+			else powerCount++;
+		}
+		if (powerCount < 0) powerCount = 0;
+		if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
+		(powerCount >= MARIO_MAX_POWER) ? SetFlagOn(FLAG_MAX_POWER) : SetFlagOff(FLAG_MAX_POWER);
+		if (IsFlagOn(FLAG_MAX_POWER) && countdown_timer == 0) {
+			countdown_timer = GetTickCount64();
+		}
+
+		// Handling grabbing logic
+		if (IsFlagOn(FLAG_GRABBING)) {
+			CKoopa* koopa = (CKoopa*)grabbedObj;
+			if (!koopa->GetGrabbedFlag()) {
+				SetFlagOff(FLAG_GRABBING);
+				grabbedObj = nullptr;
+			}
+			else {
+				float l, t, r, b; // mario bounding box
+				float gx, gy; // grabbed object x and y
+				GetBoundingBox(l, t, r, b);
+				if (nx > 0) {
+					gx = r + (grabbedObj->GetType() == OBJECT_TYPE_KOOPA ? KOOPA_BBOX_WIDTH : PARA_KOOPA_BBOX_WIDTH) / 2 - MARIO_GRABBING_OBJ_OFFSET;
+				}
+				else {
+					gx = l - (grabbedObj->GetType() == OBJECT_TYPE_KOOPA ? KOOPA_BBOX_WIDTH : PARA_KOOPA_BBOX_WIDTH) / 2 + MARIO_GRABBING_OBJ_OFFSET;
+				}
+				gx += vx * dt;
+				gy = y + vy * dt;
+				if (level == MARIO_LEVEL_SMALL) {
+					gy -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 4;
+				}
+				grabbedObj->SetPosition(gx, gy);
+			}
+		}
+
+		// Handling tail attack logic
+		if (IsFlagOn(FLAG_WAGGING_TAIL)) {
+			if (GetTickCount64() - short_action_timer > MARIO_TAIL_ATTACK_TIME) {
+				SetFlagOff(FLAG_WAGGING_TAIL);
+				short_action_timer = 0;
+				marioTail->SetState(MARIO_TAIL_STATE_INACTIVE);
+			}
+			else {
+				float tail_x, tail_y;
+				if (nx > 0) {
+					tail_x = x + MARIO_BIG_BBOX_WIDTH / 2 + MARIO_TAIL_BBOX_WIDTH / 2 - 1;
+				}
+				else {
+					tail_x = x - (MARIO_BIG_BBOX_WIDTH / 2 + MARIO_TAIL_BBOX_WIDTH / 2 + 1);
+				}
+				tail_y = y + MARIO_BIG_BBOX_HEIGHT / 4;
+				marioTail->SetPosition(tail_x, tail_y);
+				marioTail->SetState(MARIO_TAIL_STATE_ACTIVE);
+			}
+		}
+	}
+
+	DebugOutTitle(L"x: %f y: %f", x, y);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -183,10 +191,13 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		}
 	}
 	else 
-	if (e->nx != 0 && e->obj->IsBlocking())
+	if (
+		e->nx != 0 && 
+		e->obj->IsBlocking())
 	{
 		vx = 0;
 	}
+
 	switch (e->obj->GetType()) {
 	case OBJECT_TYPE_GOOMBA: OnCollisionWithGoomba(e); break;
 	case OBJECT_TYPE_COIN:	OnCollisionWithCoin(e); break;
@@ -234,8 +245,11 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
+	DebugOut(L"[DEBUG] Switch to World map\n");
+	/* Turn off for now
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+	*/
 }
 
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
@@ -870,7 +884,8 @@ void CMario::Render()
 			break;
 		}
 	}
-	DebugOut(L"[DEBUG] aniId: %d\n", aniId);
+	// DebugOut(L"[DEBUG] aniId: %d\n", aniId);
+	
 	animations->Get(aniId)->Render(x, y);
 
 	// RenderBoundingBox();
@@ -1061,6 +1076,14 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
+}
+
+void CMario::SetBoundary(int l, int t, int r, int b)
+{
+	leftBoundary = l;
+	topBoundary = t;
+	rightBoundary = r;
+	bottomBoundary = b;
 }
 
 void CMario::SetLevel(int l)

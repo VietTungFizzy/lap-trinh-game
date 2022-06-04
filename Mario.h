@@ -220,6 +220,8 @@
 
 #define MARIO_MAX_POWER 50
 #define MARIO_GRABBING_OBJ_OFFSET 2
+
+#define MARIO_BOUNDARY_OFFSET 20
 #pragma endregion
 
 #pragma region LEVEL
@@ -234,6 +236,7 @@
 #define CUT_SCENE_COURSE_END 0
 #pragma endregion
 
+// Using int type, we constrained the number of flag down to 32
 #pragma region FLAG
 #define FLAG_SITTING 0
 #define FLAG_MAX_POWER 1
@@ -248,28 +251,18 @@
 class CMario : public CGameObject
 {
 private:
-	/*
-	BOOLEAN isSitting;
-	BOOLEAN isMaxPower;
-	BOOLEAN isOnPlatform;
-	BOOLEAN isSlowFalling;
-	BOOLEAN isWaggingTail;
-	BOOLEAN isInCutScene;
-	*/
-	int currentCutScene;
-	/*
-	BOOLEAN isGrabbing;
-	*/
-	CGameObject* grabbedObj;
-
-	CGameObject* marioTail;
 	int flag;
+	int currentCutScene;
+
+	CGameObject* grabbedObj;
+	CGameObject* marioTail;
+
 
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
-	int bottomBoundary;
+	int topBoundary, leftBoundary, rightBoundary, bottomBoundary;
 	int level; 
 	int untouchable; 
 	ULONGLONG untouchable_start;
@@ -307,7 +300,7 @@ private:
 	void ResetUntouchable() { untouchable = 0; untouchable_start = 0; }
 
 public:
-	CMario(float x, float y, int b, int type);
+	CMario(float x, float y, int type);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
@@ -342,4 +335,5 @@ public:
 	}
 
 	void TailAttack() { SetFlagOn(FLAG_WAGGING_TAIL); short_action_timer = GetTickCount64(); }
+	void SetBoundary(int l, int t, int r, int b);
 };
