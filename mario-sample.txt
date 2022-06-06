@@ -1,14 +1,14 @@
 [SETTINGS]
-start	10
+start	1
 width	320
 height	240
 
 #id	type	file
-# type: 0: intro, 1: play scene 
+# type: 0: intro, 1: world map,	2: play scene
 [SCENES]
-0	data/intro.txt
-1	data/world_map.txt
-10	data/world-1-1.txt
+0	data/intro.txt	2
+1	data/world-map.txt	1
+10	data/world-1-1.txt	2
 
 
 # id	file 
@@ -20,6 +20,7 @@ height	240
 20	textures\hud_font.png
 21	textures\stage_title.png
 22	textures\misc_1.png
+23	textures\world-map-sprites.png
 
 # META NOTE
 # SPRITE ID RANGE
@@ -45,3 +46,4 @@ height	240
 # >= 5500 ==> bullet
 # >= 6000 ==> item
 # >= 11000 ==> coin
+# >= 20000 ==> decorated bbject

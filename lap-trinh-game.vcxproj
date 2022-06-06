@@ -175,6 +175,7 @@
     <ClInclude Include="PlatformTopOnly.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
+    <ClInclude Include="PortalWorldMap.h" />
     <ClInclude Include="PSwitch.h" />
     <ClInclude Include="RewardingBrick.h" />
     <ClInclude Include="RouletteCard.h" />
@@ -190,6 +191,8 @@
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusFireTrap.h" />
+    <ClInclude Include="WorldMapKeyHandler.h" />
+    <ClInclude Include="WorldScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
@@ -220,6 +223,7 @@
     <ClCompile Include="PlatformTopOnly.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="PortalWorldMap.cpp" />
     <ClCompile Include="PSwitch.cpp" />
     <ClCompile Include="RewardingBrick.cpp" />
     <ClCompile Include="RouletteCard.cpp" />
@@ -233,6 +237,8 @@
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireTrap.cpp" />
+    <ClCompile Include="WorldMapKeyHandler.cpp" />
+    <ClCompile Include="WorldScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt" />
@@ -251,6 +257,7 @@
     <Text Include="data\item.txt" />
     <Text Include="data\text.txt" />
     <Text Include="data\world-1-1.txt" />
+    <Text Include="data\world-map.txt" />
     <Text Include="mario-sample.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

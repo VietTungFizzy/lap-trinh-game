@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Animations.h"
 #include "PlayScene.h"
+#include "WorldScene.h"
 
 CGame * CGame::__instance = NULL;
 
@@ -437,6 +438,8 @@ void CGame::ProcessKeyboard()
 #define GAME_FILE_SECTION_SCENES 2
 #define GAME_FILE_SECTION_TEXTURES 3
 
+#define SCENE_TYPE_WORLD_MAP 1
+#define SCENE_TYPE_PLAY_SCENE 2
 
 void CGame::_ParseSection_SETTINGS(string line)
 {
@@ -456,8 +459,21 @@ void CGame::_ParseSection_SCENES(string line)
 	if (tokens.size() < 2) return;
 	int id = atoi(tokens[0].c_str());
 	LPCWSTR path = ToLPCWSTR(tokens[1]);   // file: ASCII format (single-byte char) => Wide Char
-
-	LPSCENE scene = new CPlayScene(id, path);
+	int type = atoi(tokens[2].c_str());
+	LPSCENE scene;
+	switch (type) {
+	case SCENE_TYPE_PLAY_SCENE:
+		scene = new CPlayScene(id, path);
+		break;
+	case SCENE_TYPE_WORLD_MAP:
+		scene = new CWorldScene(id, path);
+		break;
+	default:
+		DebugOut(L"[ERROR] Unknown scene type\n");
+		return;
+		break;
+	}
+	
 	scenes[id] = scene;
 }
 
