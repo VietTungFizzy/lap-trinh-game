@@ -166,6 +166,7 @@
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="MarioTail.h" />
+    <ClInclude Include="MarioWorldMap.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="ParaGoomba.h" />
     <ClInclude Include="ParaKoopa.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusFireTrap.h" />
     <ClInclude Include="WorldMapKeyHandler.h" />
+    <ClInclude Include="WorldMapNode.h" />
     <ClInclude Include="WorldScene.h" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +216,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="MarioTail.cpp" />
+    <ClCompile Include="MarioWorldMap.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="ParaGoomba.cpp" />
     <ClCompile Include="ParaKoopa.cpp" />
@@ -238,6 +241,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireTrap.cpp" />
     <ClCompile Include="WorldMapKeyHandler.cpp" />
+    <ClCompile Include="WorldMapNode.cpp" />
     <ClCompile Include="WorldScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +257,7 @@
     <Text Include="data\mushroom.txt" />
     <Text Include="data\pipe.txt" />
     <Text Include="data\platform.txt" />
+    <Text Include="data\world-map-node.txt" />
     <Text Include="data\score_text.txt" />
     <Text Include="data\item.txt" />
     <Text Include="data\text.txt" />

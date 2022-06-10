@@ -7,6 +7,8 @@ class CWorldScene :
     public CScene
 {
 protected:
+	LPGAMEOBJECT player;
+
 	// List of objects that can have impact with the game
 	vector<LPGAMEOBJECT> objects;
 

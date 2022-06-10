@@ -7,6 +7,8 @@
 #include "AssetIDs.h"
 
 #include "Decorated_Obj.h"
+#include "WorldMapNode.h"
+#include "PortalWorldMap.h"
 
 #include "WorldMapKeyHandler.h"
 
@@ -92,8 +94,12 @@ void CWorldScene::_ParseSection_OBJECTS(string line)
 
 	CGameObject* obj = NULL;
 	switch (object_type) {
-		case OBJECT_TYPE_DECORATED:
-		{
+		case OBJECT_TYPE_MARIO_WORLD_MAP: {
+
+			return;
+			break;
+		}
+		case OBJECT_TYPE_DECORATED: {
 			if (tokens.size() == DECORATED_OBJECT_SINGLE_CELL_PARAMS) {
 				int sprite_id = atoi(tokens[3].c_str());
 				obj = new CDecoratedObject(x, y, sprite_id, object_type);
@@ -134,7 +140,28 @@ void CWorldScene::_ParseSection_OBJECTS(string line)
 			return;
 			break;
 		}
+		case OBJECT_TYPE_WORLD_MAP_NODE: {
+			int spriteId = atoi(tokens[3].c_str());
+			int adj_t = atoi(tokens[4].c_str());
+			int adj_l = atoi(tokens[5].c_str());
+			int adj_r = atoi(tokens[6].c_str());
+			int adj_d = atoi(tokens[7].c_str());
+			obj = new CWorldMapNode(x, y, object_type, adj_t, adj_l, adj_r, adj_d, spriteId);
+			break;
+		}
+		case OBJECT_TYPE_PORTAL_WORLD_MAP: {
+			int spriteId = atoi(tokens[3].c_str());
+			int adj_t = atoi(tokens[4].c_str());
+			int adj_l = atoi(tokens[5].c_str());
+			int adj_r = atoi(tokens[6].c_str());
+			int adj_d = atoi(tokens[7].c_str());
+			int sceneId = atoi(tokens[8].c_str());
+			obj = new CPortalWorldMap(x, y, object_type, adj_t, adj_l, adj_r, adj_d, spriteId, sceneId);
+			break;
+		}
 	}
+
+	objects.push_back(obj);
 }
 
 void CWorldScene::_ParseSection_CAMERA_BOUNDARIES(string line)
