@@ -9,6 +9,9 @@
 #define WORLD_MAP_NODE_ADJACENT_NODE_RIGHT 2
 #define WORLD_MAP_NODE_ADJACENT_NODE_DOWN 3
 
+// For now, we assumed distance between node is 32
+#define WORLD_MAP_NODE_DISTANCE 32
+
 class CWorldMapNode :
     public CGameObject
 {

@@ -26,6 +26,8 @@ protected:
 
 	void LoadAssets(LPCWSTR assetFile);
 public:
+	LPGAMEOBJECT GetPlayer() { return player; }
+
 	CWorldScene(int id, LPCWSTR filePath);
 
 	virtual void Load();

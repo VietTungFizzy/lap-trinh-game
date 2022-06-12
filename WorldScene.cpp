@@ -9,6 +9,7 @@
 #include "Decorated_Obj.h"
 #include "WorldMapNode.h"
 #include "PortalWorldMap.h"
+#include "MarioWorldMap.h"
 
 #include "WorldMapKeyHandler.h"
 
@@ -95,7 +96,7 @@ void CWorldScene::_ParseSection_OBJECTS(string line)
 	CGameObject* obj = NULL;
 	switch (object_type) {
 		case OBJECT_TYPE_MARIO_WORLD_MAP: {
-
+			player = new CMarioWorldMap(x, y, object_type);
 			return;
 			break;
 		}
@@ -273,6 +274,24 @@ void CWorldScene::Unload()
 
 void CWorldScene::Update(DWORD dt)
 {
+	// We know that Mario is the last object in the list hence we won't add him into the colliable object list
+		// TO-DO: This is a "dirty" way, need a more organized way 
+	vector<LPGAMEOBJECT> coObjects;
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		coObjects.push_back(objects[i]);
+	}
+
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update(dt, &coObjects);
+	}
+	player->Update(dt, &coObjects);
+
+	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
+	if (player == NULL) return;
+
+	PurgeDeletedObjects();
 }
 
 void CWorldScene::Render()
@@ -285,6 +304,8 @@ void CWorldScene::Render()
 	for (size_t i = 0; i < objects.size(); i++) {
 		objects[i]->Render();
 	}
+
+	player->Render();
 }
 
 void CWorldScene::Clear()
