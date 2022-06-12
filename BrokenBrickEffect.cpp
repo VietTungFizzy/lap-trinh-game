@@ -17,7 +17,7 @@ void CBrokenBrickEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	bool is_all_rubble_out_of_camera = true;
 	
-	float cam_t, cam_l, cam_r, cam_b, x, y;
+	float cam_t, cam_l, cam_r, cam_b;
 	CGame* game = CGame::GetInstance();
 	game->GetCamPos(cam_l, cam_t);
 	cam_r = cam_l + game->GetBackBufferWidth();

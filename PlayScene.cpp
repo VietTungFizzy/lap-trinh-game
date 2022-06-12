@@ -98,7 +98,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (size_t i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i+1].c_str());
@@ -260,10 +260,10 @@ void CPlayScene::_ParseSection_CAMERA_BOUNDARIES(string line)
 		return;
 	}
 
-	topBoundaries = atoi(tokens[0].c_str());
-	leftBoundaries = atoi(tokens[1].c_str());
-	bottomBoundaries = atoi(tokens[2].c_str());
-	rightBoundaries = atoi(tokens[3].c_str());
+	topBoundaries = (float)atof(tokens[0].c_str());
+	leftBoundaries = (float)atof(tokens[1].c_str());
+	bottomBoundaries = (float)atof(tokens[2].c_str());
+	rightBoundaries = (float)atof(tokens[3].c_str());
 }
 
 void CPlayScene::LoadAssets(LPCWSTR assetFile)
@@ -388,14 +388,14 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	// Always render decorated objects first
-	for (int i = 0; i < decoratedObjects.size(); i++) {
+	for (size_t i = 0; i < decoratedObjects.size(); i++) {
 		if (isInCamera(decoratedObjects[i])) {
 			decoratedObjects[i]->Render();
 		}
 		
 	}
 
-	for (int i = 0; i < objects.size(); i++) {
+	for (size_t i = 0; i < objects.size(); i++) {
 		if(isInCamera(objects[i]) || dynamic_cast<CPlatform*>(objects[i]))
 			objects[i]->Render();
 	}
@@ -433,7 +433,7 @@ void CPlayScene::Clear()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 		delete objects[i];
 
 	objects.clear();

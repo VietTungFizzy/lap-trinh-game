@@ -18,7 +18,7 @@ void CMarioTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// We couldn't use Bounding Box Collision technique
 		// Instead, we just detect whether mario tail's bounding box
 		// and an object's bounding box overlap each other
-		for (int i = 0; i < coObjects->size(); i++) {
+		for (size_t i = 0; i < coObjects->size(); i++) {
 			CGameObject* t = coObjects->at(i);
 			isOverlap = CCollision::GetInstance()->DetectOverlap(this, t);
 

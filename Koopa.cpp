@@ -195,7 +195,7 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		if (e->obj->GetType() == OBJECT_TYPE_REWARDING_BRICK &&
 			e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
 			CRewardingBrick* obj = (CRewardingBrick*)e->obj;
-			obj->SetRewardDirection(-e->nx);
+			obj->SetRewardDirection((int)-e->nx);
 			obj->SetState(REWARDING_BRICK_GO_UP_STATE);
 		}
 		if (e->obj->GetType() == OBJECT_TYPE_SWITCH_BRICK &&

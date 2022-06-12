@@ -64,8 +64,11 @@
 #define ID_ANI_MARIO_WALKING_RIGHT 500
 #define ID_ANI_MARIO_WALKING_LEFT 501
 
-#define ID_ANI_MARIO_RUNNING_RIGHT 600
-#define ID_ANI_MARIO_RUNNING_LEFT 601
+#define ID_ANI_MARIO_RUNNING_NO_POWER_RIGHT 550
+#define ID_ANI_MARIO_RUNNING_NO_POWER_LEFT 551
+
+#define ID_ANI_MARIO_RUNNING_FULL_POWER_RIGHT 600
+#define ID_ANI_MARIO_RUNNING_FULL_POWER_LEFT 601
 
 #define ID_ANI_MARIO_JUMP_WALK_RIGHT 700
 #define ID_ANI_MARIO_JUMP_WALK_LEFT 701
@@ -103,8 +106,11 @@
 #define ID_ANI_MARIO_SMALL_WALKING_RIGHT 1200
 #define ID_ANI_MARIO_SMALL_WALKING_LEFT 1201
 
-#define ID_ANI_MARIO_SMALL_RUNNING_RIGHT 1300
-#define ID_ANI_MARIO_SMALL_RUNNING_LEFT 1301
+#define ID_ANI_MARIO_SMALL_RUNNING_NO_POWER_RIGHT 1250
+#define ID_ANI_MARIO_SMALL_RUNNING_NO_POWER_LEFT 1251
+
+#define ID_ANI_MARIO_SMALL_RUNNING_FULL_POWER_RIGHT 1300
+#define ID_ANI_MARIO_SMALL_RUNNING_FULL_POWER_LEFT 1301
 
 #define ID_ANI_MARIO_SMALL_BRACE_RIGHT 1400
 #define ID_ANI_MARIO_SMALL_BRACE_LEFT 1401
@@ -262,7 +268,7 @@ private:
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
-	int topBoundary, leftBoundary, rightBoundary, bottomBoundary;
+	float topBoundary, leftBoundary, rightBoundary, bottomBoundary;
 	int level; 
 	int untouchable; 
 	ULONGLONG untouchable_start;
@@ -335,5 +341,5 @@ public:
 	}
 
 	void TailAttack() { SetFlagOn(FLAG_WAGGING_TAIL); short_action_timer = GetTickCount64(); }
-	void SetBoundary(int l, int t, int r, int b);
+	void SetBoundary(float l, float t, float r, float b);
 };

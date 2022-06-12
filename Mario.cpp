@@ -245,11 +245,8 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
-	DebugOut(L"[DEBUG] Switch to World map\n");
-	/* Turn off for now
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
-	*/
 }
 
 void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
@@ -553,10 +550,10 @@ int CMario::GetAniIdSmall()
 					}
 					else {
 						if (nx > 0) {
-							aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_SMALL_RUNNING_RIGHT : ID_ANI_MARIO_SMALL_WALKING_RIGHT;
+							aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_SMALL_RUNNING_NO_POWER_RIGHT : ID_ANI_MARIO_SMALL_WALKING_RIGHT;
 						}
 						else {
-							aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_SMALL_RUNNING_LEFT : ID_ANI_MARIO_SMALL_WALKING_LEFT;
+							aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_SMALL_RUNNING_NO_POWER_LEFT : ID_ANI_MARIO_SMALL_WALKING_LEFT;
 						}
 					}
 				}
@@ -570,7 +567,7 @@ int CMario::GetAniIdSmall()
 					if (ax < 0)
 						aniId = ID_ANI_MARIO_SMALL_BRACE_RIGHT;
 					else if (ax == MARIO_ACCEL_RUN_X)
-						aniId = ID_ANI_MARIO_SMALL_RUNNING_RIGHT;
+						aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_SMALL_RUNNING_FULL_POWER_RIGHT : ID_ANI_MARIO_SMALL_RUNNING_NO_POWER_RIGHT;
 					else
 						aniId = ID_ANI_MARIO_SMALL_WALKING_RIGHT;
 				}
@@ -584,7 +581,7 @@ int CMario::GetAniIdSmall()
 					if (ax > 0)
 						aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
 					else if (ax == -MARIO_ACCEL_RUN_X)
-						aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
+						aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_SMALL_RUNNING_FULL_POWER_LEFT : ID_ANI_MARIO_SMALL_RUNNING_NO_POWER_LEFT;
 					else
 						aniId = ID_ANI_MARIO_SMALL_WALKING_LEFT;
 				}
@@ -803,10 +800,10 @@ int CMario::GetAniIdBig()
 					}
 					else {
 						if (nx > 0) {
-							aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RUNNING_RIGHT : ID_ANI_MARIO_WALKING_RIGHT;
+							aniId = (ax == MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RUNNING_NO_POWER_RIGHT : ID_ANI_MARIO_WALKING_RIGHT;
 						}
 						else {
-							aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RUNNING_LEFT : ID_ANI_MARIO_WALKING_LEFT;
+							aniId = (ax == -MARIO_ACCEL_RUN_X) ? ID_ANI_MARIO_RUNNING_NO_POWER_LEFT : ID_ANI_MARIO_WALKING_LEFT;
 						}
 					}
 					
@@ -821,7 +818,7 @@ int CMario::GetAniIdBig()
 					if (ax < 0)
 						aniId = ID_ANI_MARIO_BRACE_RIGHT;
 					else if (ax == MARIO_ACCEL_RUN_X)
-						aniId = ID_ANI_MARIO_RUNNING_RIGHT;
+						aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_RUNNING_FULL_POWER_RIGHT : ID_ANI_MARIO_RUNNING_NO_POWER_RIGHT;
 					else
 						aniId = ID_ANI_MARIO_WALKING_RIGHT;
 				}
@@ -836,7 +833,7 @@ int CMario::GetAniIdBig()
 					if (ax > 0)
 						aniId = ID_ANI_MARIO_BRACE_LEFT;
 					else if (ax == -MARIO_ACCEL_RUN_X)
-						aniId = ID_ANI_MARIO_RUNNING_LEFT;
+						aniId = (IsFlagOn(FLAG_MAX_POWER)) ? ID_ANI_MARIO_RUNNING_FULL_POWER_LEFT : ID_ANI_MARIO_RUNNING_NO_POWER_LEFT;
 					else
 						aniId = ID_ANI_MARIO_WALKING_LEFT;
 				}
@@ -1078,7 +1075,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	}
 }
 
-void CMario::SetBoundary(int l, int t, int r, int b)
+void CMario::SetBoundary(float l, float t, float r, float b)
 {
 	leftBoundary = l;
 	topBoundary = t;

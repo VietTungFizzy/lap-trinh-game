@@ -58,7 +58,7 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			CMario* player = (CMario*)scene->GetPlayer();
 			player->ScoringPointWithoutCombo(SCORE_POINT_100);
-			this->nx = e->nx;
+			this->nx = (int)e->nx;
 			break;
 		}
 	case OBJECT_TYPE_PARA_GOOMBA:
@@ -87,7 +87,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 	if (state == GOOMBA_STATE_DIE_FOR_SHELL) {
-		float cam_l, cam_t, cam_r, cam_b;
+		float cam_l, cam_t, cam_b;
 		CGame* game = CGame::GetInstance();
 		game->GetCamPos(cam_l, cam_t);
 		cam_b = cam_t + game->GetBackBufferHeight();

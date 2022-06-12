@@ -170,7 +170,7 @@ void CParaKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		e->nx != 0 &&
 		state == PARA_KOOPA_STATE_SHELL_MOVING) {
 		CRewardingBrick* obj = (CRewardingBrick*)e->obj;
-		obj->SetRewardDirection(-e->nx);
+		obj->SetRewardDirection((int)-e->nx);
 		obj->SetState(REWARDING_BRICK_GO_UP_STATE);
 	}
 

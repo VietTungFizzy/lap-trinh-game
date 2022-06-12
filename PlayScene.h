@@ -11,7 +11,7 @@
 class CPlayScene: public CScene
 {
 private:
-	int topBoundaries, leftBoundaries, rightBoundaries, bottomBoundaries;
+	float topBoundaries, leftBoundaries, rightBoundaries, bottomBoundaries;
 	BOOLEAN isCameraYLocked;
 	BOOLEAN isSwitchOn;
 	ULONGLONG timer;
