@@ -4,7 +4,7 @@
 0	0	176	256
 
 [BACKGROUND_COLOR]
-# RED GREEN BLUD
+# RED GREEN BLUE
 255.0	218.0	121.0
 
 # list of object assets to load in this scene

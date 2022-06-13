@@ -186,6 +186,12 @@
     <ClInclude Include="MarioWorldMap.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="IntroKeyHandler.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroScene.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -326,6 +332,12 @@
     <ClCompile Include="MarioWorldMap.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
+    <ClCompile Include="IntroKeyHandler.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroScene.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt">
@@ -383,6 +395,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\world-map-node.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\intro.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

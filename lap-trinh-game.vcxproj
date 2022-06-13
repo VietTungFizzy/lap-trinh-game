@@ -154,6 +154,8 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="IntroKeyHandler.h" />
+    <ClInclude Include="IntroScene.h" />
     <ClInclude Include="InvinsibleBrick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
@@ -204,6 +206,8 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="IntroKeyHandler.cpp" />
+    <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="InvinsibleBrick.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -253,6 +257,7 @@
     <Text Include="data\effect.txt" />
     <Text Include="data\enemy.txt" />
     <Text Include="data\goal.txt" />
+    <Text Include="data\intro.txt" />
     <Text Include="data\mario.txt" />
     <Text Include="data\mushroom.txt" />
     <Text Include="data\pipe.txt" />

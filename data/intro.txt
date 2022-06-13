@@ -1,0 +1,22 @@
+# Some setting properties
+[BACKGROUND_COLOR]
+# RED GREEN BLUE
+255.0	219.0	161.0
+
+# list of object assets to load in this scene
+[ASSETS]
+data/decorated.txt
+
+[OBJECTS]
+
+# FLOOR
+6	0	185	20	1	60088	0	32	37
+
+# TITLE
+6	155	60	60089
+
+# NUMBER 3
+6	155	116	1	1	20002	1
+
+# LEFT TREE IN TITLE SCREEN
+6	32	135	60094

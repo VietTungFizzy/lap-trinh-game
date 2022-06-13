@@ -8,6 +8,7 @@
 #include "Animations.h"
 #include "PlayScene.h"
 #include "WorldScene.h"
+#include "IntroScene.h"
 
 CGame * CGame::__instance = NULL;
 
@@ -438,6 +439,7 @@ void CGame::ProcessKeyboard()
 #define GAME_FILE_SECTION_SCENES 2
 #define GAME_FILE_SECTION_TEXTURES 3
 
+#define SCENE_TYPE_INTRO 0
 #define SCENE_TYPE_WORLD_MAP 1
 #define SCENE_TYPE_PLAY_SCENE 2
 
@@ -462,6 +464,9 @@ void CGame::_ParseSection_SCENES(string line)
 	int type = atoi(tokens[2].c_str());
 	LPSCENE scene;
 	switch (type) {
+	case SCENE_TYPE_INTRO:
+		scene = new CIntroScene(id, path);
+		break;
 	case SCENE_TYPE_PLAY_SCENE:
 		scene = new CPlayScene(id, path);
 		break;
