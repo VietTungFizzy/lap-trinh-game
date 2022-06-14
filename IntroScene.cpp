@@ -7,6 +7,7 @@
 #include "AssetIDs.h"
 
 #include "Decorated_Obj.h"
+#include "TitleMenu.h"
 
 #include "IntroKeyHandler.h"
 
@@ -130,6 +131,11 @@ void CIntroScene::_ParseSection_OBJECTS(string line)
 				return;
 			}
 			decoratedObjects.push_back(obj);
+			return;
+			break;
+		}
+		case OBJECT_TYPE_TITLE_MENU: {
+			menu = new CTitleMenu(x, y, object_type);
 			return;
 			break;
 		}
@@ -266,6 +272,7 @@ void CIntroScene::Render()
 	for (size_t i = 0; i < objects.size(); i++) {
 		objects[i]->Render();
 	}
+	menu->Render();
 }
 
 void CIntroScene::Clear()

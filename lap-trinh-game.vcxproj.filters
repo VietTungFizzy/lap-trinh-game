@@ -192,6 +192,9 @@
     <ClInclude Include="IntroScene.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="TitleMenu.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -338,6 +341,9 @@
     <ClCompile Include="IntroScene.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="TitleMenu.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt">
@@ -398,6 +404,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\intro.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\title_menu.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

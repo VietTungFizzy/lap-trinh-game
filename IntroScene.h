@@ -7,6 +7,8 @@ class CIntroScene :
     public CScene
 {
 private:
+	LPGAMEOBJECT menu;
+
 	// List of objects that can have impact with the game
 	vector<LPGAMEOBJECT> objects;
 
@@ -34,5 +36,7 @@ public:
 	void PurgeDeletedObjects();
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
+
+	LPGAMEOBJECT GetMenu() { return menu; }
 };
 

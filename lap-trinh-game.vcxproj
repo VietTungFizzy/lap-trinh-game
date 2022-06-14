@@ -192,6 +192,7 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Textures.h" />
+    <ClInclude Include="TitleMenu.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusFireTrap.h" />
     <ClInclude Include="WorldMapKeyHandler.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="SwitchBrick.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="TitleMenu.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusFireTrap.cpp" />
     <ClCompile Include="WorldMapKeyHandler.cpp" />
@@ -262,6 +264,7 @@
     <Text Include="data\mushroom.txt" />
     <Text Include="data\pipe.txt" />
     <Text Include="data\platform.txt" />
+    <Text Include="data\title_menu.txt" />
     <Text Include="data\world-map-node.txt" />
     <Text Include="data\score_text.txt" />
     <Text Include="data\item.txt" />
