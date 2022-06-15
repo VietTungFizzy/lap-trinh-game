@@ -33,11 +33,7 @@ HOW TO INSTALL Microsoft.DXSDK.D3DX
 #include "Animation.h"
 #include "Animations.h"
 
-#include "Mario.h"
-#include "Brick.h"
-#include "Goomba.h"
-#include "Coin.h"
-#include "Platform.h"
+#include "GlobalState.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -198,6 +194,7 @@ int WINAPI WinMain(
 	LPGAME game = CGame::GetInstance();
 	game->Init(hWnd, hInstance);
 	game->InitKeyboard();
+	CGlobalState::GetInstance()->Init();
 
 
 	//IMPORTANT: this is the only place where a hardcoded file name is allowed ! 

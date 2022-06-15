@@ -10,6 +10,7 @@
 #include "WorldMapNode.h"
 #include "PortalWorldMap.h"
 #include "MarioWorldMap.h"
+#include "Hud.h"
 
 #include "WorldMapKeyHandler.h"
 
@@ -160,6 +161,11 @@ void CWorldScene::_ParseSection_OBJECTS(string line)
 			obj = new CPortalWorldMap(x, y, object_type, adj_t, adj_l, adj_r, adj_d, spriteId, sceneId);
 			break;
 		}
+		case OBJECT_TYPE_HUD: {
+			hud = new CHud(x, y, object_type);
+			return;
+			break;
+		}
 	}
 
 	objects.push_back(obj);
@@ -287,9 +293,10 @@ void CWorldScene::Update(DWORD dt)
 		objects[i]->Update(dt, &coObjects);
 	}
 	player->Update(dt, &coObjects);
+	hud->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return;
+	if (player == NULL || hud == NULL) return;
 
 	PurgeDeletedObjects();
 }
@@ -306,6 +313,7 @@ void CWorldScene::Render()
 	}
 
 	player->Render();
+	hud->Render();
 }
 
 void CWorldScene::Clear()

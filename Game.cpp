@@ -9,6 +9,7 @@
 #include "PlayScene.h"
 #include "WorldScene.h"
 #include "IntroScene.h"
+#include "GlobalState.h"
 
 CGame * CGame::__instance = NULL;
 

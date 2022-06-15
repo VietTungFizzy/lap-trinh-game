@@ -195,6 +195,12 @@
     <ClInclude Include="TitleMenu.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -344,6 +350,12 @@
     <ClCompile Include="TitleMenu.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
+    <ClCompile Include="GlobalState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hud.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\brick.txt">
@@ -407,6 +419,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="data\title_menu.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="data\hud.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -8,6 +8,7 @@ class CWorldScene :
 {
 protected:
 	LPGAMEOBJECT player;
+	LPGAMEOBJECT hud;
 
 	// List of objects that can have impact with the game
 	vector<LPGAMEOBJECT> objects;

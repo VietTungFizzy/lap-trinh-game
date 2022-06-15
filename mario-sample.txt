@@ -1,5 +1,5 @@
 [SETTINGS]
-start	1
+start	2
 width	320
 height	240
 
@@ -36,6 +36,7 @@ height	240
 # >= 42000 ==> text
 # >= 43000 ==> card
 # >= 44000 ==> title menu
+# >= 45000 ==> hud
 # >= 51000 ==> world map node
 # >= 54000 ==> platform
 # >= 60000 ==> decorated

@@ -12,6 +12,8 @@
 data/decorated.txt
 data/world-map-node.txt
 data/mario.txt
+data/hud.txt
+data/text.txt
 
 [OBJECTS]
 
@@ -111,3 +113,6 @@ data/mario.txt
 
 # MARIO
 17	32	48
+
+# HUD
+19	118	185
