@@ -21,7 +21,8 @@
 
 #define HUD_SKELETON_OFFSET_X 40
 
-#define HUD_CARDS_OFFSET_X 160
+#define HUD_CARDS_OFFSET_X 168
+#define HUD_CARDS_OFFSET_Y 10
 
 #define HUD_WORLD_TEXT_OFFSET_X 37
 #define HUD_WORLD_TEXT_OFFSET_Y 7
@@ -43,6 +44,7 @@
 
 #define HUD_TIME_TEXT_OFFSET_X 124
 #define HUD_TIME_TEXT_OFFSET_Y 15
+
 #pragma endregion
 
 /*
@@ -58,6 +60,7 @@ private:
 	CGameObject* coinText;
 	CGameObject* timeText;
 	CGameObject* worldText;
+	CGameObject* powerMeter;
 
 	CGameObject* cards[HUD_AMOUNT_OF_CARD];
 private:

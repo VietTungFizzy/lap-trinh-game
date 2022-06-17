@@ -3,6 +3,7 @@
 #include "Hud.h"
 #include "Text.h"
 #include "Card.h"
+#include "PowerMeter.h"
 #include "GlobalState.h"
 #include "AssetIDs.h"
 
@@ -40,10 +41,15 @@ void CHud::Render()
 	coinText->Render();
 	pointText->Render();
 	timeText->Render();
+	powerMeter->Render();
 	
 	sprites->Get(ID_SPRITE_HUD_M_BUTTON)->Draw(
 		x - HUD_BBOX_WIDTH / 2 + HUD_LOCAL_COORDINATE_OFFSET + HUD_M_BUTTON_OFFSET_X,
 		y - HUD_BBOX_HEIGHT / 2 + HUD_LOCAL_COORDINATE_OFFSET + HUD_M_BUTTON_OFFSET_Y);
+
+	for (int i = 0; i < HUD_AMOUNT_OF_CARD; i++) {
+		cards[i]->Render();
+	}
 
 	RenderBoundingBox();
 }
@@ -71,6 +77,13 @@ CHud::CHud(float x, float y, int type)
 
 	t = convertIntToString(HUD_TIME_SIZE, gt->time);
 	timeText = new CText(base_x + HUD_TIME_TEXT_OFFSET_X, base_y + HUD_TIME_TEXT_OFFSET_Y, OBJECT_TYPE_TEXT, t);
+
+	for (int i = 0; i < HUD_AMOUNT_OF_CARD; i++) {
+		cards[i] = new CCard(base_x + HUD_CARDS_OFFSET_X + CARD_BBOX_WIDTH * i, base_y + HUD_CARDS_OFFSET_Y, OBJECT_TYPE_CARD);
+		cards[i]->SetState(gt->cards[i]);
+	}
+
+	powerMeter = new CPowerMeter(base_x + HUD_POWER_METER_OFFSET_X, base_y + HUD_POWER_METER_OFFSET_Y, OBJECT_TYPE_POWER_METER);
 }
 
 void CHud::OnGlobalStateChange()

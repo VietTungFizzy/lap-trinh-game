@@ -181,6 +181,7 @@
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="PortalWorldMap.h" />
+    <ClInclude Include="PowerMeter.h" />
     <ClInclude Include="PSwitch.h" />
     <ClInclude Include="RewardingBrick.h" />
     <ClInclude Include="RouletteCard.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="PortalWorldMap.cpp" />
+    <ClCompile Include="PowerMeter.cpp" />
     <ClCompile Include="PSwitch.cpp" />
     <ClCompile Include="RewardingBrick.cpp" />
     <ClCompile Include="RouletteCard.cpp" />

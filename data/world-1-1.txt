@@ -19,6 +19,8 @@ data/effect.txt
 data/goal.txt
 data/text.txt
 data/card.txt
+data/hud.txt
+
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

@@ -50,4 +50,5 @@ height	240
 # >= 5500 ==> bullet
 # >= 6000 ==> item
 # >= 11000 ==> coin
+# >= 12000 ==> hud
 # >= 20000 ==> decorated bbject

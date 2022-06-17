@@ -14,7 +14,7 @@ CGlobalState* CGlobalState::GetInstance()
 
 void CGlobalState::Init()
 {
-	time = coin = power = point = 0;
+	time = coin = point = power = 0;
 	lives = DEFAULT_LIVES_FOR_MARIO;
 	world = DEFAULT_VALUE_WORLD;
 	for (int i = 0; i < MAXIMUM_CARDS; i++) cards[i] = CARD_STATE_EMPTY;
