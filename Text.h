@@ -69,6 +69,6 @@ public:
 		this->hasLivingTime = hasLivingTime;
 	}
 	// This function mostly used for HUD
-	void UpdateText(std::string text) { this->text = text; }
+	void UpdateText(std::string text);
 };
 

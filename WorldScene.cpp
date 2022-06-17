@@ -11,6 +11,7 @@
 #include "PortalWorldMap.h"
 #include "MarioWorldMap.h"
 #include "Hud.h"
+#include "GlobalState.h"
 
 #include "WorldMapKeyHandler.h"
 
@@ -264,6 +265,12 @@ void CWorldScene::Load()
 	}
 
 	f.close();
+
+	// Set camera position
+	CGame::GetInstance()->SetCamPos(0, 0);
+
+	// Setting global state
+	CGlobalState::GetInstance()->time = 0;
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }

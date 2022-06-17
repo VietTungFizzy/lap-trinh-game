@@ -276,8 +276,6 @@ private:
 	ULONGLONG countdown_timer; // countdown before max power decrease
 	ULONGLONG short_action_timer; // Mostly use for kicking, tail attack,...
 
-	int point; 
-	int coin;
 	int comboCount;
 	int powerCount;
 
@@ -325,7 +323,7 @@ public:
 	int GetLevel() { return this->level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	
-	void AddPoint(int point) { this->point += point; }
+	void AddPoint(int point);
 	void ScoringPointWithoutCombo(int point);
 	
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);

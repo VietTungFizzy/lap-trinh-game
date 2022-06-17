@@ -74,3 +74,14 @@ void CText::Render()
 		sprites->Get(spriteId)->Draw(xx, y);
 	}
 }
+
+void CText::UpdateText(std::string text)
+{
+	// If new text is longer than current text
+	// we decrease x to keep text object in
+	// intended position
+	if (text.length() > this->text.length()) {
+		x -= (text.length() - this->text.length()) * CHARACTER_BBOX_WIDTH;
+	}
+	this->text = text;
+}

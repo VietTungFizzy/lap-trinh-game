@@ -22,6 +22,8 @@
 #include "PiranhaPlant.h"
 #include "SwitchBrick.h"
 #include "Goal.h"
+#include "Hud.h"
+#include "GlobalState.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -38,10 +40,15 @@ using namespace std;
 
 #define MAX_SCENE_LINE 1024
 #define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_HEIGHT 204
 #define SWITCH_ON_TIME 3000
 
 #define CAMERA_CHECKING_OFFSET 32
+#define HUD_POS_OFFSET_X 125
+#define HUD_POS_OFFSET_Y 20
+
+#define DEFAULT_TIME 300
+#define ONE_SECOND 1000
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	CScene(id, filePath)
@@ -50,7 +57,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	key_handler = new CSampleKeyHandler(this);
 	isCameraYLocked = false;
 	isSwitchOn = false;
-	timer = 0;
+	switchTimer = gameTimer = 0;
 }
 
 void CPlayScene::_ParseSection_SPRITES(string line)
@@ -348,16 +355,34 @@ void CPlayScene::Load()
 		rightBoundaries - MARIO_BOUNDARY_OFFSET, 
 		bottomBoundaries);
 
+	// Init HUD
+	hud = new CHud(0, 0, OBJECT_TYPE_HUD);
+
+	// Setting global state
+	CGlobalState::GetInstance()->time = DEFAULT_TIME;
+	gameTimer = GetTickCount64();
+
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
 void CPlayScene::Update(DWORD dt)
 {
+	// Handling Timer
 	if (isSwitchOn) {
-		if (GetTickCount64() - timer > SWITCH_ON_TIME) {
+		if (GetTickCount64() - switchTimer > SWITCH_ON_TIME) {
 			isSwitchOn = false;
-			timer = 0;
+			switchTimer = 0;
 		}
+	}
+	if (((CMario*)player)->GetState() != MARIO_STATE_DIE &&
+		!((CMario*)player)->IsFlagOn(FLAG_IN_CUT_SCENE)) {
+		if (GetTickCount64() - gameTimer > ONE_SECOND) {
+			gameTimer = GetTickCount64();
+			CGlobalState::GetInstance()->time--;
+		}
+	}
+	if (CGlobalState::GetInstance()->time == 0) {
+		player->SetState(MARIO_STATE_DIE);
 	}
 
 	// We know that Mario is the last object in the list hence we won't add him into the colliable object list
@@ -376,11 +401,17 @@ void CPlayScene::Update(DWORD dt)
 			
 	}
 	player->Update(dt, &coObjects);
+	hud->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
 	AdjustCameraPosition();
+
+	// Update HUD pos
+	float cam_x, cam_y;
+	CGame::GetInstance()->GetCamPos(cam_x, cam_y);
+	((CHud*)hud)->SetPosition(cam_x + HUD_POS_OFFSET_X, cam_y + SCREEN_HEIGHT - HUD_POS_OFFSET_Y);
 
 	PurgeDeletedObjects();
 }
@@ -400,6 +431,7 @@ void CPlayScene::Render()
 			objects[i]->Render();
 	}
 	player->Render();
+	hud->Render();
 }
 
 void CPlayScene::AddObjects(LPGAMEOBJECT obj, bool isAddAtTheBeginning)

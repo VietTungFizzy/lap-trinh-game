@@ -14,8 +14,11 @@ private:
 	float topBoundaries, leftBoundaries, rightBoundaries, bottomBoundaries;
 	BOOLEAN isCameraYLocked;
 	BOOLEAN isSwitchOn;
-	ULONGLONG timer;
+	ULONGLONG switchTimer, gameTimer;
 protected: 
+	// HUD will be handling differently
+	LPGAMEOBJECT hud;
+	
 	// A play scene has to have player, right? 
 	LPGAMEOBJECT player;					
 
@@ -56,7 +59,7 @@ public:
 
 	static bool IsGameObjectDeleted(const LPGAMEOBJECT& o);
 
-	void SetSwitchOn() { isSwitchOn = true; timer = GetTickCount64(); }
+	void SetSwitchOn() { isSwitchOn = true; switchTimer = GetTickCount64(); }
 	bool GetSwitchStatus() { return isSwitchOn; }
 
 	bool isInCamera(LPGAMEOBJECT obj);

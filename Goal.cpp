@@ -1,6 +1,8 @@
 #include "Goal.h"
 #include "PlayScene.h"
 #include "RouletteCard.h"
+#include "GlobalState.h"
+#include "Card.h"
 
 void CGoal::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -44,11 +46,30 @@ void CGoal::SetState(int state)
 	case GOAL_STATE_TOUCHED:
 		{
 			CPlayScene* scene = (CPlayScene * )CGame::GetInstance()->GetCurrentScene();
-			int rouletteCardState;
+			CGlobalState* gt = CGlobalState::GetInstance();
+			int rouletteCardState, globalCardState;
 			switch (this->state) {
-				case GOAL_STATE_MUSHROOM: rouletteCardState = ROULETTE_CARD_STATE_MUSHROOM; break;
-				case GOAL_STATE_FLOWER: rouletteCardState = ROULETTE_CARD_STATE_FLOWER; break;
-				case GOAL_STATE_STAR: rouletteCardState = ROULETTE_CARD_STATE_STAR; break;
+				case GOAL_STATE_MUSHROOM: {
+					rouletteCardState = ROULETTE_CARD_STATE_MUSHROOM; 
+					globalCardState = CARD_STATE_MUSHROOM;
+					break;
+				}
+				case GOAL_STATE_FLOWER: {
+					rouletteCardState = ROULETTE_CARD_STATE_FLOWER; 
+					globalCardState = CARD_STATE_FLOWER;
+					break; 
+				}
+				case GOAL_STATE_STAR: {
+					rouletteCardState = ROULETTE_CARD_STATE_STAR; 
+					globalCardState = CARD_STATE_STAR;
+					break;
+				}
+			}
+			for (int i = 0; i < MAXIMUM_CARDS; i++) {
+				if (gt->cards[i] == CARD_STATE_EMPTY) {
+					gt->cards[i] = globalCardState;
+					break;
+				}
 			}
 			scene->AddObjects(new CRouletteCard(x, y, rouletteCardState));
 			Delete();

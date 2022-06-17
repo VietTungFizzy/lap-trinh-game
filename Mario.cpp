@@ -19,6 +19,7 @@
 #include "PSwitch.h"
 #include "MarioTail.h"
 #include "Goal.h"
+#include "GlobalState.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -32,7 +33,6 @@ CMario::CMario(float x, float y, int type) : CGameObject(x, y, type)
 	level = MARIO_LEVEL_RACCOON;
 	untouchable = 0;
 	untouchable_start = -1;
-	point = 0;
 	bottomBoundary = leftBoundary = topBoundary = rightBoundary = 0;
 
 	powerCount = 0;
@@ -170,7 +170,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
-	DebugOutTitle(L"x: %f y: %f", x, y);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -228,6 +227,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE_FOR_MARIO);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			ScoringWithCombo();
 		}
 		else // hit by Goomba
 		{
@@ -239,8 +239,9 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	point+= SCORE_POINT_100;
-	coin++;
+	CGlobalState* gt = CGlobalState::GetInstance();
+	gt->point += SCORE_POINT_50;
+	gt->coin++;
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -253,7 +254,7 @@ void CMario::OnCollisionWithRewardingBrick(LPCOLLISIONEVENT e)
 {
 	if (e->ny > 0 && e->obj->GetState() == REWARDING_BRICK_NORMAL_STATE) {
 		e->obj->SetState(REWARDING_BRICK_GO_UP_STATE);
-		point += SCORE_POINT_100;
+		CGlobalState::GetInstance()->point += SCORE_POINT_100;
 	}
 }
 
@@ -273,7 +274,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 			ScoringPointWithoutCombo(SCORE_POINT_1000);
 		}
 		else {
-			DebugOut(L">>>>>>>>> Add 1 life to player <<<<<<<<");
+			CGlobalState::GetInstance()->lives++;
 		}
 	}
 }
@@ -486,6 +487,8 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithGoal(LPCOLLISIONEVENT e)
 {
+	vx = 0;
+	ax = 0;
 	e->obj->SetState(GOAL_STATE_TOUCHED);
 	SetFlagOn(FLAG_IN_CUT_SCENE);
 	currentCutScene = CUT_SCENE_COURSE_END;
@@ -719,23 +722,24 @@ void CMario::GetHit()
 void CMario::ScoringWithCombo()
 {
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	CGlobalState* gt = CGlobalState::GetInstance();
 	comboCount++;
 	switch (comboCount) {
 		case COMBO_100:
 		{
-			point += SCORE_POINT_100;
+			gt->point += SCORE_POINT_100;
 			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_100, OBJECT_TYPE_SCORE_TEXT));
 			break;
 		}
 		case COMBO_200:
 		{
-			point += SCORE_POINT_200;
+			gt->point += SCORE_POINT_200;
 			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_200, OBJECT_TYPE_SCORE_TEXT));
 			break;
 		}
 		case COMBO_400:
 		{
-			point += SCORE_POINT_400;
+			gt->point += SCORE_POINT_400;
 			scene->AddObjects(new CScoreText(x, y, SCORE_TEXT_400, OBJECT_TYPE_SCORE_TEXT));
 			break;
 		}
@@ -1001,6 +1005,7 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
 		ax = 0;
+		CGlobalState::GetInstance()->lives--;
 		break;
 	case MARIO_STATE_BIG_TO_SMALL:
 	case MARIO_STATE_SMALL_TO_BIG:
@@ -1033,6 +1038,11 @@ void CMario::SetState(int state)
 	CGameObject::SetState(state);
 }
 
+void CMario::AddPoint(int point)
+{
+	CGlobalState::GetInstance()->point += point;
+}
+
 void CMario::ScoringPointWithoutCombo(int point)
 {
 	int scoreTextId = SCORE_TEXT_100;
@@ -1042,7 +1052,7 @@ void CMario::ScoringPointWithoutCombo(int point)
 	case SCORE_POINT_200: scoreTextId = SCORE_TEXT_200; break;
 	case SCORE_POINT_400: scoreTextId = SCORE_TEXT_400; break;
 	}
-	this->point += point;
+	CGlobalState::GetInstance()->point += point;
 	CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	scene->AddObjects(new CScoreText(x, y, scoreTextId, OBJECT_TYPE_SCORE_TEXT));
 }

@@ -74,7 +74,6 @@ protected:
 	virtual void Render();
 public:
 	CHud(float x, float y, int type);
-
-	void OnGlobalStateChange();
+	void SetPosition(float x, float y);
 };
 
