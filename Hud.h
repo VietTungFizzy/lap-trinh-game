@@ -14,6 +14,8 @@
 #define HUD_TIME_SIZE 3
 
 #pragma region COMPONENT OFFSET
+#define HUD_BACKGROUND_OFFSET_X 5
+
 #define HUD_M_BUTTON_OFFSET_X 8
 #define HUD_M_BUTTON_OFFSET_Y 15
 
@@ -47,6 +49,10 @@
 
 #pragma endregion
 
+#define ID_SPRITE_HUD_BACKGROUND 60056
+
+#define HUD_BACKGROUND_CELL_LENGTH 20
+#define HUD_BACKGROUND_CELL_HEIGHT 6
 /*
 *	HUD ties directly to global state. Whenever global state
 *	changes, HUD will change accordingly
@@ -61,6 +67,7 @@ private:
 	CGameObject* timeText;
 	CGameObject* worldText;
 	CGameObject* powerMeter;
+	CGameObject* background;
 
 	CGameObject* cards[HUD_AMOUNT_OF_CARD];
 private:

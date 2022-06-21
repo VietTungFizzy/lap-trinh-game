@@ -4,6 +4,8 @@
 #include "Text.h"
 #include "Card.h"
 #include "PowerMeter.h"
+#include "Decorated_Obj.h"
+
 #include "GlobalState.h"
 #include "AssetIDs.h"
 
@@ -52,6 +54,9 @@ void CHud::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CHud::Render()
 {
+	// Render background first
+	background->Render();
+
 	CSprites* sprites = CSprites::GetInstance();
 	// Render HUD Skeleton
 	sprites->Get(ID_SPRITE_HUD_SKELETON)->Draw(x - HUD_SKELETON_OFFSET_X, y);
@@ -72,7 +77,7 @@ void CHud::Render()
 		cards[i]->Render();
 	}
 
-	RenderBoundingBox();
+	// RenderBoundingBox();
 }
 
 CHud::CHud(float x, float y, int type)
@@ -105,6 +110,8 @@ CHud::CHud(float x, float y, int type)
 	}
 
 	powerMeter = new CPowerMeter(base_x + HUD_POWER_METER_OFFSET_X, base_y + HUD_POWER_METER_OFFSET_Y, OBJECT_TYPE_POWER_METER);
+
+	background = new CDecoratedObject(base_x - HUD_BACKGROUND_OFFSET_X, base_y, ID_SPRITE_HUD_BACKGROUND, OBJECT_TYPE_DECORATED, HUD_BACKGROUND_CELL_LENGTH, HUD_BACKGROUND_CELL_HEIGHT);
 }
 
 void CHud::SetPosition(float x, float y)
@@ -122,4 +129,5 @@ void CHud::SetPosition(float x, float y)
 		cards[i]->SetPosition(base_x + HUD_CARDS_OFFSET_X + CARD_BBOX_WIDTH * i, base_y + HUD_CARDS_OFFSET_Y);
 	}
 	powerMeter->SetPosition(base_x + HUD_POWER_METER_OFFSET_X, base_y + HUD_POWER_METER_OFFSET_Y);
+	background->SetPosition(base_x - HUD_BACKGROUND_OFFSET_X, base_y);
 }
