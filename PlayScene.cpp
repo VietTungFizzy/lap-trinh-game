@@ -33,6 +33,7 @@ using namespace std;
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
 #define SCENE_SECTION_CAMERA_BOUNDARIES 3
+#define SCENE_SECTION_BACKGROUND_COLOR 4
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -273,6 +274,20 @@ void CPlayScene::_ParseSection_CAMERA_BOUNDARIES(string line)
 	rightBoundaries = (float)atof(tokens[3].c_str());
 }
 
+void CPlayScene::_ParseSection_BACKGROUND_COLOR(string line)
+{
+	vector<string> tokens = split(line);
+
+	// Skip invalid line
+	if (tokens.size() < 3) return;
+
+	float red = (float)atof(tokens[0].c_str());
+	float blue = (float)atof(tokens[1].c_str());
+	float green = (float)atof(tokens[2].c_str());
+
+	bg_color = D3DXCOLOR(red / 255, blue / 255, green / 255, 0.0f);
+}
+
 void CPlayScene::LoadAssets(LPCWSTR assetFile)
 {
 	DebugOut(L"[INFO] Start loading assets from : %s \n", assetFile);
@@ -327,6 +342,7 @@ void CPlayScene::Load()
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line == "[CAMERA_BOUNDARIES]") { section = SCENE_SECTION_CAMERA_BOUNDARIES; continue; }
+		if (line == "[BACKGROUND_COLOR]") { section = SCENE_SECTION_BACKGROUND_COLOR; continue; }
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -337,6 +353,7 @@ void CPlayScene::Load()
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_CAMERA_BOUNDARIES: _ParseSection_CAMERA_BOUNDARIES(line); break;
+			case SCENE_SECTION_BACKGROUND_COLOR: _ParseSection_BACKGROUND_COLOR(line); break;
 		}
 	}
 
@@ -361,6 +378,8 @@ void CPlayScene::Load()
 	// Setting global state
 	CGlobalState::GetInstance()->time = DEFAULT_TIME;
 	gameTimer = GetTickCount64();
+
+	CGame::GetInstance()->SetCamPos(0, 0);
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
@@ -578,7 +597,7 @@ void CPlayScene::AdjustCameraPosition()
 		isCameraYLocked = false;
 	}
 	
-	if (newCamY < 0) newCamY = 0;
+	if (newCamY < topBoundaries) newCamY = topBoundaries;
 	if (newCamY > (bottomBoundaries - SCREEN_HEIGHT)) newCamY = bottomBoundaries - SCREEN_HEIGHT;
 
 	CGame::GetInstance()->SetCamPos(newCamX, newCamY);

@@ -49,16 +49,6 @@ CMario::CMario(float x, float y, int type) : CGameObject(x, y, type)
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	/*
-	if (!isSlowFalling) {
-		vy += ay * dt;
-		vx += ax * dt;
-	}
-	else {
-		vy += MARIO_GRAVITY_SLOW_FALLING * dt;
-		vx += ax * dt;
-	}
-	*/
 	vy += ay * dt;
 	vx += ax * dt;
 
@@ -91,7 +81,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			float l, t, r, b;
 			GetBoundingBox(l, t, r, b);
 			float dx = vx * dt;
+			float dy = vy * dt;
 			if (l + dx <= leftBoundary || r + dx >= rightBoundary) vx = 0;
+			if (t + dy <= topBoundary) vy = 0;
 		}
 
 
@@ -118,6 +110,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		if (powerCount < 0) powerCount = 0;
 		if (powerCount > MARIO_MAX_POWER) powerCount = MARIO_MAX_POWER;
 		(powerCount >= MARIO_MAX_POWER) ? SetFlagOn(FLAG_MAX_POWER) : SetFlagOff(FLAG_MAX_POWER);
+		CGlobalState::GetInstance()->power = powerCount;
 		if (IsFlagOn(FLAG_MAX_POWER) && countdown_timer == 0) {
 			countdown_timer = GetTickCount64();
 		}

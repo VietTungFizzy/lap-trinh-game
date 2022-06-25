@@ -430,5 +430,8 @@
     <Text Include="data\hud.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="data\world-1-1-underground.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

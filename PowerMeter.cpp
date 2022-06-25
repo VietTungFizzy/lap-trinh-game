@@ -14,6 +14,7 @@ void CPowerMeter::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
 	int power = CGlobalState::GetInstance()->power;
+	DebugOutTitle(L"%d", power);
 	
 	int full_parts = (int)floor((power / POWER_METER_VALUE_PER_ARROW));
 	for (int i = 0; i < full_parts; i++) {

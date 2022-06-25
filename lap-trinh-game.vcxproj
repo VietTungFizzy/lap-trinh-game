@@ -272,6 +272,7 @@
     <Text Include="data\pipe.txt" />
     <Text Include="data\platform.txt" />
     <Text Include="data\title_menu.txt" />
+    <Text Include="data\world-1-1-underground.txt" />
     <Text Include="data\world-map-node.txt" />
     <Text Include="data\score_text.txt" />
     <Text Include="data\item.txt" />

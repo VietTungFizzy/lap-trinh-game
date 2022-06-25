@@ -10,6 +10,7 @@ height	240
 1	data/intro.txt	0
 2	data/world-map.txt	1
 10	data/world-1-1.txt	2
+11	data/world-1-1-underground.txt	2
 
 
 # id	file 
@@ -52,3 +53,6 @@ height	240
 # >= 11000 ==> coin
 # >= 12000 ==> hud
 # >= 20000 ==> decorated bbject
+#
+# NOTE:
+# HUD require following assets: text, hud, card

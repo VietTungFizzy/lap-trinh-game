@@ -34,6 +34,7 @@ protected:
 	void _ParseSection_ASSETS(string line);
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_CAMERA_BOUNDARIES(string line);
+	void _ParseSection_BACKGROUND_COLOR(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
 	
