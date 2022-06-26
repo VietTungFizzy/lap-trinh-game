@@ -208,6 +208,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	case OBJECT_TYPE_SWITCH_BRICK: OnCollisionWithSwitchBrick(e); break;
 	case OBJECT_TYPE_P_SWITCH: OnCollisionWithPSwitch(e); break;
 	case OBJECT_TYPE_GOAL: OnCollisionWithGoal(e); break;
+	case OBJECT_TYPE_PORTAL_HIDDEN_ZONE: OnCollisionWithPortalHiddenZone(e); break;
 	}
 }
 
@@ -486,6 +487,10 @@ void CMario::OnCollisionWithGoal(LPCOLLISIONEVENT e)
 	SetFlagOn(FLAG_IN_CUT_SCENE);
 	currentCutScene = CUT_SCENE_COURSE_END;
 	SetState(MARIO_STATE_IDLE);
+}
+
+void CMario::OnCollisionWithPortalHiddenZone(LPCOLLISIONEVENT e)
+{
 }
 
 //

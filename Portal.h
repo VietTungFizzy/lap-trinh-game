@@ -1,16 +1,16 @@
 #pragma once
 
 #include "GameObject.h"
-
 /*
 	Object that triggers scene switching
 */
 class CPortal : public CGameObject
 {
+protected:
 	int scene_id;	// target scene to switch to 
 
 	float width;
-	float height; 
+	float height;
 public:
 	CPortal(float l, float t, float r, float b, int scene_id);
 	virtual void Render();

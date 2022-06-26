@@ -229,14 +229,6 @@
 #define MARIO_BOUNDARY_OFFSET 20
 #pragma endregion
 
-#pragma region LEVEL
-
-#define	MARIO_LEVEL_SMALL	1
-#define	MARIO_LEVEL_BIG		2
-#define MARIO_LEVEL_RACCOON 3
-
-#pragma endregion
-
 #pragma region CUT_SCENE_ID
 #define CUT_SCENE_COURSE_END 0
 #pragma endregion
@@ -293,6 +285,7 @@ private:
 	void OnCollisionWithSwitchBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoal(LPCOLLISIONEVENT e);
+	void OnCollisionWithPortalHiddenZone(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();

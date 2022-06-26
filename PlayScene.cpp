@@ -24,6 +24,7 @@
 #include "Goal.h"
 #include "Hud.h"
 #include "GlobalState.h"
+#include "PortalHiddenZone.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -183,6 +184,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id);
 	}
 	break;
+	case OBJECT_TYPE_PORTAL_HIDDEN_ZONE:
+	{
+		int scene_id = atoi(tokens[3].c_str());
+		float dest_x = (float)atof(tokens[4].c_str());
+		float dest_y = (float)atof(tokens[5].c_str());
+		obj = new CPortalHiddenZone(x, y, scene_id, dest_x, dest_y);
+		break;
+	}
 	case OBJECT_TYPE_DECORATED:
 	{
 		if (tokens.size() == DECORATED_OBJECT_SINGLE_CELL_PARAMS) {

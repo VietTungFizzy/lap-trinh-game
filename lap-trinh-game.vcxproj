@@ -180,6 +180,7 @@
     <ClInclude Include="PlatformTopOnly.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
+    <ClInclude Include="PortalHiddenZone.h" />
     <ClInclude Include="PortalWorldMap.h" />
     <ClInclude Include="PowerMeter.h" />
     <ClInclude Include="PSwitch.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="PlatformTopOnly.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="PortalHiddenZone.cpp" />
     <ClCompile Include="PortalWorldMap.cpp" />
     <ClCompile Include="PowerMeter.cpp" />
     <ClCompile Include="PSwitch.cpp" />

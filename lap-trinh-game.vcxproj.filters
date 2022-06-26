@@ -204,6 +204,9 @@
     <ClInclude Include="PowerMeter.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="PortalHiddenZone.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -222,9 +225,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Portal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
@@ -360,6 +360,12 @@
       <Filter>Source Files\Object</Filter>
     </ClCompile>
     <ClCompile Include="PowerMeter.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="PortalHiddenZone.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>

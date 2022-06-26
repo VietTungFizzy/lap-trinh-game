@@ -2,7 +2,7 @@
 
 #include "debug.h"
 #include "Game.h"
-
+#include "AssetIDs.h"
 #include "Mario.h"
 #include "PlayScene.h"
 

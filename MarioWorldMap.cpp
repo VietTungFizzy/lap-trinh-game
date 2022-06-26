@@ -41,9 +41,9 @@ void CMarioWorldMap::Render()
 {
 	int aniId = ID_ANI_MARIO_WORLD_MAP_SMALL;
 	switch (level) {
-		case MARIO_WORLD_MAP_LEVEL_SMALL: aniId = ID_ANI_MARIO_WORLD_MAP_SMALL; break;
-		case MARIO_WORLD_MAP_LEVEL_BIG: aniId = ID_ANI_MARIO_WORLD_MAP_BIG; break;
-		case MARIO_WORLD_MAP_LEVEL_RACCOON: aniId = ID_ANI_MARIO_WORLD_MAP_RACCOON; break;
+		case MARIO_LEVEL_SMALL: aniId = ID_ANI_MARIO_WORLD_MAP_SMALL; break;
+		case MARIO_LEVEL_BIG: aniId = ID_ANI_MARIO_WORLD_MAP_BIG; break;
+		case MARIO_LEVEL_RACCOON: aniId = ID_ANI_MARIO_WORLD_MAP_RACCOON; break;
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);

@@ -9,6 +9,7 @@ class CGlobalState
 private:
 	static CGlobalState* __instance;
 public:
+	// Properties can be shown on HUD
 	int point;
 	int lives;
 	int power;
@@ -16,6 +17,11 @@ public:
 	int time;
 	int cards[MAXIMUM_CARDS];
 	int world;
+
+	// Properties don't show on HUD
+	int marioLevel;
+	float marioDestX;
+	float marioDestY;
 public:
 	static CGlobalState* GetInstance();
 	void Init();

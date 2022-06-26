@@ -1,5 +1,6 @@
 #include "GlobalState.h"
 #include"Card.h"
+#include "AssetIDs.h"
 
 #define DEFAULT_LIVES_FOR_MARIO 4
 #define DEFAULT_VALUE_WORLD 1
@@ -18,4 +19,7 @@ void CGlobalState::Init()
 	lives = DEFAULT_LIVES_FOR_MARIO;
 	world = DEFAULT_VALUE_WORLD;
 	for (int i = 0; i < MAXIMUM_CARDS; i++) cards[i] = CARD_STATE_EMPTY;
+	marioLevel = MARIO_LEVEL_SMALL;
+	marioDestX = -1;
+	marioDestY = -1;
 }

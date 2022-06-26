@@ -270,7 +270,9 @@ void CWorldScene::Load()
 	CGame::GetInstance()->SetCamPos(0, 0);
 
 	// Setting global state
-	CGlobalState::GetInstance()->time = 0;
+	CGlobalState* gs = CGlobalState::GetInstance();
+	gs->time = 0;
+	((CMarioWorldMap*)player)->SetLevel(gs->marioLevel);
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
