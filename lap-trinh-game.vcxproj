@@ -169,6 +169,7 @@
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopa.h" />
     <ClInclude Include="Mario.h" />
+    <ClInclude Include="MarioGoingIntoPipeEffect.h" />
     <ClInclude Include="MarioTail.h" />
     <ClInclude Include="MarioWorldMap.h" />
     <ClInclude Include="Mushroom.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="Koopa.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="MarioGoingIntoPipeEffect.cpp" />
     <ClCompile Include="MarioTail.cpp" />
     <ClCompile Include="MarioWorldMap.cpp" />
     <ClCompile Include="Mushroom.cpp" />

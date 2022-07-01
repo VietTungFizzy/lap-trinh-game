@@ -14,9 +14,14 @@ class CPortalHiddenZone :
 private:
     float dest_x;
     float dest_y;
+    int spriteId;
 
 public:
-    CPortalHiddenZone(float x, float y, int scene_id, float dest_x, float dest_y );
+    CPortalHiddenZone(float x, float y, int spriteId, int scene_id, float dest_x, float dest_y);
 
+    virtual void Render();
+
+    int IsBlocking() { return 1; }
+    void GetDestCoord(float& x, float& y) { x = dest_x; y = dest_y; }
 };
 

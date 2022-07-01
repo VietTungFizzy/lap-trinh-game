@@ -54,6 +54,7 @@
 
 #define MARIO_STATE_KICKING 900
 
+#define MARIO_STATE_GOING_INTO_PIPE 1000
 #pragma endregion
 
 #pragma region ANIMATION_ID
@@ -192,7 +193,6 @@
 #define ID_ANI_MARIO_RACCOON_JUMP_WHILE_GRABBING_RIGHT 1851
 #pragma endregion
 
-
 #pragma region BBOX_SETTING
 
 #define MARIO_BIG_BBOX_WIDTH  14
@@ -205,6 +205,7 @@
 #define MARIO_SMALL_BBOX_HEIGHT 12
 
 #pragma endregion
+
 #pragma region MISC
 
 #define MARIO_SIT_HEIGHT_ADJUST ((MARIO_BIG_BBOX_HEIGHT-MARIO_BIG_SITTING_BBOX_HEIGHT)/2)
@@ -215,6 +216,7 @@
 #define MARIO_MAX_POWER_DECREASE_TIME 4000
 #define MARIO_KICKING_TIME 100
 #define MARIO_TAIL_ATTACK_TIME 350
+#define MARIO_CUT_SCENE_GOING_INTO_PIPE_TIMER 1000
 
 #define MINIMUM_ACCEL_VALUE 1e-4
 
@@ -332,4 +334,5 @@ public:
 
 	void TailAttack() { SetFlagOn(FLAG_WAGGING_TAIL); short_action_timer = GetTickCount64(); }
 	void SetBoundary(float l, float t, float r, float b);
+
 };

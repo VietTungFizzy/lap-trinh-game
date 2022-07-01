@@ -186,10 +186,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	break;
 	case OBJECT_TYPE_PORTAL_HIDDEN_ZONE:
 	{
-		int scene_id = atoi(tokens[3].c_str());
-		float dest_x = (float)atof(tokens[4].c_str());
-		float dest_y = (float)atof(tokens[5].c_str());
-		obj = new CPortalHiddenZone(x, y, scene_id, dest_x, dest_y);
+		int spriteId = atoi(tokens[3].c_str());
+		int scene_id = atoi(tokens[4].c_str());
+		float dest_x = (float)atof(tokens[5].c_str());
+		float dest_y = (float)atof(tokens[6].c_str());
+		obj = new CPortalHiddenZone(x, y, spriteId, scene_id, dest_x, dest_y);
 		break;
 	}
 	case OBJECT_TYPE_DECORATED:
@@ -385,8 +386,16 @@ void CPlayScene::Load()
 	hud = new CHud(0, 0, OBJECT_TYPE_HUD);
 
 	// Setting global state
-	CGlobalState::GetInstance()->time = DEFAULT_TIME;
+	CGlobalState * gs = CGlobalState::GetInstance();
+	gs->time = DEFAULT_TIME;
 	gameTimer = GetTickCount64();
+
+	// If mario teleport from hidden zone
+	if (gs->marioDestX != -1 && gs->marioDestY != -1) {
+		((CMario*)player)->SetPosition(gs->marioDestX, gs->marioDestY);
+		((CMario*)player)->SetLevel(gs->marioLevel);
+		gs->ResetTeleportProperties();
+	}
 
 	CGame::GetInstance()->SetCamPos(0, 0);
 
@@ -412,7 +421,7 @@ void CPlayScene::Update(DWORD dt)
 	if (CGlobalState::GetInstance()->time == 0) {
 		player->SetState(MARIO_STATE_DIE);
 	}
-
+	
 	// We know that Mario is the last object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	vector<LPGAMEOBJECT> coObjects;

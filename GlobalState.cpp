@@ -22,4 +22,13 @@ void CGlobalState::Init()
 	marioLevel = MARIO_LEVEL_SMALL;
 	marioDestX = -1;
 	marioDestY = -1;
+	destSceneId = -1;
+}
+
+void CGlobalState::ResetTeleportProperties()
+{
+	marioLevel = MARIO_LEVEL_SMALL;
+	marioDestX = -1;
+	marioDestY = -1;
+	destSceneId = -1;
 }

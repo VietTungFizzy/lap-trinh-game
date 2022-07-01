@@ -207,6 +207,9 @@
     <ClInclude Include="PortalHiddenZone.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="MarioGoingIntoPipeEffect.h">
+      <Filter>Header Files\Object\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -367,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="PortalHiddenZone.cpp">
       <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioGoingIntoPipeEffect.cpp">
+      <Filter>Source Files\Object\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,8 @@
 #include "MarioTail.h"
 #include "Goal.h"
 #include "GlobalState.h"
+#include "PortalHiddenZone.h"
+#include "MarioGoingIntoPipeEffect.h"
 
 #include "debug.h"
 #include "Collision.h"
@@ -52,6 +54,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
+	if (this->state == MARIO_STATE_GOING_INTO_PIPE) {
+		if (GetTickCount64() - transition_timer > MARIO_CUT_SCENE_GOING_INTO_PIPE_TIMER) {
+			int scene_id = CGlobalState::GetInstance()->destSceneId;
+			CGame::GetInstance()->InitiateSwitchScene(scene_id);
+			return;
+		}
+	}
+	
 	if (IsFlagOn(FLAG_IN_CUT_SCENE)) {
 		if (currentCutScene == CUT_SCENE_COURSE_END) {
 			if (IsFlagOn(FLAG_ON_PLATFORM)) {
@@ -491,6 +501,23 @@ void CMario::OnCollisionWithGoal(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithPortalHiddenZone(LPCOLLISIONEVENT e)
 {
+	if (e->ny != 0) {
+		CPortalHiddenZone* p = (CPortalHiddenZone*)e->obj;
+		CGlobalState * gs = CGlobalState::GetInstance();
+		if ((e->ny > 0 && CGame::GetInstance()->IsKeyDown(DIK_UP)) ||
+			(e->ny < 0 && CGame::GetInstance()->IsKeyDown(DIK_DOWN))
+			) {
+			gs->marioLevel = level;
+			gs->destSceneId = p->GetSceneId();
+			p->GetDestCoord(gs->marioDestX, gs->marioDestY);
+			transition_timer = GetTickCount64();
+			CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+			int direction = e->ny > 0 ? MARIO_GOING_INTO_PIPE_DIRECTION_UP : MARIO_GOING_INTO_PIPE_DIRECTION_DOWN;
+			scene->AddObjects(new CMarioGoingIntoPipeEffect(x, y, direction, level), true);
+			SetState(MARIO_STATE_GOING_INTO_PIPE);
+		}
+	}
+	
 }
 
 //
@@ -848,6 +875,8 @@ int CMario::GetAniIdBig()
 
 void CMario::Render()
 {
+	if (this->state == MARIO_STATE_GOING_INTO_PIPE) return;
+
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
 	switch (state) {
@@ -895,6 +924,8 @@ void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return;
+
+	if(this->state == MARIO_STATE_GOING_INTO_PIPE) return;
 
 	if (this->state == MARIO_STATE_BIG_TO_SMALL) {
 		if (GetTickCount64() - transition_timer <= MARIO_TRANSFORM_SMALL_AND_BIG_TIME) return;
